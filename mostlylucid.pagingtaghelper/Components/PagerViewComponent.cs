@@ -65,5 +65,5 @@ public class PagerViewComponent : ViewComponent
 
         // Optional htmx integration:
         // If set (e.g. "#content"), pagination links will include htmx attributes.
-        public string HtmxTarget { get; set; }
+        public string HtmxTarget { get; set; } = "";
     }

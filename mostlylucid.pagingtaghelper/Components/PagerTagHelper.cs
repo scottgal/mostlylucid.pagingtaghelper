@@ -52,10 +52,10 @@ public class PagerTagHelper : TagHelper
     [HtmlAttributeName("skip-forward-back-navigation")]
     public bool SkipForwardBackNavigation { get; set; } = true;
 
-    [HtmlAttributeName("htmx-target")] public string HtmxTarget { get; set; }
+    [HtmlAttributeName("htmx-target")] public string HtmxTarget { get; set; } = "";
 
     // Inject the current ViewContext
-    [ViewContext] [HtmlAttributeNotBound] public ViewContext ViewContext { get; set; }
+    [ViewContext] [HtmlAttributeNotBound] public required ViewContext ViewContext { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {

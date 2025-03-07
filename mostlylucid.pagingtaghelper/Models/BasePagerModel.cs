@@ -6,6 +6,6 @@ public abstract class BasePagerModel : IPagingModel
     public int TotalItems { get; set; }
     public int PageSize { get; set; }
 
-    public string LinkUrl { get; set; }
+    public string LinkUrl { get; set; } = "";
 
 }

@@ -1,0 +1,2 @@
+﻿1.0
+The mostlylucid paging tag helper AND View Component enables simple paging of data in ASP.NET Core applications.
