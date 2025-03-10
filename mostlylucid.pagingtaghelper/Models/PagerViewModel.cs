@@ -1,8 +1,17 @@
-﻿namespace mostlylucid.pagingtaghelper.Models;
+using mostlylucid.pagingtaghelper.Models;
+
+namespace mostlylucid.pagingtaghelper.Components;
 
 public class PagerViewModel
 {
     public IPagingModel? Model { get; set; }
+
+    public bool UseLocalView { get; set; } = false;
+    
+    public bool UseHtmx { get; set; } = true;
+
+    public string? PagerId { get; set; }
+    public bool ShowPageSize { get; set; } = true;
         
     public string? SearchTerm { get; set; }
     // Required properties
@@ -29,5 +38,5 @@ public class PagerViewModel
 
     // Optional htmx integration:
     // If set (e.g. "#content"), pagination links will include htmx attributes.
-    public string HtmxTarget { get; set; }
+    public string HtmxTarget { get; set; } = "";
 }

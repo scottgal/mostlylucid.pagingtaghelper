@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mostlylucid.pagingtaghelper.tests", "mostlylucid.pagingtaghelper.tests\mostlylucid.pagingtaghelper.tests.csproj", "{3833FB78-1CFF-47CF-B538-54D49E46A872}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mostlylucig.pagingtaghelper.sample", "mostlylucig.pagingtaghelper.sample\mostlylucig.pagingtaghelper.sample.csproj", "{E088A815-A686-4C28-9F84-726AC15885BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{3833FB78-1CFF-47CF-B538-54D49E46A872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3833FB78-1CFF-47CF-B538-54D49E46A872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3833FB78-1CFF-47CF-B538-54D49E46A872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E088A815-A686-4C28-9F84-726AC15885BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E088A815-A686-4C28-9F84-726AC15885BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E088A815-A686-4C28-9F84-726AC15885BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E088A815-A686-4C28-9F84-726AC15885BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

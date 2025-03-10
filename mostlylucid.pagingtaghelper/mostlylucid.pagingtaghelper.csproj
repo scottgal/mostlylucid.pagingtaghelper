@@ -3,6 +3,8 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <RazorCompileOnBuild>true</RazorCompileOnBuild>
+        <RazorCompileOnPublish>true</RazorCompileOnPublish>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
@@ -24,11 +26,6 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <Content Include="Areas\**\*.cshtml" Pack="true" CopyToOutputDirectory="PreserveNewest" />
-        <Content Update="Pages\Shared\Components\Pager\Default.cshtml">
-          <Pack>true</Pack>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
         <None Remove="ReleaseNotes.txt" />
         <Content Include="ReleaseNotes.txt">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -55,6 +52,14 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\background.png" />
       <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Areas\Components\Views\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Components\Views\Pager\Default.cshtml" />
     </ItemGroup>
 
 </Project>

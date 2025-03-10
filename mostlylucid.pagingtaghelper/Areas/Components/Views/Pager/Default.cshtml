@@ -1,0 +1,210 @@
+﻿@model  mostlylucid.pagingtaghelper.Components.PagerViewModel
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalItems! / (double)Model.PageSize!);
+    var pageSizes = new List<int>();
+    if (Model.ShowPageSize)
+    {
+        // Build a dynamic list of page sizes.
+     
+        // Fixed steps as a starting point.
+        int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
+
+        // Add only those fixed steps that are less than or equal to TotalItems.
+        foreach (var step in fixedSteps)
+        {
+            if (step <= Model.TotalItems)
+            {
+                pageSizes.Add(step);
+            }
+        }
+
+        // If TotalItems is greater than the largest fixed step,
+        // add additional steps by doubling until reaching TotalItems.
+        if (Model.TotalItems > fixedSteps.Last())
+        {
+            int next = fixedSteps.Last();
+            while (next < Model.TotalItems)
+            {
+                next *= 2;
+                // Only add if it doesn't exceed TotalItems.
+                if (next < Model.TotalItems)
+                {
+                    pageSizes.Add(next);
+                }
+            }
+
+            // Always include the actual TotalItems as the maximum option.
+            if (!pageSizes.Contains(Model.TotalItems.Value))
+            {
+                pageSizes.Add(Model.TotalItems.Value);
+            }
+        }
+    }
+}
+@if (totalPages > 1)
+{
+ 
+        
+   
+    <div class="@Model.CssClass flex items-center justify-center" id="pager-container">
+        @if (Model.ShowPageSize)
+        {
+
+            var pagerId = Model.PagerId; 
+                var htmxAttributes = Model.UseHtmx
+                    ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search']\" hx-push-url=\"true\""
+                    : "";
+         
+
+                <!-- Preserve current page -->
+                <input type="hidden" name="page" value="@Model.Page"/>
+                <input type="hidden" name="search" value="@Model.SearchTerm"/>
+                <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLower()" />
+
+                <!-- Page size select with label -->
+                <div class="flex items-center mr-8">
+                    <label for="pageSize-@pagerId" class="text-sm text-gray-600 mr-2">Page size:</label>
+                    <select id="pageSize-@pagerId"
+                            name="pageSize"
+                            class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4"
+                            @Html.Raw(htmxAttributes)>
+                        @foreach (var option in pageSizes)
+                        {
+                            <option value="@option" selected="@(option == Model.PageSize)">@option</option>
+                        }
+                    </select>
+                </div>
+        }
+
+        @* "First" page link *@
+        @if (Model.FirstLastNavigation && Model.Page > 1)
+        {
+            var href = $"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}";
+            if (!string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                href += $"&search={Model.SearchTerm}";
+            }
+
+            <a class="btn btn-sm"
+               href="@href">
+                @Model.FirstPageText
+            </a>
+        }
+
+        @* "Previous" page link *@
+        @if (Model.Page > 1)
+        {
+            var href = $"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}";
+            if (!string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                href += $"&search={Model.SearchTerm}";
+            }
+
+            <a class="btn btn-sm"
+               href="@href">
+                @Model.PreviousPageText
+            </a>
+        }
+
+        @* Optional skip back indicator *@
+        @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
+        {
+            <a class="btn btn-sm btn-disabled">
+                @Model.SkipBackText
+            </a>
+        }
+
+        @* Determine visible page range *@
+        @{
+            int halfDisplay = Model.PagesToDisplay / 2;
+            int startPage = Math.Max(1, Model.Page.Value - halfDisplay);
+            int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
+            startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
+        }
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            var href = $"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}";
+            if (!string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                href += $"&search={Model.SearchTerm}";
+            }
+
+            <a data-page="@i" class="btn btn-sm @(i == Model.Page ? "btn-active" : "")"
+               href="@href">
+                @i
+            </a>
+        }
+
+        @* Optional skip forward indicator *@
+        @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
+        {
+            <a class="btn btn-sm btn-disabled">
+                @Model.SkipForwardText
+            </a>
+        }
+
+        @* "Next" page link *@
+        @if (Model.Page < totalPages)
+        {
+            var href = $"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}";
+            if (!string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                href += $"&search={Model.SearchTerm}";
+            }
+
+            <a class="btn btn-sm"
+               href="@href"
+               aria-label="@Model.NextPageAriaLabel">
+                @Model.NextPageText
+            </a>
+        }
+
+        @* "Last" page link *@
+        @if (Model.FirstLastNavigation && Model.Page < totalPages)
+        {
+            var href = $"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}";
+            if (!string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                href += $"&search={Model.SearchTerm}";
+            }
+
+            <a class="btn btn-sm"
+               href="@href">
+                @Model.LastPageText
+            </a>
+        }
+
+        <!-- Page info text with left margin for separation -->
+        <div class="text-sm text-neutral-500 ml-8">
+            Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
+        </div>
+    </div>
+}
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.addEventListener("change", function (event) {
+                let selectElement = event.target.closest(".pager-container select[name='pageSize']");
+                if (!selectElement) return;
+
+                let pagerContainer = selectElement.closest(".pager-container");
+                let useHtmx = pagerContainer.querySelector(".useHtmx").value === "true";
+
+                if (!useHtmx) {
+                    let page = pagerContainer.querySelector("[name='page']").value;
+                    let search = pagerContainer.querySelector("[name='search']").value;
+                    let pageSize = selectElement.value;
+
+                    let url = new URL("@Model.LinkUrl", window.location.origin);
+                    url.searchParams.set("page", page);
+                    url.searchParams.set("pageSize", pageSize);
+                    if (search) {
+                        url.searchParams.set("search", search);
+                    }
+
+                    window.location.href = url.toString();
+                }
+            });
+        });
+    </script>
