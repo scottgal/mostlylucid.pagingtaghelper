@@ -31,9 +31,15 @@ jobs:
         run: dotnet build --configuration Release --no-restore
         working-directory: mostlylucid.pagingtaghelper
 
+      - name: Create NuGet Output Directory
+        run: mkdir -p $GITHUB_WORKSPACE/nupkgs
+
       - name: Pack NuGet Package with Git Tag Version
-        run: dotnet pack --configuration Release --no-build --output ../nupkgs /p:Version=${{ env.VERSION }}
+        run: dotnet pack --configuration Release --no-build --output $GITHUB_WORKSPACE/nupkgs /p:Version=${{ env.VERSION }}
         working-directory: mostlylucid.pagingtaghelper
 
+      - name: List Generated Packages (Debugging)
+        run: ls -la $GITHUB_WORKSPACE/nupkgs
+
       - name: Publish to NuGet
-        run: dotnet nuget push ../nupkgs/*.nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push $GITHUB_WORKSPACE/nupkgs/*.nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
