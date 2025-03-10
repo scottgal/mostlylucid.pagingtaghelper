@@ -1,0 +1,39 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - "v*.*.*" # Runs when a version tag like v1.2.3 is pushed
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Extract Version from Git Tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            8.0
+            9.0
+
+      - name: Restore Dependencies
+        run: dotnet restore
+        working-directory: mostlylucid.pagingtaghelper
+
+      - name: Build Project for .NET 8 & .NET 9
+        run: dotnet build --configuration Release --no-restore
+        working-directory: mostlylucid.pagingtaghelper
+
+      - name: Pack NuGet Package with Git Tag Version
+        run: dotnet pack --configuration Release --no-build --output ../nupkgs /p:Version=${{ env.VERSION }}
+        working-directory: mostlylucid.pagingtaghelper
+
+      - name: Publish to NuGet
+        run: dotnet nuget push ../nupkgs/*.nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
