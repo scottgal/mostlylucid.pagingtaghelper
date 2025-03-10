@@ -1,11 +1,11 @@
-﻿@model  mostlylucid.pagingtaghelper.Components.PagerViewModel
+﻿@model mostlylucid.pagingtaghelper.Components.PagerViewModel
 @{
     var totalPages = (int)Math.Ceiling((double)Model.TotalItems! / (double)Model.PageSize!);
     var pageSizes = new List<int>();
     if (Model.ShowPageSize)
     {
         // Build a dynamic list of page sizes.
-     
+
         // Fixed steps as a starting point.
         int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
 
@@ -43,44 +43,45 @@
 }
 @if (totalPages > 1)
 {
- 
-        
-   
     <div class="@Model.CssClass flex items-center justify-center" id="pager-container">
         @if (Model.ShowPageSize)
         {
+            var pagerId = Model.PagerId;
+            var htmxAttributes = Model.UseHtmx
+                ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search']\" hx-push-url=\"true\""
+                : "";
 
-            var pagerId = Model.PagerId; 
-                var htmxAttributes = Model.UseHtmx
-                    ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search']\" hx-push-url=\"true\""
-                    : "";
-         
 
-                <!-- Preserve current page -->
-                <input type="hidden" name="page" value="@Model.Page"/>
-                <input type="hidden" name="search" value="@Model.SearchTerm"/>
+            <!-- Preserve current page -->
+            <input type="hidden" name="page" value="@Model.Page"/>
+            <input type="hidden" name="search" value="@Model.SearchTerm"/>
+            <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
+            if (!Model.UseHtmx)
+            {
+                <input type="hidden" class="linkUrl" value="@Model.LinkUrl"/>
+            }
 
-                <!-- Page size select with label -->
-                <div class="flex items-center mr-8">
-                    <label for="pageSize-@pagerId" class="text-sm text-gray-600 mr-2">Page size:</label>
-                    <select id="pageSize-@pagerId"
-                            name="pageSize"
-                            class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4"
-                           @Html.Raw(htmxAttributes)>
-                   @foreach (var option in pageSizes.ToList())
-                   {
-                       var optionString = option.ToString();
-                                if (option == Model.PageSize)
-                                {
-                                    <option value="@optionString" selected="selected">@optionString</option>
-                                }
-                                else
-                                {
-                                    <option value="@optionString">@optionString</option>
-                                } 
-                   }
-                    </select>
-                </div>
+            <!-- Page size select with label -->
+            <div class="flex items-center mr-8">
+                <label for="pageSize-@pagerId" class="text-sm text-gray-600 mr-2">Page size:</label>
+                <select id="pageSize-@pagerId"
+                        name="pageSize"
+                        class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4"
+                        @Html.Raw(htmxAttributes)>
+                    @foreach (var option in pageSizes.ToList())
+                    {
+                        var optionString = option.ToString();
+                        if (option == Model.PageSize)
+                        {
+                            <option value="@optionString" selected="selected">@optionString</option>
+                        }
+                        else
+                        {
+                            <option value="@optionString">@optionString</option>
+                        }
+                    }
+                </select>
+            </div>
         }
 
         @* "First" page link *@
@@ -187,31 +188,3 @@
         </div>
     </div>
 }
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.body.addEventListener("change", function (event) {
-                let selectElement = event.target.closest(".pager-container select[name='pageSize']");
-                if (!selectElement) return;
-
-                let pagerContainer = selectElement.closest(".pager-container");
-                let useHtmx = pagerContainer.querySelector(".useHtmx").value === "true";
-
-                if (!useHtmx) {
-                    let page = pagerContainer.querySelector("[name='page']").value;
-                    let search = pagerContainer.querySelector("[name='search']").value;
-                    let pageSize = selectElement.value;
-
-                    let url = new URL("@Model.LinkUrl", window.location.origin);
-                    url.searchParams.set("page", page);
-                    url.searchParams.set("pageSize", pageSize);
-                    if (search) {
-                        url.searchParams.set("search", search);
-                    }
-
-                    window.location.href = url.toString();
-                }
-            });
-        });
-    </script>

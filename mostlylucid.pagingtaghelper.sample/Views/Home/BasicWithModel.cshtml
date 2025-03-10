@@ -1,5 +1,13 @@
-﻿@model PagingViewModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using mostlylucid.pagingtaghelper.Components
+@using mostlylucid.pagingtaghelper.Extensions
+@model PagingViewModel
+@{
+    var previewModel = new PreviewPartialViewModel();
+    previewModel.Description = "This example shows the basic usage of the PagingTagHelper with a model. It also disables the HTMX functionality and uses the Javascript snippet to handle the paging.";
+}
 
+<partial name="_PreviewPartial" model="previewModel"/>
 
 <table class="table-auto">
     <thead>
@@ -27,5 +35,9 @@
     </tbody>
 </table>
 
-<paging model="Model" class="mt-4">
+<paging model="Model"
+        use-htmx="false"
+        class="mt-4">
 </paging>
+
+@Html.PageSizeOnchangeSnippet()

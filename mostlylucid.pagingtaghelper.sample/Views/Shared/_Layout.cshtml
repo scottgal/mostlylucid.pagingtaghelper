@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using mostlylucid.pagingtaghelper.Extensions
+@using mostlylucid.pagingtaghelper.Helpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -28,21 +30,12 @@
 <script type="text/javascript" defer src="https://unpkg.com/highlightjs-cshtml-razor/dist/cshtml-razor.min.js"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
+
+
 <div id="loading-modal" class="modal htmx-indicator">
     <div class="modal-box flex flex-col items-center justify-center">
         <h2 class="text-lg font-semibold">Loading...</h2>
     </div>
 </div>
 </body>
-<script>
-    function showPreview() {
-        let container = document.getElementById("preview-container");
-        let codeBlock = document.getElementById("code-content");
-
-        if (container && codeBlock) {
-            container.classList.remove("hidden"); // Show preview div
-            hljs.highlightElement(codeBlock); // Highlight the loaded code
-        }
-    }
-</script>
 </html>

@@ -66,4 +66,9 @@
       <AdditionalFiles Include="Areas\Components\Views\Pager\Default.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="JavaScript\PagsixeOnchange.js" />
+      <EmbeddedResource Include="JavaScript\PagsizeOnchange.js" LogicalName="Pagesizeonchange" />
+    </ItemGroup>
+
 </Project>
