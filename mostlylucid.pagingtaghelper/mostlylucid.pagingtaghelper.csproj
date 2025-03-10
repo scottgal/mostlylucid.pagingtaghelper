@@ -15,12 +15,16 @@
         <RepositoryUrl>https://github.com/scottgal/</RepositoryUrl>
         <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
         <PackageTags>web</PackageTags>
+        <PackageOutputPath>bin\Release</PackageOutputPath>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        
         <Description>
             A TagHelper and ViewComponent for adding a simple Umami endpoint to your ASP.NET Core application.
         </Description>
         <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/ReleaseNotes.txt"))</PackageReleaseNotes>
         <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+        <Version>0.0.1</Version>
     </PropertyGroup>
 
 

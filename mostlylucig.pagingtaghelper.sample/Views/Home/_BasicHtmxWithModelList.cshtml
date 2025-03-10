@@ -1,0 +1,41 @@
+﻿@model PagingViewModel
+
+<table class="table-auto">
+    <thead>
+    <th>@Html.DisplayNameFor(x => x.Data.First().Id)</th>
+    <th>@Html.DisplayNameFor(x => x.Data.First().Name)</th>
+    <th>@Html.DisplayNameFor(x => x.Data.First().CompanyAddress)</th>
+    <th>@Html.DisplayNameFor(x => x.Data.First().CompanyCity)</th>
+    <th>@Html.DisplayNameFor(x => x.Data.First().CompanyCountry)</th>
+    <th>@Html.DisplayNameFor(x => x.Data.First().CompanyEmail)</th>
+    <th>@Html.DisplayNameFor(x => x.Data.First().CompanyPhone)</th>
+    </thead>
+    <tbody>
+    @foreach(var item in Model.Data)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Name</td>
+            <td>@item.CompanyAddress</td>
+            <td>@item.CompanyCity</td>
+            <td>@item.CompanyCountry</td>
+            <td>@item.CompanyEmail</td>
+            <td>@item.CompanyPhone</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<paging model="Model"
+        @* The Magic tha tallows this to work as a HTMX request *@
+        hx-boost="true"
+        class="mt-4"
+        @* This is the loading indicator, when the HTMX request is made it will show this. *@
+        hx-indicator="#loading-modal"
+        @* The target to swap out, this is the ID of the element that will be replaced *@
+        hx-target="#list "
+        @* This is the animation to use when swapping in this case it just swaps *@
+        hx-swap="show:none"
+        @* This allows use to detect whether this is a paging request, can be handy for Htmx Boost *@
+        hx-headers='{"pagerequest": "true"}'>
+</paging>

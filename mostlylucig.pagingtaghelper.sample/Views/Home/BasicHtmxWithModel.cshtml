@@ -1,0 +1,15 @@
+﻿@model PagingViewModel
+
+@{
+   var previewModel = new PreviewPartialViewModel();
+   previewModel.ViewName = @"Views/Home/_BasicHtmxWithModel.cshtml";
+   previewModel.Description = "This example shows how the tag helper can be used to create a list of items with paging using HTMX for SPA-like behaviour.";
+}
+
+<partial name="_PreviewPartial" model="previewModel"/>
+
+
+
+<div id="list">
+   <partial name="_BasicHtmxWithModelList"/>
+</div>

@@ -1,0 +1,28 @@
+﻿@model PreviewPartialViewModel
+
+<a asp-action="Index" asp-controller="Home"
+   class="inline-block mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+    Home
+</a>
+
+<div class="max-w-4xl mx-auto my-10 p-6 bg-white text-base-100 shadow-lg rounded-lg">
+    @Model.Description
+    <div class="p-4 border rounded bg-base-200">
+        <button class="btn btn-primary"
+                hx-controller="FilePreview"
+                hx-action="GetFileContents"
+                hx-route-file="@Model.ViewName"
+                hx-get
+                hx-target="#code-content"
+                hx-swap="innerHTML"
+                hx-on::after-request="showPreview()">
+            Show Razor File Preview of @Model.ViewName
+        </button>
+
+        <!-- Hidden preview container -->
+        <div id="preview-container" class="hidden mt-4">
+            <pre><code id="code-content" class="language-csharp"></code></pre>
+        </div>
+    </div>
+
+</div>
