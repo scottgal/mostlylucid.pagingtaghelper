@@ -1,5 +1,46 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Sample Suite - Home";
 }
 
-<a asp-action="BasicWithModel" asp-controller="Home">Basic With Model</a>
+<div class="max-w-4xl mx-auto my-10 p-6 bg-white shadow-lg rounded-lg">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Sample Suite for MostlyLucid Paging</h1>
+    <p class="text-gray-600 mb-6">Explore various examples demonstrating the functionality of the Paging Tag Helper.</p>
+
+    <div class="grid gap-4">
+        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
+            <h2 class="text-lg font-semibold text-gray-800">Basic Pagination with Model</h2>
+            <p class="text-sm text-gray-600">Demonstrates basic paging using a model to manage data.</p>
+            <a asp-action="BasicWithModel" asp-controller="Home"
+               class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                View Example
+            </a>
+        </div>
+
+        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
+            <h2 class="text-lg font-semibold text-gray-800">HTMX Integration</h2>
+            <p class="text-sm text-gray-600">Demonstrates how to use HTMX for AJAX-based paging without full page reloads.</p>
+            <a asp-action="HtmxPaging" asp-controller="Home"
+               class="inline-block mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                View Example
+            </a>
+        </div>
+
+        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
+            <h2 class="text-lg font-semibold text-gray-800">Custom Styling</h2>
+            <p class="text-sm text-gray-600">Shows how to customize pagination controls using Tailwind CSS and custom components.</p>
+            <a asp-action="StyledPaging" asp-controller="Home"
+               class="inline-block mt-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+                View Example
+            </a>
+        </div>
+
+        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
+            <h2 class="text-lg font-semibold text-gray-800">Server-Side Pagination</h2>
+            <p class="text-sm text-gray-600">Demonstrates paging where data is loaded server-side using EF Core.</p>
+            <a asp-action="ServerSidePaging" asp-controller="Home"
+               class="inline-block mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                View Example
+            </a>
+        </div>
+    </div>
+</div>

@@ -3,25 +3,29 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - mostlylucig.pagingtaghelper.sample</title>
+    <title>@ViewData["Title"] - mostlylucid.pagingtaghelper.sample</title>
     <link rel="stylesheet" href="~/css/dist/main.css" asp-append-version="true"/>
 </head>
-<body>
+<body class="bg-base-200 text-base-content">
 
-<div class="container">
-    <main role="main" class="pb-3">
+<div class="flex flex-col min-h-screen justify-center items-center px-4">
+    <main role="main" class="w-full max-w-4xl p-6 bg-base-100 shadow-lg rounded-lg">
         @RenderBody()
     </main>
 </div>
+
+<!-- Dummy Hidden Span to Preserve Tailwind Classes -->
 <span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm 
-    text-sm text-gray-600 text-neutral-500 border rounded flex items-center 
-    justify-center min-w-[80px] pr-4 mr-8 ml-8 pt-0 mt-0">
+        text-sm text-gray-600 text-neutral-500 border rounded flex items-center 
+        justify-center min-w-[80px] pr-4 mr-8 ml-8 pt-0 mt-0">
 </span>
-<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+
+<script src="https://unpkg.com/htmx.org@2.0.4" 
+        integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" 
+        crossorigin="anonymous"></script>
 <script src="~/js/dist/main.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
-
 
 </body>
 </html>
