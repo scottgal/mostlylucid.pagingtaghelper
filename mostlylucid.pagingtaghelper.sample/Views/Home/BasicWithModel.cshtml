@@ -1,5 +1,6 @@
 ﻿@model PagingViewModel
 
+
 <table class="table-auto">
     <thead>
     <th>@Html.DisplayNameFor(x => x.Data.First().Id)</th>
@@ -26,16 +27,5 @@
     </tbody>
 </table>
 
-<paging model="Model"
-        @* The Magic tha tallows this to work as a HTMX request *@
-        hx-boost="true"
-        class="mt-4"
-        @* This is the loading indicator, when the HTMX request is made it will show this. *@
-        hx-indicator="#loading-modal"
-        @* The target to swap out, this is the ID of the element that will be replaced *@
-        hx-target="#list "
-        @* This is the animation to use when swapping in this case it just swaps *@
-        hx-swap="show:none"
-        @* This allows use to detect whether this is a paging request, can be handy for Htmx Boost *@
-        hx-headers='{"pagerequest": "true"}'>
+<paging model="Model" class="mt-4">
 </paging>

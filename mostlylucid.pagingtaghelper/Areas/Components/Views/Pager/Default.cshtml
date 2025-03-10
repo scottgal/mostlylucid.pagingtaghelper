@@ -59,7 +59,6 @@
                 <!-- Preserve current page -->
                 <input type="hidden" name="page" value="@Model.Page"/>
                 <input type="hidden" name="search" value="@Model.SearchTerm"/>
-                <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLower()" />
 
                 <!-- Page size select with label -->
                 <div class="flex items-center mr-8">
@@ -67,11 +66,19 @@
                     <select id="pageSize-@pagerId"
                             name="pageSize"
                             class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4"
-                            @Html.Raw(htmxAttributes)>
-                        @foreach (var option in pageSizes)
-                        {
-                            <option value="@option" selected="@(option == Model.PageSize)">@option</option>
-                        }
+                           @Html.Raw(htmxAttributes)>
+                   @foreach (var option in pageSizes.ToList())
+                   {
+                       var optionString = option.ToString();
+                                if (option == Model.PageSize)
+                                {
+                                    <option value="@optionString" selected="selected">@optionString</option>
+                                }
+                                else
+                                {
+                                    <option value="@optionString">@optionString</option>
+                                } 
+                   }
                     </select>
                 </div>
         }

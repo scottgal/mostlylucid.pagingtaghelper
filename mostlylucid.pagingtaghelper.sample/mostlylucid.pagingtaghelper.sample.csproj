@@ -22,6 +22,11 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\css\dist\" />
+      <Folder Include="wwwroot\js\dist\" />
+    </ItemGroup>
+
     <Target Name="BuildCss" BeforeTargets="Compile">
         <Exec Command="npm run dev" Condition=" '$(Configuration)' == 'Debug' " />
         <Exec Command="npm run build" Condition=" '$(Configuration)' == 'Release' " EnvironmentVariables="NODE_ENV=production" />

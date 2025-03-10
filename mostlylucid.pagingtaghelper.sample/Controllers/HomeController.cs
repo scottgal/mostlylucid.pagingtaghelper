@@ -31,7 +31,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     {
   
         var pagingModel = await GenerateModel(page, pageSize);
-        if (Request.IsHtmxBoosted() && Request.IsPageRequest())
+        if (Request.IsHtmxBoosted() || Request.IsHtmx())
         {
             return PartialView("_BasicHtmxWithModelList", pagingModel);
         }

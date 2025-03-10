@@ -20,8 +20,10 @@ public class PagerTagHelper : TagHelper
     [HtmlAttributeName("model")]
     public IPagingModel? Model { get; set; }
 
-    [HtmlAttributeName("use-htmx")]
-    public bool UseHtmx { get; set; } 
+    /// <summary>
+    /// Whether to enable HTMX use for the pagesize component. Defaults to true.
+    /// </summary>
+    [HtmlAttributeName("use-htmx")] public bool UseHtmx { get; set; } = true;
     /// <summary>
     /// Optionally pass in an id for the pager component.
     /// </summary>
@@ -163,6 +165,7 @@ public class PagerTagHelper : TagHelper
     /// <param name="output">The tag helper output.</param>
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+   
         output.TagName = "div";
         output.Attributes.RemoveAll("page");
         output.Attributes.RemoveAll("link-url");
@@ -180,13 +183,17 @@ public class PagerTagHelper : TagHelper
         output.Attributes.RemoveAll("first-last-navigation");
         output.Attributes.RemoveAll("skip-forward-back-navigation");
         output.Attributes.RemoveAll("model");
-        output.Attributes.RemoveAll("htmx-target");
         output.Attributes.RemoveAll("show-pagesize");
         output.Attributes.RemoveAll("pagingmodel");
         output.Attributes.RemoveAll("use-local-view");
         
-        var pagerId = PagerId ?? $"pager-{Guid.NewGuid():N}";
+        var pagerId =  PagerId ?? $"pager-{Guid.NewGuid():N}";
         var linkUrl = LinkUrl ?? ViewContext.HttpContext.Request.Path;
+        PageSize = Model?.PageSize ?? PageSize ?? 10;
+        Page = Model?.Page ?? Page ?? 1;
+        TotalItems = Model?.TotalItems ?? TotalItems ?? 0;
+        if(Model is IPagingSearchModel searchModel)
+            SearchTerm = searchModel?.SearchTerm ?? SearchTerm ?? "";
         output.Attributes.SetAttribute("id", pagerId);
         var viewComponentHelper = (IViewComponentHelper)ViewContext.HttpContext.RequestServices.GetService(typeof(IViewComponentHelper))!;
         ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
@@ -196,7 +203,7 @@ public class PagerTagHelper : TagHelper
    
             UseLocalView = UseLocalView,
             UseHtmx = UseHtmx,
-            PagerId = PagerId,
+            PagerId = pagerId,
             SearchTerm = SearchTerm,
             ShowPageSize = ShowPageSize,
             Model = Model,
@@ -215,7 +222,8 @@ public class PagerTagHelper : TagHelper
             LastPageText = LastPageText,
             FirstLastNavigation = FirstLastNavigation,
             SkipForwardBackNavigation = SkipForwardBackNavigation,
-            HtmxTarget = HtmxTarget
+            HtmxTarget = HtmxTarget,
+            
         };
 
         var result = await viewComponentHelper.InvokeAsync("Pager", pagerModel);

@@ -11,6 +11,7 @@ public class PagerViewComponent : ViewComponent
         {
             if(model.Model != null)
             {
+                
                 model.Page ??= model.Model.Page;
                 model.PageSize ??= model.Model.PageSize;
                 model.TotalItems ??= model.Model.TotalItems;

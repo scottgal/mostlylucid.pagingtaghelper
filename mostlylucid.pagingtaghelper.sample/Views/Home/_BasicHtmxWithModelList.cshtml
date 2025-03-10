@@ -1,6 +1,5 @@
 ﻿@model PagingViewModel
 
-
 <table class="table-auto">
     <thead>
     <th>@Html.DisplayNameFor(x => x.Data.First().Id)</th>
@@ -27,6 +26,11 @@
     </tbody>
 </table>
 
-<paging model="Model" class="mt-4">
-    
+<paging hx-boost="true"
+        class="mt-4"
+        hx-indicator="#loading-modal"
+        hx-target="#list"
+        hx-swap="show:none"
+        hx-headers='{"pagerequest": "true"}'
+        model="@Model">
 </paging>
