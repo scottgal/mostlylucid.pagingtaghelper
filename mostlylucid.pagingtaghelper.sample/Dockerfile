@@ -18,8 +18,9 @@ COPY ["mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csp
 COPY ["mostlylucid.pagingtaghelper/mostlylucid.pagingtaghelper.csproj", "mostlylucid.pagingtaghelper/"]
 COPY ["mostlylucid.pagingtaghelper/ReleaseNotes.txt", "mostlylucid.pagingtaghelper/"]
 
-# Restore dependencies (only once)
-RUN dotnet restore "mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj"
+# Restore dependencies WITH the correct runtime
+RUN dotnet restore "mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj" \
+    --runtime linux-musl-x64
 
 COPY . .
 WORKDIR "/src/mostlylucid.pagingtaghelper.sample"
@@ -27,7 +28,7 @@ WORKDIR "/src/mostlylucid.pagingtaghelper.sample"
 # Install npm dependencies before publishing
 RUN npm install
 
-# Publish without trimming but with ReadyToRun (better performance)
+# Publish with correct runtime
 RUN dotnet publish "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
     --no-restore -r linux-musl-x64 -p:PublishReadyToRun=true -p:PublishSingleFile=false
 
