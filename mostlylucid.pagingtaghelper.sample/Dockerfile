@@ -17,6 +17,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 WORKDIR /src
 COPY ["mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj", "mostlylucid.pagingtaghelper.sample/"]
 COPY ["mostlylucid.pagingtaghelper/mostlylucid.pagingtaghelper.csproj", "mostlylucid.pagingtaghelper/"]
+COPY ["mostlylucid.pagingtaghelper/ReleaseNotes.txt", "mostlylucid.pagingtaghelper/"] 
 RUN dotnet restore "mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj"
 COPY . .
 WORKDIR "/src/mostlylucid.pagingtaghelper.sample"

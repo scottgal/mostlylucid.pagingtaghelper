@@ -34,7 +34,6 @@
         <Content Include="ReleaseNotes.txt">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-
     </ItemGroup>
 
     <ItemGroup>
