@@ -1,11 +1,10 @@
 ﻿@model SearchPagingViewModel
-
-<partial name="_ResultsList"/>
 <paging hx-boost="true"
-        class="mt-4"
+        class="my-4"
         hx-indicator="#loading-modal"
         hx-target="#list"
         hx-swap="show:none"
         hx-headers='{"pagerequest": "true"}'
         model="@Model">
 </paging>
+<partial name="_ResultsList"/>

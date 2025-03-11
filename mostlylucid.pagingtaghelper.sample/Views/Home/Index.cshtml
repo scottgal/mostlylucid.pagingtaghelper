@@ -2,41 +2,42 @@
     ViewData["Title"] = "Sample Suite - Home";
 }
 
-<div class="max-w-4xl mx-auto my-10 p-6 bg-white shadow-lg rounded-lg">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">Sample Suite for MostlyLucid Paging</h1>
-    <p class="text-gray-600 mb-6">Explore various examples demonstrating the functionality of the Paging Tag Helper.</p>
-
+<div class="max-w-4xl mx-auto my-10 p-6 bg-white  dark:bg-gray-600 text-base-100 dark:text-white shadow-lg rounded-lg">
+    <h1 class="text-2xl font-bold  mb-4">Sample Suite for mostlylucid paging taghelper</h1>
+    <p class=" mb-6">Explore various examples demonstrating the functionality of the Paging Tag Helper.</p>
+    <p class=" mb-6">I'm writing a number of blog posts on this here:      <a  class="inline-block mt-2 px-4 py-2 btn bg-orange-300 text-black rounded hover:bg-orange-400 transition" href="https://www.mostlylucid.net/blog/category/PagingTagHelper">See Articles</a></p>
+   
     <div class="grid gap-4">
-        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
-            <h2 class="text-lg font-semibold text-gray-800">Basic Pagination with Model</h2>
-            <p class="text-sm text-gray-600">Demonstrates basic paging using a model to manage data.</p>
+        <div class="border p-4 rounded-md hover:outline-double transition">
+            <h2 class="text-lg font-semibold ">Basic Pagination with Model</h2>
+            <p class="text-sm ">Demonstrates basic paging using a model to manage data.</p>
             <a asp-action="BasicWithModel" asp-controller="Home"
                class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                 View Example
             </a>
         </div>
 
-        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
-            <h2 class="text-lg font-semibold text-gray-800">HTMX Integration</h2>
-            <p class="text-sm text-gray-600">Demonstrates how to use HTMX for AJAX-based paging without full page reloads.</p>
+        <div class="border p-4 rounded-md  hover:outline-double transition">
+            <h2 class="text-lg font-semibold ">HTMX Integration</h2>
+            <p class="text-sm 0">Demonstrates how to use HTMX for AJAX-based paging without full page reloads.</p>
             <a asp-action="BasicHtmxWithModel" asp-controller="Home"
                class="inline-block mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
                 View Example
             </a>
         </div>
 
-        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
-            <h2 class="text-lg font-semibold text-gray-800">Search With Htmx</h2>
-            <p class="text-sm text-gray-600">This shows how to use a search function with Htmx</p>
+        <div class="border p-4 rounded-md hover:outline-double transition">
+            <h2 class="text-lg font-semibold ">Search With Htmx</h2>
+            <p class="text-sm ">This shows how to use a search function with Htmx</p>
             <a asp-action="SearchWithHtmx" asp-controller="Home"
                class="inline-block mt-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
                 View Example
             </a>
         </div>
 
-        <div class="border p-4 rounded-md hover:bg-gray-50 transition">
-            <h2 class="text-lg font-semibold text-gray-800">Plain CSS</h2>
-            <p class="text-sm text-gray-600">This demonstrates using 'Plain' CSS which is injected into the view</p>
+        <div class="border p-4 rounded-md -50 hover:outline-double transition">
+            <h2 class="text-lg font-semibold ">Plain CSS</h2>
+            <p class="text-sm ">This demonstrates using 'Plain' CSS which is injected into the view</p>
             <a asp-action="PlainView" asp-controller="Home"
                class="inline-block mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
                 View Example

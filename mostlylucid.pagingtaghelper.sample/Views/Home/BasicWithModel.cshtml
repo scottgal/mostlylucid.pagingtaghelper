@@ -5,12 +5,12 @@
 }
 
 <partial name="_PreviewPartial" model="previewModel"/>
+<paging model="Model"
+        use-htmx="false"
+        class="my-4">
+</paging>
 
 <partial name="_ResultsList" model="Model"/>
 
-<paging model="Model"
-        use-htmx="false"
-        class="mt-4">
-</paging>
 
 @Html.PageSizeOnchangeSnippet()
