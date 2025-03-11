@@ -1,4 +1,5 @@
-﻿@model PagingViewModel
+﻿
+@model PagingViewModel
 @{
     var previewModel = new PreviewPartialViewModel();
     previewModel.Description = "This example shows the basic usage of the PagingTagHelper with a model. It also disables the HTMX functionality and uses the Javascript snippet to handle the paging.";
@@ -6,11 +7,12 @@
 
 <partial name="_PreviewPartial" model="previewModel"/>
 
-<partial name="_ResultsList" model="Model"/>
-
+    <partial name="_ResultsList" model="Model"/>
+<div class="no-tailwind">
+    @Html.PlainCSS()
 <paging model="Model"
         use-htmx="false"
         class="mt-4">
 </paging>
-
+</div>
 @Html.PageSizeOnchangeSnippet()

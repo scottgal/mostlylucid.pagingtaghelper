@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using mostlylucig.pagingtaghelper.sample.Models;
 using mostlylucig.pagingtaghelper.sample.Services;
 using  mostlylucid.pagingtaghelper.Helpers;
+using mostlylucid.pagingtaghelper.Models;
+
 namespace mostlylucig.pagingtaghelper.sample.Controllers;
 
 public class HomeController(DataFakerService dataFakerService, ILogger<HomeController> logger) : Controller
@@ -17,6 +19,14 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         return View();
     }
 
+
+    
+    public async Task<IActionResult> PlainView(int page = 1,int pageSize = 10)
+    {
+        var pagingModel = await GenerateModel(page, pageSize);
+        pagingModel.ViewType = ViewType.Plain;
+        return View(pagingModel);
+    }
 
     public async Task<IActionResult> BasicWithModel(int page = 1,int pageSize = 10)
     {

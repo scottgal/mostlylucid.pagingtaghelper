@@ -196,6 +196,7 @@ public class PagerTagHelper : TagHelper
         var linkUrl = LinkUrl ?? ViewContext.HttpContext.Request.Path;
         PageSize = Model?.PageSize ?? PageSize ?? 10;
         Page = Model?.Page ?? Page ?? 1;
+        ViewType = Model?.ViewType ?? ViewType;
         TotalItems = Model?.TotalItems ?? TotalItems ?? 0;
         if(Model is IPagingSearchModel searchModel)
             SearchTerm = searchModel?.SearchTerm ?? SearchTerm ?? "";
@@ -205,7 +206,7 @@ public class PagerTagHelper : TagHelper
 
         var pagerModel = PagerModel ?? new PagerViewModel()
         {
-   
+            
             ViewType = ViewType,
             UseLocalView = UseLocalView,
             UseHtmx = UseHtmx,
