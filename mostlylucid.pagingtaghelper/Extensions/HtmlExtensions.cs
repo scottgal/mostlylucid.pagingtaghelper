@@ -12,4 +12,11 @@ public static class HtmlExtensions
         var script = helper.Raw($"<script>{javaScript}</script>");
         return script;
     }
+    
+    public static IHtmlContent PlainCSS(this IHtmlHelper helper)
+    {
+        var css = MostlylucidSnippets.PlainCSS;
+        var script = helper.Raw($"<style>{css}</style>");
+        return script;
+    }
 }

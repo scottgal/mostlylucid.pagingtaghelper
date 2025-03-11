@@ -1,0 +1,116 @@
+﻿@model mostlylucid.pagingtaghelper.Components.PagerViewModel
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalItems! / (double)Model.PageSize!);
+    var pageSizes = new List<int>();
+
+    if (Model.ShowPageSize)
+    {
+        int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
+        foreach (var step in fixedSteps)
+        {
+            if (step <= Model.TotalItems) pageSizes.Add(step);
+        }
+        if (Model.TotalItems > fixedSteps.Last())
+        {
+            int next = fixedSteps.Last();
+            while (next < Model.TotalItems)
+            {
+                next *= 2;
+                if (next < Model.TotalItems) pageSizes.Add(next);
+            }
+            if (!pageSizes.Contains(Model.TotalItems.Value)) pageSizes.Add(Model.TotalItems.Value);
+        }
+    }
+}
+
+@if (totalPages > 1)
+{
+    <div class="d-flex flex-wrap align-items-center justify-content-center mt-3">
+        @if (Model.ShowPageSize)
+        {
+            var pagerId = Model.PagerId;
+            var htmxAttributes = Model.UseHtmx
+                ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search']\" hx-push-url=\"true\""
+                : "";
+
+            <input type="hidden" name="page" value="@Model.Page"/>
+            <input type="hidden" name="search" value="@Model.SearchTerm"/>
+            <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
+            if (!Model.UseHtmx) { <input type="hidden" class="linkUrl" value="@Model.LinkUrl"/> }
+
+            <div class="me-3">
+                <label for="pageSize-@pagerId" class="form-label me-2">Page size:</label>
+                <select id="pageSize-@pagerId" name="pageSize" class="form-select form-select-sm d-inline w-auto" @Html.Raw(htmxAttributes)>
+                    @foreach (var option in pageSizes)
+                    {
+                        <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
+                    }
+                </select>
+            </div>
+        }
+
+        <nav aria-label="Pagination">
+            <ul class="pagination pagination-sm mb-0">
+                @if (Model.FirstLastNavigation && Model.Page > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@($"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}")">@Model.FirstPageText</a>
+                    </li>
+                }
+
+                @if (Model.Page > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@($"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}")">@Model.PreviousPageText</a>
+                    </li>
+                }
+
+                @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">@Model.SkipBackText</span>
+                    </li>
+                }
+
+                @{
+                    int halfDisplay = Model.PagesToDisplay / 2;
+                    int startPage = Math.Max(1, Model.Page.Value - halfDisplay);
+                    int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
+                    startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : "")">
+                        <a class="page-link" href="@($"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}")">@i</a>
+                    </li>
+                }
+
+                @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">@Model.SkipForwardText</span>
+                    </li>
+                }
+
+                @if (Model.Page < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@($"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}")">@Model.NextPageText</a>
+                    </li>
+                }
+
+                @if (Model.FirstLastNavigation && Model.Page < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@($"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}")">@Model.LastPageText</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <div class="ms-3 text-muted small">
+            Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
+        </div>
+    </div>
+}

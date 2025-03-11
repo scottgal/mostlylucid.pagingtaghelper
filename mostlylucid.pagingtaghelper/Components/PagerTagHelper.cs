@@ -19,6 +19,9 @@ public class PagerTagHelper : TagHelper
     /// </summary>
     [HtmlAttributeName("model")]
     public IPagingModel? Model { get; set; }
+    
+    [HtmlAttributeName("view-type")]
+    public ViewType ViewType { get; set; } = Models.ViewType.TailwindANdDaisy;
 
     /// <summary>
     /// Whether to enable HTMX use for the pagesize component. Defaults to true.
@@ -203,6 +206,7 @@ public class PagerTagHelper : TagHelper
         var pagerModel = PagerModel ?? new PagerViewModel()
         {
    
+            ViewType = ViewType,
             UseLocalView = UseLocalView,
             UseHtmx = UseHtmx,
             PagerId = pagerId,

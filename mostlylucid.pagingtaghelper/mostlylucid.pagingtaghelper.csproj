@@ -68,6 +68,8 @@
     <ItemGroup>
       <None Remove="JavaScript\PagsixeOnchange.js" />
       <EmbeddedResource Include="JavaScript\PagsizeOnchange.js" LogicalName="Pagesizeonchange" />
+      <None Remove="CSS\PlainView.css" />
+      <EmbeddedResource Include="CSS\PlainView.css" LogicalName="PlainCSS" />
     </ItemGroup>
 
 </Project>

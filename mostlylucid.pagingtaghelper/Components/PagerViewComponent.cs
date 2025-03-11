@@ -26,8 +26,6 @@ public class PagerViewComponent : ViewComponent
             {
                 throw new ArgumentException("Page, PageSize, TotalItems, and LinkUrl required.");
             }
-            // Calculate total pages based on total items and page size.
-            model.TotalPages = (int)Math.Ceiling((double)model.TotalItems.Value / model.PageSize.Value);
 
             // Ensure the current page is within valid bounds.
             model.Page = Math.Max(1, Math.Min(model.Page.Value, model.TotalPages));
@@ -36,10 +34,13 @@ public class PagerViewComponent : ViewComponent
 
             var useLocalView = model.UseLocalView;
 
-            return useLocalView switch
+            return (useLocalView, model.ViewType) switch
             {
-                true when ViewExists(viewName) => View(viewName, model),
-                true when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
+                (true, ViewType.Custom) when ViewExists(viewName) => View(viewName, model),
+                (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
+                (true, ViewType.Bootstrap) => View("/Areas/Components/Views/Pager/BootstrapView.cshtml", model),
+                (true, ViewType.Plain) => View("/Areas/Components/Views/Pager/PlainView.cshtml", model),
+                (true, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/Pager/Default.cshtml", model),
                 _ => View("/Areas/Components/Views/Pager/Default.cshtml", model)
             };
 
