@@ -29,7 +29,7 @@ RUN npm install
 
 # Publish without trimming but with ReadyToRun (better performance)
 RUN dotnet publish "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
-    --no-restore -p:PublishReadyToRun=true -p:PublishSingleFile=false
+    --no-restore -r linux-musl-x64 -p:PublishReadyToRun=true -p:PublishSingleFile=false
 
 # Final runtime image - Alpine-based
 FROM base AS final
