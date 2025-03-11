@@ -25,8 +25,8 @@ module.exports = (env, argv) => {
                             properties: false, // Do not mangle properties
                         },
                         format: {
-                            comments: false, // Remove comments
-                            beautify: false, // Disable beautification
+                            comments: true, // Remove comments
+                            beautify: true, // Disable beautification
                         },
                         compress: {
                             drop_console: true, // Drop console statements

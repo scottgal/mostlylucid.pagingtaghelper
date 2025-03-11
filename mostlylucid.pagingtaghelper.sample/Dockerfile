@@ -1,37 +1,39 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+﻿# Base runtime - Smaller Alpine image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Build Stage - SDK is only needed here
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 ARG BUILD_CONFIGURATION=Release
 
-# Install Node.js (Updated to v18)
-# Install Node.js & npm-run-all
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm-run-all \
-    && rm -rf /var/lib/apt/lists/*
-
-
+# Install Node.js (only for build, not in final image)
+RUN apk add --no-cache nodejs npm \
+    && npm install -g npm-run-all 
 
 WORKDIR /src
 COPY ["mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj", "mostlylucid.pagingtaghelper.sample/"]
 COPY ["mostlylucid.pagingtaghelper/mostlylucid.pagingtaghelper.csproj", "mostlylucid.pagingtaghelper/"]
-COPY ["mostlylucid.pagingtaghelper/ReleaseNotes.txt", "mostlylucid.pagingtaghelper/"] 
+COPY ["mostlylucid.pagingtaghelper/ReleaseNotes.txt", "mostlylucid.pagingtaghelper/"]
+
+# Restore dependencies (only once)
 RUN dotnet restore "mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj"
+
 COPY . .
 WORKDIR "/src/mostlylucid.pagingtaghelper.sample"
-# Install npm dependencies before .NET build
+
+# Install npm dependencies before publishing
 RUN npm install
-RUN dotnet build "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Publish without trimming but with ReadyToRun (better performance)
+RUN dotnet publish "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
+    --no-restore -p:PublishReadyToRun=true -p:PublishSingleFile=false
 
+# Final runtime image - Alpine-based
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "mostlylucid.pagingtaghelper.sample.dll"]
