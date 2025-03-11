@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - "v*"
+      - "v*"  # Triggers on version tags like v1.0.0
 
 jobs:
   build-and-push:
@@ -33,7 +33,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./mostlylucid.pagingtaghelper.sample
+          context: .  # Set build context to the repository root
           file: ./mostlylucid.pagingtaghelper.sample/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
