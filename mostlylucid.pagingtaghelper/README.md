@@ -13,7 +13,12 @@ dotnet add package mostlylucid.pagingtaghelper
 
 ## Usage
 I am currently building a sample porject here (I'll host the sample site later). 
-You can view the source for the sample site here:
+
+The sample site can be found here (in progress, some things will be broken!)
+
+https://taghelpersample.mostlylucid.net/
+
+You can view the source for the sample site here: https://github.com/scottgal/mostlylucid.pagingtaghelper
 
 - [Basic use without HTMX](https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Views/Home/BasicWithModel.cshtml) - this sample shoows the very basic usage of the tag helper. It disables HTMX  using the `use-htmx` property set to false. 
 ```html
