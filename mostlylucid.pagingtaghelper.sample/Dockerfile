@@ -30,7 +30,7 @@ RUN npm install
 
 # Publish with correct runtime
 RUN dotnet publish "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
-    --no-restore -r linux-musl-x64 -p:PublishReadyToRun=true -p:PublishSingleFile=false
+    --no-restore -r linux-musl-x64  -p:PublishSingleFile=false
 
 # Final runtime image - Alpine-based
 FROM base AS final
