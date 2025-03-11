@@ -39,9 +39,9 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     
-    public async Task<IActionResult> SearchWithHtmx(int page = 1,int pageSize = 10, string search="")
+    public async Task<IActionResult> SearchWithHtmx(string? search, int pageSize = 10,int page = 1)
     {
-        search = search.Trim().ToLowerInvariant();
+        search = search?.Trim().ToLowerInvariant();
         var fakeModel =await dataFakerService.GenerateData(1000);
         var results = new List<FakeDataModel>();
         
@@ -53,6 +53,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         var pagingModel = new SearchPagingViewModel();
         pagingModel.TotalItems = results.Count();
         pagingModel.Page = page;
+        pagingModel.SearchTerm = search;
         pagingModel.PageSize = pageSize;
         pagingModel.Data = results.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         
