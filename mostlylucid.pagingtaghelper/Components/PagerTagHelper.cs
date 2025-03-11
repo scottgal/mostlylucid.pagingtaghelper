@@ -167,6 +167,8 @@ public class PagerTagHelper : TagHelper
     {
    
         output.TagName = "div";
+        
+        //Remove all the properties that are not needed for the rendered content.
         output.Attributes.RemoveAll("page");
         output.Attributes.RemoveAll("link-url");
         output.Attributes.RemoveAll("page-size");

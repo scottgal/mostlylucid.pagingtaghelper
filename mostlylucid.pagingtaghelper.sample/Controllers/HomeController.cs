@@ -38,6 +38,31 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         return View(pagingModel);
     }
 
+    
+    public async Task<IActionResult> SearchWithHtmx(int page = 1,int pageSize = 10, string search="")
+    {
+        search = search.Trim().ToLowerInvariant();
+        var fakeModel =await dataFakerService.GenerateData(1000);
+        var results = new List<FakeDataModel>();
+        
+        if(!string.IsNullOrEmpty(search))
+         results = fakeModel.Where(x => x.Name.ToLowerInvariant().Contains(search)
+                                           || x.Description.ToLowerInvariant().Contains(search) ||
+                                           x.CompanyAddress.Contains(search)).ToList();
+        
+        var pagingModel = new SearchPagingViewModel();
+        pagingModel.TotalItems = results.Count();
+        pagingModel.Page = page;
+        pagingModel.PageSize = pageSize;
+        pagingModel.Data = results.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        
+        if (Request.IsHtmxBoosted() || Request.IsHtmx())
+        {
+            return PartialView("_SearchWithHtmxPartial", pagingModel);
+        }
+        return View("SearchWithHtmx",pagingModel);
+    }
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

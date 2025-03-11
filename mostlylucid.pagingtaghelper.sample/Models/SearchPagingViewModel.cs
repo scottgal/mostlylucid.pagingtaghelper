@@ -2,7 +2,7 @@
 
 using mostlylucid.pagingtaghelper.Models;
 
-public class SearchPagingViewModel : BasePagerSearchMdodel
+public class SearchPagingViewModel : PagingViewModel, IPagingSearchModel
 {
-    
+    public string? SearchTerm { get; set; }
 }
