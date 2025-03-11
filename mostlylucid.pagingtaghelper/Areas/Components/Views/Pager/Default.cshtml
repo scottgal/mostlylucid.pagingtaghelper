@@ -137,7 +137,7 @@
                 href += $"&search={Model.SearchTerm}";
             }
 
-            <a data-page="@i" class="btn btn-sm @(i == Model.Page ? "btn-active" : "")"
+            <a data-page="@i" class="btn btn-sm mr-2 @(i == Model.Page ? "btn-active" : "")"
                href="@href">
                 @i
             </a>
@@ -146,7 +146,7 @@
         @* Optional skip forward indicator *@
         @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
         {
-            <a class="btn btn-sm btn-disabled">
+            <a class="btn btn-sm btn-disabled mr-2">
                 @Model.SkipForwardText
             </a>
         }
@@ -160,7 +160,7 @@
                 href += $"&search={Model.SearchTerm}";
             }
 
-            <a class="btn btn-sm"
+            <a class="btn btn-sm mr-2"
                href="@href"
                aria-label="@Model.NextPageAriaLabel">
                 @Model.NextPageText
