@@ -58,7 +58,11 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         if(!string.IsNullOrEmpty(search))
          results = fakeModel.Where(x => x.Name.ToLowerInvariant().Contains(search)
                                            || x.Description.ToLowerInvariant().Contains(search) ||
-                                           x.CompanyAddress.Contains(search)).ToList();
+                                           x.CompanyAddress.ToLowerInvariant().Contains(search)
+                                           || x.CompanyEmail.ToLowerInvariant().Contains(search)
+                                           || x.CompanyCity.ToLowerInvariant().Contains(search)
+                                           || x.CompanyCountry.ToLowerInvariant().Contains(search)
+                                           || x.CompanyPhone.ToLowerInvariant().Contains(search)).ToList();
         else
         {
             results = fakeModel.ToList();
