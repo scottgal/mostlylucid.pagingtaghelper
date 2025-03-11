@@ -49,6 +49,10 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
          results = fakeModel.Where(x => x.Name.ToLowerInvariant().Contains(search)
                                            || x.Description.ToLowerInvariant().Contains(search) ||
                                            x.CompanyAddress.Contains(search)).ToList();
+        else
+        {
+            results = fakeModel.ToList();
+        }
         
         var pagingModel = new SearchPagingViewModel();
         pagingModel.TotalItems = results.Count();
