@@ -14,18 +14,18 @@ RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-COPY ["mostlylucig.pagingtaghelper.sample/mostlylucig.pagingtaghelper.sample.csproj", "mostlylucig.pagingtaghelper.sample/"]
+COPY ["mostlylucig.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj", "mostlylucid.pagingtaghelper.sample/"]
 COPY ["mostlylucid.pagingtaghelper/mostlylucid.pagingtaghelper.csproj", "mostlylucid.pagingtaghelper/"]
-RUN dotnet restore "mostlylucig.pagingtaghelper.sample/mostlylucig.pagingtaghelper.sample.csproj"
+RUN dotnet restore "mostlylucid.pagingtaghelper.sample/mostlylucig.pagingtaghelper.sample.csproj"
 COPY . .
-WORKDIR "/src/mostlylucig.pagingtaghelper.sample"
-RUN dotnet build "mostlylucig.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/mostlylucid.pagingtaghelper.sample"
+RUN dotnet build "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "mostlylucig.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "mostlylucid.pagingtaghelper.sample.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "mostlylucig.pagingtaghelper.sample.dll"]
+ENTRYPOINT ["dotnet", "mostlylucid.pagingtaghelper.sample.dll"]
