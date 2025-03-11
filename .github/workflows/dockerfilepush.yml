@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: your-dockerhub-username/mostlylucid-pagingtaghelper-sample
+          images: scottgal/mostlylucid-pagingtaghelper-sample
           tags: |
             type=ref,event=branch
             type=ref,event=tag
