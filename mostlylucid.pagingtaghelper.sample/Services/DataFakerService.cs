@@ -12,7 +12,7 @@ public class DataFakerService(IMemoryCache memoryCache)
     {
        return await memoryCache.GetOrCreateAsync($"fakeData_{count}", async entry =>
        {
-           entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+           entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
            return await Generate(count);
     
        });
