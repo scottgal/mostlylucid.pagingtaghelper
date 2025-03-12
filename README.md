@@ -12,13 +12,13 @@ dotnet add package mostlylucid.pagingtaghelper
 ```
 
 ## Usage
-I am currently building a sample porject here (I'll host the sample site later).
-
-The sample site can be found here (in progress, some things will be broken!)
+The sample site can be found here.
 
 https://taghelpersample.mostlylucid.net/
 
 You can view the source for the sample site here: https://github.com/scottgal/mostlylucid.pagingtaghelper
+
+Aditionally you can follow along with any articles on my [blog site here](https://www.mostlylucid.net/blog/category/PagingTagHelper).
 
 - [Basic use without HTMX](https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Views/Home/BasicWithModel.cshtml) - this sample shoows the very basic usage of the tag helper. It disables HTMX  using the `use-htmx` property set to false.
 ```html
@@ -204,11 +204,16 @@ NOTE: As it stands this site uses DaisyUI with TailwindCSS; later I'll document 
 For Tailwind & DaisyUI I also add a piece of HTML to the _layout.cshtml file provide a hint to the tailwind processor for required classes.
 
 ```html
-<!--Pager Tailwind Hint-->
-<span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm 
-        text-sm text-gray-600 text-neutral-500 border rounded flex items-center 
-        justify-center min-w-[80px] pr-4 mr-8 ml-8 pt-0 mt-0">
+<!-- Dummy Hidden Span to Preserve Tailwind Classes -->
+<span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm
+        text-sm text-gray-600 text-neutral-500 border rounded flex items-center
+        justify-center min-w-[80px] pr-4 pt-0 mt-0 mr-2 btn-primary btn-outline
+bg-white text-black
+        dark:bg-blue-500 dark:border-blue-400 dark:text-white dark:hover:bg-blue-600 
+        dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700
+        dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap">
 </span>
+
 
 ```
 
@@ -228,10 +233,50 @@ For Tailwind & DaisyUI I also add a piece of HTML to the _layout.cshtml file pro
 
 The tag helper is designed to preserve the `hx` attributes and these cascade into the tag helper. The form submission is then handled using HTMX.
 
-As I designed this to be HTMX by default you only need to specify `ust-htmx` if you AREN'T using HTMX. In that case you can use the Page Size JS snipept to handle the form submission.
+As I designed this to be HTMX by default you only need to specify `ust-htmx="false"` if you AREN'T using HTMX. In that case you can use the Page Size JS snipept to handle the page size selector submission.
+
+```csharp
+@Html.PageSizeOnchangeSnippet()
+```
+
+Additionally you can select from multiple Views using the `ViewType` property, set using the ViewType attribute `view-type="Custom"`.
+
+
+```csharp
+    public ViewType ViewType { get; set; } = Models.ViewType.TailwindANdDaisy;
+  ```
+
+When set to Custom you are able to pass in the view name using the `UseLocalView` property / `"use-local-view="\ViewPath.cshtml"`. property.
+
+This is handled within the `PagerViewComponent` which is used to render the pager. This is a ViewComponent that is used to render the pager. It uses the `PagerViewModel` to render the pager.
+
+```csharp
+        var viewName = "Components/Pager/Default";
+
+            var useLocalView = model.UseLocalView;
+
+            return (useLocalView, model.ViewType) switch
+            {
+                (true, ViewType.Custom) when ViewExists(viewName) => View(viewName, model),
+                (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
+                (false, ViewType.Bootstrap) => View("/Areas/Components/Views/Pager/BootstrapView.cshtml", model),
+                (false, ViewType.Plain) => View("/Areas/Components/Views/Pager/PlainView.cshtml", model),
+                (false, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/Pager/Default.cshtml", model),
+                _ => View("/Areas/Components/Views/Pager/Default.cshtml", model)
+            };
+            
+         /// <summary>
+        /// Checks if a view exists in the consuming application.
+        /// </summary>
+        private bool ViewExists(string viewName)
+        {
+            var result = ViewEngine.FindView(ViewContext, viewName, false);
+            return result.Success;
+        }
+```
 
 
 ## TBC
-Additionally I'll write some blog posts over on my [site](https://www.mostlylucid.net) about how to use this tag helper in a real-world scenario as welll as detail the thinking behind it's creation etc.
+Additionally I'll write some blog posts over on my [site](https://www.mostlylucid.net) about how to use this tag helper in a real-world scenario as well as detail the thinking behind it's creation etc.
 
-ViewComponent - one aspect of this is I use a ViewComponent in conjuntion with a tag helper; this pemits me to use the tag helper in a more dynamic way (for instance you can replace the Default view with your own custom view).
+ViewComponent - one aspect of this is I use a ViewComponent in conjunction with a tag helper; this pemits me to use the tag helper in a more dynamic way (for instance you can replace the Default view with your own custom view).

@@ -8,3 +8,5 @@ Adds plain CSS injection snippet. @Html.PlainCSS()
 Adds light mode for all views.
 0.3.1 
 Improves layout for samples.
+0.3.2
+Updates readme.

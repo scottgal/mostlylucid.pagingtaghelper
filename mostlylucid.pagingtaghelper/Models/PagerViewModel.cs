@@ -20,8 +20,7 @@ public class PagerViewModel
     public int? Page { get; set; }
     public int? PageSize { get; set; }
     public int? TotalItems { get; set; }
-
-    // Optional properties with defaults (using DaisyUI/Tailwind classes)
+    
     public int PagesToDisplay { get; set; } = 5;
     public string CssClass { get; set; } = "btn-group";  // DaisyUI grouping style
     public string FirstPageText { get; set; } = "«";
@@ -30,6 +29,7 @@ public class PagerViewModel
     public string SkipForwardText { get; set; } = "..";
     public string NextPageText { get; set; } = "Next ›";
     public string NextPageAriaLabel { get; set; } = "go to next page";
+    
     public string LastPageText { get; set; } = "»";
     public bool FirstLastNavigation { get; set; } = true;
     public bool SkipForwardBackNavigation { get; set; } = true;
