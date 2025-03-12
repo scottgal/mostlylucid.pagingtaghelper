@@ -1,2 +1,8 @@
-﻿1.0
-The mostlylucid paging tag helper AND View Component enables simple paging of data in ASP.NET Core applications.
+﻿0.2.0
+Adds multiple views,     TailwindANdDaisy,
+                         Custom,
+                         Plain,
+                         Bootstrap
+Adds plain CSS injection snippet. @Html.PlainCSS()
+0.3.0
+Adds light mode for all views.
