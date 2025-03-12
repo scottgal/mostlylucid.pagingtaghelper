@@ -11,7 +11,7 @@ else
     
 
 
-    <table class="table table-auto table-zebra">
+    <table class="table table-auto text-black dark:text-white">
         <thead>
         <th>@Html.DisplayNameFor(x => x.Data.First().Id)</th>
         <th>@Html.DisplayNameFor(x => x.Data.First().Name)</th>
@@ -24,7 +24,7 @@ else
         <tbody>
         @foreach(var item in Model.Data)
         {
-            <tr>
+            <tr  class="even:bg-gray-100 odd:bg-white dark:even:bg-gray-800 dark:odd:bg-gray-900">
                 <td>@item.Id</td>
                 <td>@item.Name</td>
                 <td>@item.CompanyAddress</td>

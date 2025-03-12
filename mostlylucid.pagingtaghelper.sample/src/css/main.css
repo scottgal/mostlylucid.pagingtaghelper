@@ -3,7 +3,10 @@
 @tailwind utilities;
 @plugin "daisyui";
 
-.no-tailwind :not(style) {
-    all: unset;
+.no-tailwind :where(*) {
+    all: initial;
     font-family: inherit;
+}
+.no-tailwind style {
+    display: none !important;
 }

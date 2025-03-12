@@ -26,6 +26,7 @@
     border-radius: 4px;
     background-color: white;
     cursor: pointer;
+    color: #333;
 }
 
 .pager-button {
@@ -61,4 +62,43 @@
     font-size: 14px;
     color: #555;
     margin-left: 16px;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .page-size-container label {
+        color: #ddd;
+    }
+
+    .page-size-container select {
+        background-color: #222;
+        color: #ddd;
+        border: 1px solid #555;
+    }
+
+    .pager-button {
+        color: #ddd;
+        background-color: #333;
+        border: 1px solid #555;
+    }
+
+    .pager-button:hover {
+        background-color: #444;
+    }
+
+    .pager-button.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .pager-button.disabled {
+        background-color: #444;
+        color: #777;
+        border: 1px solid #555;
+    }
+
+    .pager-info {
+        color: #bbb;
+    }
 }

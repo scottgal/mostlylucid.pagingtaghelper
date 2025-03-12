@@ -9,27 +9,39 @@
     <link rel="icon" type="image/png" href="/img/smalllogo.svg" />
 </head>
 <body class="bg-base-200 text-base-content">
-<header class="w-full bg-base-100 shadow-md py-2 px-6 flex justify-between items-center">
+<header class="w-full dark:bg-base-100 bg-white shadow-md py-2 px-6 flex justify-between items-center">
     <!-- Logo -->
     <a asp-controller="Home" asp-action="Index" class="flex items-center gap-2 text-lg font-bold">
-        <img src="/img/logo.svg" alt="Logo" width="224px" height="112px" >
+        <img src="/img/logo.svg" alt="Logo" width="224px" height="112px" class="invert dark:invert-0" >
     </a>
 
     <!-- Navigation Links -->
     <nav class="flex gap-4">
+        <button onclick="toggleTheme()" class="btn btn-primary dark:btn-accent">
+            <span class="light-mode">🌞 Light Mode</span>
+            <span class="dark-mode hidden">🌙 Dark Mode</span>
+        </button>
+
     </nav>
 </header>
 <div class="flex flex-col min-h-screen justify-start items-center">
     <main role="main" class="w-full max-w-4xl  px-4 bg-base-100 shadow-lg rounded-lg">
+        <div class="max-w-4xl mx-auto mb-6 p-6 bg-white  dark:bg-gray-600 text-base-100 dark:text-white shadow-lg rounded-lg">
         @RenderBody()
+        </div>
     </main>
 </div>
 
 <!-- Dummy Hidden Span to Preserve Tailwind Classes -->
-<span class="hidden btn btn-sm btn-active  btn-disabled select select-primary select-sm 
-        text-sm text-gray-600 text-neutral-500 border rounded flex items-center 
-        justify-center min-w-[80px] pr-4 mr-8 ml-8 pt-0 mt-0 mr-2">
+<span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm
+        text-sm text-gray-600 text-neutral-500 border rounded flex items-center
+        justify-center min-w-[80px] pr-4 pt-0 mt-0 mr-2 btn-primary btn-outline
+bg-white text-black
+        dark:bg-blue-500 dark:border-blue-400 dark:text-white dark:hover:bg-blue-600 
+        dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700
+        dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap">
 </span>
+
 
 <script src="https://unpkg.com/htmx.org@2.0.4" 
         integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" 
