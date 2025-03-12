@@ -1,7 +1,5 @@
 ﻿@model PagingViewModel
 
-<partial name="_ResultsList" model="Model"/>
-
 <paging hx-boost="true"
         class="mt-4"
         hx-indicator="#loading-modal"
@@ -10,3 +8,5 @@
         hx-headers='{"pagerequest": "true"}'
         model="@Model">
 </paging>
+
+<partial name="_ResultsList" model="Model"/>
