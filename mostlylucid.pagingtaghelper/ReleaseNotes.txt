@@ -6,3 +6,5 @@ Adds multiple views,     TailwindANdDaisy,
 Adds plain CSS injection snippet. @Html.PlainCSS()
 0.3.0
 Adds light mode for all views.
+0.3.1 
+Improves layout for samples.
