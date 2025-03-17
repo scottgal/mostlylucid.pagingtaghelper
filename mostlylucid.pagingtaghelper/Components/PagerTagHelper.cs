@@ -153,6 +153,17 @@ public class PagerTagHelper : TagHelper
     /// </summary>
     [HtmlAttributeName("htmx-target")]
     public string HtmxTarget { get; set; } = "";
+    
+    
+    [HtmlAttributeName("descending")]
+    public bool? Descending { get; set; }
+    
+    
+    [HtmlAttributeName("order-by")]
+    public string? OrderBy { get; set; }
+    
+    [HtmlAttributeName("show-summary")]
+    public bool ShowSummary { get; set; } = true;
 
     /// <summary>
     /// The current view context, automatically injected.
@@ -206,7 +217,9 @@ public class PagerTagHelper : TagHelper
 
         var pagerModel = PagerModel ?? new PagerViewModel()
         {
-            
+            OrderBy = OrderBy,
+            Descending = Descending,
+            ShowSummary = ShowSummary,
             ViewType = ViewType,
             UseLocalView = UseLocalView,
             UseHtmx = UseHtmx,
@@ -215,9 +228,9 @@ public class PagerTagHelper : TagHelper
             ShowPageSize = ShowPageSize,
             Model = Model,
             LinkUrl = linkUrl,
-            Page = Page,
-            PageSize = PageSize,
-            TotalItems = TotalItems,
+            Page = Page.Value,
+            PageSize = PageSize.Value,
+            TotalItems = TotalItems.Value,
             PagesToDisplay = PagesToDisplay,
             CssClass = CssClass,
             FirstPageText = FirstPageText,

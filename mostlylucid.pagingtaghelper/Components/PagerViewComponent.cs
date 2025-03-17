@@ -11,10 +11,6 @@ public class PagerViewComponent : ViewComponent
         {
             if(model.Model != null)
             {
-                
-                model.Page ??= model.Model.Page;
-                model.PageSize ??= model.Model.PageSize;
-                model.TotalItems ??= model.Model.TotalItems;
                 model.LinkUrl ??= model.Model.LinkUrl;
                 
                 if(model.Model is IPagingSearchModel searchModel)
@@ -22,13 +18,9 @@ public class PagerViewComponent : ViewComponent
                     model.SearchTerm ??= searchModel.SearchTerm;
                 }
             }
-            if(model.Page == null || model.PageSize == null || model.TotalItems == null || model.LinkUrl == null)
-            {
-                throw new ArgumentException("Page, PageSize, TotalItems, and LinkUrl required.");
-            }
 
             // Ensure the current page is within valid bounds.
-            model.Page = Math.Max(1, Math.Min(model.Page.Value, model.TotalPages));
+            model.Page = Math.Max(1, Math.Min(model.Page, model.TotalPages));
 
             var viewName = "Components/Pager/Default";
 

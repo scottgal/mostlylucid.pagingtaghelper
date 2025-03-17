@@ -1,5 +1,5 @@
 ﻿@using mostlylucid.pagingtaghelper.Extensions
-@model mostlylucid.pagingtaghelper.Components.PagerViewModel
+@model mostlylucid.pagingtaghelper.Models.PagerViewModel
 
 
 
@@ -21,7 +21,7 @@
                 next *= 2;
                 if (next < Model.TotalItems) pageSizes.Add(next);
             }
-            if (!pageSizes.Contains(Model.TotalItems.Value)) pageSizes.Add(Model.TotalItems.Value);
+            if (!pageSizes.Contains(Model.TotalItems)) pageSizes.Add(Model.TotalItems);
         }
     }
 }
@@ -68,7 +68,7 @@
 
         @{
             int halfDisplay = Model.PagesToDisplay / 2;
-            int startPage = Math.Max(1, Model.Page.Value - halfDisplay);
+            int startPage = Math.Max(1, Model.Page - halfDisplay);
             int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
             startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
         }

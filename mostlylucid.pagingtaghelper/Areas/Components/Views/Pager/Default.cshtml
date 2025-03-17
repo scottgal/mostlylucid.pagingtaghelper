@@ -1,39 +1,36 @@
-﻿@model mostlylucid.pagingtaghelper.Components.PagerViewModel
+﻿@using mostlylucid.pagingtaghelper.Models
+@model mostlylucid.pagingtaghelper.Models.PagerViewModel
 @{
-    var totalPages = (int)Math.Ceiling((double)Model.TotalItems! / (double)Model.PageSize!);
-    var pageSizes = new List<int>();
+    var totalPages = Model.TotalPages;
 
-    if (Model.ShowPageSize)
+    string GetUrl(int page)
     {
-        int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
-
-        foreach (var step in fixedSteps)
+        var href = $"{Model.LinkUrl}?page={page}&pageSize={Model.PageSize}";
+        if (Model.Model is IPagingSearchModel searchModel && !string.IsNullOrEmpty(searchModel.SearchTerm))
         {
-            if (step <= Model.TotalItems)
-            {
-                pageSizes.Add(step);
-            }
+            href+= $"&search={searchModel.SearchTerm}";
         }
-
-        if (Model.TotalItems > fixedSteps.Last())
+        if(!string.IsNullOrEmpty(Model.SearchTerm )) href += $"&search={Model.SearchTerm}";
+        if(Model.Model is IOrderableBasePagerModel orderableModel)
         {
-            int next = fixedSteps.Last();
-            while (next < Model.TotalItems)
-            {
-                next *= 2;
-                if (next < Model.TotalItems)
-                {
-                    pageSizes.Add(next);
-                }
-            }
-
-            if (!pageSizes.Contains(Model.TotalItems.Value))
-            {
-                pageSizes.Add(Model.TotalItems.Value);
-            }
+            href += $"&orderBy={orderableModel.OrderBy}";
+            href += $"&descending={orderableModel.Descending}";
         }
+        else
+        {
+            if(Model.Descending != null) href += $"&descending={Model.Descending}";
+            if(Model.OrderBy != null) href += $"&orderBy={Model.OrderBy}";
+        }
+      
+        
+
+        return href;
+
     }
 }
+
+
+
 @if (totalPages > 1)
 {
     <div class="@Model.CssClass flex items-center gap-2 justify-center pager-container">
@@ -59,7 +56,7 @@
                         class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black
                                dark:bg-gray-800 dark:text-white dark:border-gray-600"
                         @Html.Raw(htmxAttributes)>
-                    @foreach (var option in pageSizes.ToList())
+                    @foreach (var option in Model.PageSizes)
                     {
                         <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
                     }
@@ -69,9 +66,7 @@
 
         @if (Model.FirstLastNavigation && Model.Page > 1)
         {
-            var href = $"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}";
-            if (!string.IsNullOrEmpty(Model.SearchTerm)) href += $"&search={Model.SearchTerm}";
-
+            var href = GetUrl(1);
             <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
                href="@href">
                 @Model.FirstPageText
@@ -80,8 +75,7 @@
 
         @if (Model.Page > 1)
         {
-            var href = $"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}";
-            if (!string.IsNullOrEmpty(Model.SearchTerm)) href += $"&search={Model.SearchTerm}";
+            var href = GetUrl(Model.Page-1);
 
             <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
                href="@href">
@@ -99,15 +93,13 @@
         @* Pagination Numbers *@
         @{
             int halfDisplay = Model.PagesToDisplay / 2;
-            int startPage = Math.Max(1, Model.Page.Value - halfDisplay);
+            int startPage = Math.Max(1, Model.Page - halfDisplay);
             int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
             startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
         }
         @for (int i = startPage; i <= endPage; i++)
         {
-            var href = $"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}";
-            if (!string.IsNullOrEmpty(Model.SearchTerm)) href += $"&search={Model.SearchTerm}";
-
+            var href = GetUrl(i);
             <a data-page="@i"
                class="pager-button btn btn-sm 
                       @(i == Model.Page ? "btn-primary btn-active dark:bg-blue-500 dark:border-blue-400 dark:text-white" : "btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600")"
@@ -125,9 +117,7 @@
 
         @if (Model.Page < totalPages)
         {
-            var href = $"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}";
-            if (!string.IsNullOrEmpty(Model.SearchTerm)) href += $"&search={Model.SearchTerm}";
-
+            var href = GetUrl(Model.Page+1);
             <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
                href="@href"
                aria-label="@Model.NextPageAriaLabel">
@@ -137,17 +127,20 @@
 
         @if (Model.FirstLastNavigation && Model.Page < totalPages)
         {
-            var href = $"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}";
-            if (!string.IsNullOrEmpty(Model.SearchTerm)) href += $"&search={Model.SearchTerm}";
+            var href = GetUrl(Model.TotalPages);
 
             <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
                href="@href">
                 @Model.LastPageText
             </a>
         }
+@if (Model.ShowSummary)
+        {
 
-        <div class="text-sm text-gray-600 dark:text-gray-300">
-            Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
-        </div>
+
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+                Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
+            </div>
+        }
     </div>
 }

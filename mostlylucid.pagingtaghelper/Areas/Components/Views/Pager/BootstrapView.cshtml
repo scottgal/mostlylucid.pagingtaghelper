@@ -1,26 +1,6 @@
-﻿@model mostlylucid.pagingtaghelper.Components.PagerViewModel
+﻿@model mostlylucid.pagingtaghelper.Models.PagerViewModel
 @{
-    var totalPages = (int)Math.Ceiling((double)Model.TotalItems! / (double)Model.PageSize!);
-    var pageSizes = new List<int>();
-
-    if (Model.ShowPageSize)
-    {
-        int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
-        foreach (var step in fixedSteps)
-        {
-            if (step <= Model.TotalItems) pageSizes.Add(step);
-        }
-        if (Model.TotalItems > fixedSteps.Last())
-        {
-            int next = fixedSteps.Last();
-            while (next < Model.TotalItems)
-            {
-                next *= 2;
-                if (next < Model.TotalItems) pageSizes.Add(next);
-            }
-            if (!pageSizes.Contains(Model.TotalItems.Value)) pageSizes.Add(Model.TotalItems.Value);
-        }
-    }
+    var totalPages = Model.TotalPages;
 }
 
 @if (totalPages > 1)
@@ -41,7 +21,7 @@
             <div class="me-3">
                 <label for="pageSize-@pagerId" class="form-label me-2">Page size:</label>
                 <select id="pageSize-@pagerId" name="pageSize" class="form-select form-select-sm d-inline w-auto" @Html.Raw(htmxAttributes)>
-                    @foreach (var option in pageSizes)
+                    @foreach (var option in Model.PageSizes)
                     {
                         <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
                     }
@@ -74,7 +54,7 @@
 
                 @{
                     int halfDisplay = Model.PagesToDisplay / 2;
-                    int startPage = Math.Max(1, Model.Page.Value - halfDisplay);
+                    int startPage = Math.Max(1, Model.Page - halfDisplay);
                     int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
                     startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
                 }
