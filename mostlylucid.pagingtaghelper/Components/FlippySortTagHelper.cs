@@ -166,10 +166,12 @@ public class SortableHeaderTagHelper(IUrlHelperFactory urlHelperFactory) : TagHe
             href = output.Attributes["href"].Value?.ToString() ?? "";
         }
         if(string.IsNullOrEmpty(href)) throw new ArgumentException("No href was provided or could be generated");
-
+        
         // If AutoAppend is false or href is still empty, don't modify anything
-        if (!AutoAppend || string.IsNullOrWhiteSpace(href))
+        if (!AutoAppend && !string.IsNullOrWhiteSpace(href))
         {
+            output.Attributes.RemoveAll("href");
+            output.Attributes.SetAttribute("href", href);
             return;
         }
 
