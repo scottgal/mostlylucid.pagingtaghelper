@@ -1,31 +1,25 @@
-// Function to toggle the theme and store preference
 function toggleTheme() {
-    if (document.documentElement.classList.contains("dark")) {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-    } else {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-    }
-    updateButtonText(); // Update button icon
+    document.documentElement.classList.toggle("dark"); // <html> tag
+
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+
+    updateButtonText();
 }
 
-// Function to update button text/icon
 function updateButtonText() {
-    document.querySelector(".light-mode").classList.toggle("hidden", document.documentElement.classList.contains("dark"));
-    document.querySelector(".dark-mode").classList.toggle("hidden", !document.documentElement.classList.contains("dark"));
+    const isDark = document.documentElement.classList.contains("dark");
+    document.querySelector(".light-mode").classList.toggle("hidden", isDark);
+    document.querySelector(".dark-mode").classList.toggle("hidden", !isDark);
 }
 
-// Apply theme on page load
 (function () {
-    if (localStorage.getItem("theme") === "dark" ||
-        (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-        document.documentElement.classList.add("dark");
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
     } else {
-        document.documentElement.classList.remove("dark");
+        document.documentElement.classList.remove('dark');
     }
     updateButtonText();
 })();
 
-// Ensure Webpack doesn't remove toggleTheme() by attaching it to window
 window.toggleTheme = toggleTheme;
