@@ -10,35 +10,24 @@
 .page-size-container {
     display: flex;
     align-items: center;
-    margin-right: 16px;
 }
 
 .page-size-container label {
-    font-size: 14px;
     color: #333;
-    margin-right: 8px;
 }
 
 .page-size-container select {
-    padding: 4px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
     background-color: white;
-    cursor: pointer;
     color: #333;
+    border: 1px solid #ccc;
 }
 
 .pager-button {
     display: inline-block;
     padding: 6px 12px;
-    font-size: 14px;
     color: #333;
-    background-color: #f8f9fa;
+    background-color: #fff;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.2s;
 }
 
 .pager-button:hover {
@@ -54,51 +43,47 @@
 .pager-button.disabled {
     background-color: #e9ecef;
     color: #6c757d;
-    cursor: not-allowed;
-    border: 1px solid #ccc;
+    border-color: #ccc;
 }
 
 .pager-info {
-    font-size: 14px;
-    color: #555;
-    margin-left: 16px;
+    color: #666;
 }
 
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    .page-size-container label {
-        color: #ddd;
-    }
+/* Dark mode (class-based, matching Tailwind) */
 
-    .page-size-container select {
-        background-color: #222;
-        color: #ddd;
-        border: 1px solid #555;
-    }
+.dark .page-size-container label {
+    color: #ddd;
+}
 
-    .pager-button {
-        color: #ddd;
-        background-color: #333;
-        border: 1px solid #555;
-    }
+.dark .page-size-container select {
+    background-color: #222;
+    color: #ddd;
+    border: 1px solid #555;
+}
 
-    .pager-button:hover {
-        background-color: #444;
-    }
+.dark .pager-button {
+    color: #ddd;
+    background-color: #333;
+    border: 1px solid #555;
+}
 
-    .pager-button.active {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-    }
+.dark .pager-button:hover {
+    background-color: #444;
+}
 
-    .pager-button.disabled {
-        background-color: #444;
-        color: #777;
-        border: 1px solid #555;
-    }
+.dark .pager-button.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
 
-    .pager-info {
-        color: #bbb;
-    }
+.dark .pager-button.disabled {
+    background-color: #555;
+    color: #777;
+    border-color: #555;
+}
+
+.dark .pager-info {
+    color: #bbb;
 }
