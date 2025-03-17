@@ -16,3 +16,5 @@ Adds the new FlippySortTagHelper to the package. This enables you to sort a list
 Update this release notes as I forgot; update the Samples page.
 0.6.0
 This update adds HTMX free capabilities to the FlippySortTagHelper. This means you can now sort a list of items without any JavaScript / HTMX.
+0.6.1
+Fix to add an ability to return href plain when AutoAppend is set to false.
