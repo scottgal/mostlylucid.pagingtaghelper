@@ -10,3 +10,7 @@ Adds light mode for all views.
 Improves layout for samples.
 0.3.2
 Updates readme.
+0.5.0
+Adds the new FlippySortTagHelper to the package. This enables you to sort a list of items by clicking on the column headers.
+0.5.1
+Update this release notes as I forgot; update the Samples page.
