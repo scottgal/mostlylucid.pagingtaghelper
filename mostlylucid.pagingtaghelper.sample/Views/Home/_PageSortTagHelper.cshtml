@@ -1,0 +1,149 @@
+﻿@model OrderedPagingViewModel
+
+
+@if (Model.Data?.Any() != true)
+{
+    <p>No results found.</p>
+}
+else
+{
+    <paging hx-boost="true"
+            class="my-4"
+            hx-indicator="#loading-modal"
+            hx-target="#list"
+            hx-swap="show:none"
+            hx-headers='{"pagerequest": "true"}'
+            model="@Model">
+    </paging>
+    
+    <table class="table table-auto text-black dark:text-white">
+        <thead>
+        <th>
+            <sortable-header column="Id"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="Home"
+                             hx-action="PageSortTagHelper"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().Id)
+            </sortable-header>
+        </th>
+        <th>
+            <sortable-header column="Name"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="Home"
+                             hx-action="PageSortTagHelper"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().Name)
+            </sortable-header>
+        </th>
+        <th>
+            <sortable-header column="@nameof(FakeDataModel.CompanyAddress)"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="Home"
+                             hx-action="PageSortTagHelper"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().CompanyAddress)
+            </sortable-header>
+        </th>
+        <th>
+            <sortable-header column="@nameof(FakeDataModel.CompanyCity)"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="Home"
+                             hx-action="PageSortTagHelper"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().CompanyCity)
+            </sortable-header>
+        </th>
+        <th>
+            <sortable-header column="@nameof(FakeDataModel.CompanyCountry)"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="Home"
+                             hx-action="PageSortTagHelper"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().CompanyCountry)
+            </sortable-header>
+        </th>
+        <th>
+            <sortable-header column="@nameof(FakeDataModel.CompanyEmail)"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="ServiceBus"
+                             hx-action="List"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().CompanyEmail)
+            </sortable-header>
+        </th>
+        <th>
+            <sortable-header column="@nameof(FakeDataModel.CompanyPhone)"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="Home"
+                             hx-action="PageSortTagHelper"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#list"
+                             hx-push-url="true">@Html.DisplayNameFor(x => x.Data.First().CompanyPhone)
+            </sortable-header>
+        </th>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr class="even:bg-gray-100 odd:bg-white dark:even:bg-gray-800 dark:odd:bg-gray-900">
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.CompanyAddress</td>
+                <td>@item.CompanyCity</td>
+                <td>@item.CompanyCountry</td>
+                <td>@item.CompanyEmail</td>
+                <td>@item.CompanyPhone</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

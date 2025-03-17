@@ -24,13 +24,14 @@
 
     </nav>
 </header>
-<div class="flex flex-col min-h-screen justify-start items-center mt-4">
-    <main role="main" class="w-full max-w-4xl  px-4 dark:bg-base-100 bg-gray-300  shadow-lg rounded-lg">
-        <div class="max-w-4xl mx-auto mb-6 p-6 bg-white  dark:bg-gray-600 text-base-100 dark:text-white shadow-lg rounded-lg">
-        @RenderBody()
+<div class="flex justify-center mt-4">
+    <main role="main" class="w-3/4 px-4 bg-gray-300 dark:bg-base-100 shadow-lg rounded-lg">
+        <div class="p-6 bg-white dark:bg-gray-600 text-base-100 dark:text-white shadow rounded-lg">
+            @RenderBody()
         </div>
     </main>
 </div>
+
 
 <!-- Dummy Hidden Span to Preserve Tailwind Classes -->
 <span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm

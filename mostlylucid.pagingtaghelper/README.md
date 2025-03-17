@@ -275,6 +275,28 @@ This is handled within the `PagerViewComponent` which is used to render the page
         }
 ```
 
+# Flippy Header Tag Helper
+This adds a new taghelper which makes it easy to add a flippy header to your site. This is a simple tag helper that adds a header to your site that flips between two states. 
+As with the paging tag helper this permits you to use HTMX to handle the form submission (transparently, it doesn't NEED HTMX but it's designed to work with it).
+
+
+```html
+        <sortable-header column="Id"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="ServiceBus"
+                             hx-action="List"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#servicebus-list"
+                             hx-push-url="true">Id</sortable-header>
+```
+
+
 
 ## TBC
 Additionally I'll write some blog posts over on my [site](https://www.mostlylucid.net) about how to use this tag helper in a real-world scenario as well as detail the thinking behind it's creation etc.

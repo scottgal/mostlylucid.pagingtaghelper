@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Htmx;
 using Microsoft.AspNetCore.Mvc;
+using mostlylucid.pagingtaghelper.Extensions;
 using mostlylucig.pagingtaghelper.sample.Models;
 using mostlylucig.pagingtaghelper.sample.Services;
 using  mostlylucid.pagingtaghelper.Helpers;
@@ -81,6 +82,48 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         }
         return View("SearchWithHtmx",pagingModel);
     }
+
+    [Route("PageSortTagHelper")]
+    public async Task<IActionResult> PageSortTagHelper(string? search, int pageSize = 10, int page = 1, string? orderBy = "", bool descending = false)
+    {
+        search = search?.Trim().ToLowerInvariant();
+        var fakeModel = await dataFakerService.GenerateData(1000);
+        var results = new List<FakeDataModel>();
+
+        if (!string.IsNullOrEmpty(search))
+            results = fakeModel.Where(x => x.Name.ToLowerInvariant().Contains(search)
+                                           || x.Description.ToLowerInvariant().Contains(search) ||
+                                           x.CompanyAddress.ToLowerInvariant().Contains(search)
+                                           || x.CompanyEmail.ToLowerInvariant().Contains(search)
+                                           || x.CompanyCity.ToLowerInvariant().Contains(search)
+                                           || x.CompanyCountry.ToLowerInvariant().Contains(search)
+                                           || x.CompanyPhone.ToLowerInvariant().Contains(search)).ToList();
+        else
+        {
+            results = fakeModel.ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(orderBy))
+        {
+            results = results.OrderByField(orderBy, descending).ToList();
+        }
+
+        var pagingModel = new OrderedPagingViewModel();
+        pagingModel.TotalItems = results.Count();
+        pagingModel.Page = page;
+        pagingModel.SearchTerm = search;
+        pagingModel.PageSize = pageSize;
+        pagingModel.Data = results.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        pagingModel.OrderBy = orderBy;
+        pagingModel.Descending = descending;
+
+        if (Request.IsHtmxBoosted() || Request.IsHtmx())
+        {
+            return PartialView("_PageSortTagHelper", pagingModel);
+        }
+        return View("PageSortTagHelper", pagingModel);
+    }
+ 
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
@@ -98,4 +141,5 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         pagingModel.Data = fakeModel.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         return pagingModel;
     }
-}
+    
+}   

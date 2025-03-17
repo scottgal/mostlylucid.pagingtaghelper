@@ -1,0 +1,32 @@
+﻿@model OrderedPagingViewModel
+
+
+@{
+    var previewModel = new PreviewPartialViewModel();
+    previewModel.Description = "This example shows the use with Search and Htmx.";
+}
+
+<partial name="_PreviewPartial" model="previewModel"/>
+<div class="relative pb-8" id="searchelement" >
+    <label class="input input-sm dark:bg-neutral-500 bg-white  w-full bg-opacity-10 input-bordered flex items-center gap-2">
+        <input
+            type="text"
+            placeholder="Search..."
+            class="border-0 grow input-sm text-black dark:text-white bg-transparent w-half justify-center"
+            hx-get
+            hx-controller="Home"
+            hx-action="PageSortTagHelper"
+            name="search"
+            hx-push-url="true"
+            hx-trigger="keyup changed delay:300ms if(this.value.length >= 3)"
+            hx-target="#list"
+            hx-indicator="#loading-modal"
+            hx-params="*"
+        />
+
+        <i class="bx bx-search"></i>
+    </label>
+</div>
+<div id="list">
+    <partial name="_PageSortTagHelper" model="Model"/>
+</div>
