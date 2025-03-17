@@ -1,14 +1,35 @@
 ﻿using System.Text.Json;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace mostlylucid.pagingtaghelper.Components;
 
 [HtmlTargetElement("sortable-header")]
-public class SortableHeaderTagHelper : TagHelper
+public class SortableHeaderTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
 {
+    
+    private IUrlHelper Url => urlHelperFactory.GetUrlHelper(ViewContext);
+    [HtmlAttributeName("hx-controller")]
+    [AspMvcController] // Enables IntelliSense for controller names
+    public string? HXController { get; set; }
+
+    [HtmlAttributeName("hx-action")]
+    [AspMvcAction] // Enables IntelliSense for action names
+    public string? HXAction { get; set; }
+    
+    
+    [HtmlAttributeName("action")]
+    [AspMvcAction]
+    public string? Action { get; set; }
+    
+    [HtmlAttributeName("controller")]
+    [AspMvcController]
+    public string? Controller { get; set; }
     
     [ViewContext]
     [HtmlAttributeNotBound]
@@ -84,7 +105,7 @@ public class SortableHeaderTagHelper : TagHelper
       
     
         // Default href if not specified
-        if (!output.Attributes.ContainsName("href"))
+        if (!output.Attributes.ContainsName("href") && string.IsNullOrEmpty(Controller) && string.IsNullOrEmpty(Action))
         {
             output.Attributes.SetAttribute("href", "#");
         }
@@ -132,25 +153,45 @@ public class SortableHeaderTagHelper : TagHelper
 
     private void AddQueryStringParameters(TagHelperOutput output, bool newDescending)
     {
-        var href = output.Attributes["href"].Value.ToString();
-        // If not auto-append, do nothing otherwise pull the current params and append the new ones
-        if (!AutoAppend || string.IsNullOrWhiteSpace(href)) return;
-        var queryStringBuilder = new QueryString(href);
-        queryStringBuilder.Add("orderBy", Column);
-        queryStringBuilder.Add("descending", newDescending.ToString());
-        var queryParams = ViewContext.HttpContext.Request.Query.Keys;
-        if(queryParams.Any())
+        string? href = "";
+
+        // If Controller and Action are provided, generate URL dynamically
+        if (!string.IsNullOrEmpty(Controller) && !string.IsNullOrEmpty(Action))
         {
-            foreach (var key in queryParams.Select(x=>x.ToLowerInvariant()))
+            href = Url.ActionLink(Action, Controller);
+          
+        }
+        else if (output.Attributes.ContainsName("href")) // If href is manually set, use it
+        {
+            href = output.Attributes["href"].Value?.ToString() ?? "";
+        }
+        if(string.IsNullOrEmpty(href)) throw new ArgumentException("No href was provided or could be generated");
+
+        // If AutoAppend is false or href is still empty, don't modify anything
+        if (!AutoAppend || string.IsNullOrWhiteSpace(href))
+        {
+            return;
+        }
+
+        // Parse the existing URL to append query parameters
+        var queryStringBuilder = QueryString.Empty
+            .Add("orderBy", Column)
+            .Add("descending", newDescending.ToString().ToLowerInvariant());
+
+        // Preserve existing query parameters from the current request
+        foreach (var key in ViewContext.HttpContext.Request.Query.Keys)
+        {
+            var keyLower = key.ToLowerInvariant();
+            if (keyLower != "orderby" && keyLower != "descending") // Avoid duplicating orderBy params
             {
-                if (key != "orderby" && key != "descending")
-                {
-                    queryStringBuilder.Add(key, ViewContext.HttpContext.Request.Query[key]!);
-                }
+             queryStringBuilder=   queryStringBuilder.Add(key, ViewContext.HttpContext.Request.Query[key]!);
             }
         }
-                    
+href+= queryStringBuilder.ToString();
+        
+        // Remove old href and set the new one with the appended parameters
         output.Attributes.RemoveAll("href");
-        output.Attributes.SetAttribute("href", queryStringBuilder.ToString());
+        output.Attributes.SetAttribute("href", href);
     }
+
 }

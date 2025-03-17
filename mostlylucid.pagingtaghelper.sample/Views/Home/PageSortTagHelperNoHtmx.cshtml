@@ -1,0 +1,12 @@
+﻿@model OrderedPagingViewModel
+
+
+@{
+    var previewModel = new PreviewPartialViewModel();
+    previewModel.Description = "This example shows the use or the Header Sort tag helper with search.";
+}
+
+<partial name="_PreviewPartial" model="previewModel"/>
+<div id="list">
+    <partial name="_PageSortTagHelperNoHtmx" model="Model"/>
+</div>

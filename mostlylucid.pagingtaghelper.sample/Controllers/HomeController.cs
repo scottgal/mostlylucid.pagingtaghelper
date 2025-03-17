@@ -86,6 +86,25 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     [Route("PageSortTagHelper")]
     public async Task<IActionResult> PageSortTagHelper(string? search, int pageSize = 10, int page = 1, string? orderBy = "", bool descending = false)
     {
+        var pagingModel = await SortResults(search, pageSize, page, orderBy, descending);
+
+        if (Request.IsHtmxBoosted() || Request.IsHtmx())
+        {
+            return PartialView("_PageSortTagHelper", pagingModel);
+        }
+        return View("PageSortTagHelper", pagingModel);
+    }
+    
+    [Route("PageSortTagHelperNoHtmx")]
+    public async Task<IActionResult> PageSortTagHelperNoHtmx(string? search, int pageSize = 10, int page = 1, string? orderBy = "", bool descending = false)
+    {
+        var pagingModel = await SortResults(search, pageSize, page, orderBy, descending);
+
+        return View("PageSortTagHelperNoHtmx", pagingModel);
+    }
+
+    private async Task<OrderedPagingViewModel> SortResults(string? search, int pageSize, int page, string? orderBy, bool descending)
+    {
         search = search?.Trim().ToLowerInvariant();
         var fakeModel = await dataFakerService.GenerateData(1000);
         var results = new List<FakeDataModel>();
@@ -116,15 +135,10 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         pagingModel.Data = results.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         pagingModel.OrderBy = orderBy;
         pagingModel.Descending = descending;
-
-        if (Request.IsHtmxBoosted() || Request.IsHtmx())
-        {
-            return PartialView("_PageSortTagHelper", pagingModel);
-        }
-        return View("PageSortTagHelper", pagingModel);
+        return pagingModel;
     }
- 
-    
+
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

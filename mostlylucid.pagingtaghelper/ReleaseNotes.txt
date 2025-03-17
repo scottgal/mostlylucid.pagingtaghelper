@@ -14,3 +14,5 @@ Updates readme.
 Adds the new FlippySortTagHelper to the package. This enables you to sort a list of items by clicking on the column headers.
 0.5.1
 Update this release notes as I forgot; update the Samples page.
+0.6.0
+This update adds HTMX free capabilities to the FlippySortTagHelper. This means you can now sort a list of items without any JavaScript / HTMX.
