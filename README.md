@@ -430,6 +430,7 @@ This `PagerTagHelper` allows for flexible pagination and supports different UI f
 This adds a new taghelper which makes it easy to add a flippy header to your site. This is a simple tag helper that adds a header to your site that flips between two states.
 As with the paging tag helper this permits you to use HTMX to handle the form submission (transparently, it doesn't NEED HTMX but it's designed to work with it).
 
+You can see more detailed coverage of this 'bonus' tag helper [on my blog.](https://www.mostlylucid.net/blog/pagingtaghelper-part2)
 
 ```html
         <sortable-header column="Id"
