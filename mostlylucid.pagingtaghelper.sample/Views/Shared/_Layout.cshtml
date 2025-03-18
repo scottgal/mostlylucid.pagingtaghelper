@@ -2,13 +2,13 @@
 <html lang="en"  class="dark">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
     <title>@ViewData["Title"] - mostlylucid.pagingtaghelper.sample</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="~/css/dist/main.css" asp-append-version="true"/>
     <link rel="icon" type="image/png" href="/img/smalllogo.svg" />
 </head>
-<body class="bg-white dark:bg-base-100 text-base-content">
+<body class="flex flex-col min-h-screen bg-white dark:bg-base-100 text-base-content">
 <header class="w-full dark:bg-base-100 bg-white shadow-md py-2 px-6 flex justify-between items-center">
     <!-- Logo -->
     <a href="https://www.mostlylucid.net" class="flex items-center gap-2 text-lg font-bold">
@@ -21,14 +21,14 @@
             <i class="bx bxl-github"></i> GitHub
         </a>
         <button onclick="toggleTheme()" class="btn btn-primary dark:btn-accent">
-            <span class="light-mode">🌞 Light Mode</span>
-            <span class="dark-mode hidden">🌙 Dark Mode</span>
+            <span class="light-mode"><i class="bx bx-sun" ></i>Light Mode</span>
+            <span class="dark-mode hidden"><i class="bx bx-moon" ></i> Dark Mode</span>
         </button>
 
     </nav>
 </header>
-<div class="flex justify-center mt-4">
-    <main role="main" class="w-3/4 px-4 bg-gray-300 dark:bg-base-100 shadow-lg rounded-lg">
+<div class="flex justify-center mt-4 ">
+    <main role="main" class="flex-1 w-full max-w-screen-lg mx-auto px-4 bg-gray-300 dark:bg-base-100 shadow-lg rounded-lg">
         <div class="p-6 bg-white dark:bg-gray-600 text-base-100 dark:text-white shadow rounded-lg">
             @RenderBody()
         </div>
@@ -43,7 +43,7 @@
 bg-white text-black
         dark:bg-blue-500 dark:border-blue-400 dark:text-white dark:hover:bg-blue-600 
         dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700
-        dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap">
+        dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap cursor-pointer">
 </span>
 
 
