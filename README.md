@@ -10,7 +10,6 @@ You can install the package via nuget:
 dotnet add package mostlylucid.pagingtaghelper
   
 ```
-
 ## Usage
 The sample site can be found here.
 
@@ -274,6 +273,180 @@ This is handled within the `PagerViewComponent` which is used to render the page
             return result.Success;
         }
 ```
+## `PagerTagHelper` Properties
+
+The `PagerTagHelper` provides various attributes to customize the pagination component. Below is a detailed list of each property and its purpose.
+
+### General Properties
+
+- **`model`** (optional)
+    - Type: `IPagingModel?`
+    - Description: The paging model containing the pagination details.
+
+- **`pagingmodel`** (optional)
+    - Type: `PagerViewModel?`
+    - Description: The view model for the pager component.
+
+- **`id`**
+    - Type: `string?`
+    - Description: Optionally pass in an ID for the pager component.
+
+- **`view-type`**
+    - Type: `ViewType`
+    - Default: `ViewType.TailwindANdDaisy`
+    - Description: Defines the type of view to be used for rendering the pager.
+
+- **`use-local-view`**
+    - Type: `bool`
+    - Default: `false`
+    - Description: Determines whether the local view is used instead of the tag helper view.
+
+### Pagination Behavior
+
+- **`page`**
+    - Type: `int?`
+    - Description: The current page number.
+
+- **`page-size`**
+    - Type: `int?`
+    - Description: The number of items per page.
+
+- **`total-items`**
+    - Type: `int?`
+    - Description: The total number of items in the pagination set.
+
+- **`pages-to-display`**
+    - Type: `int`
+    - Default: `5`
+    - Description: The number of pages to display in the pager navigation.
+
+- **`show-pagesize`**
+    - Type: `bool`
+    - Default: `true`
+    - Description: Determines whether the page size selection is shown.
+
+- **`show-summary`**
+    - Type: `bool`
+    - Default: `true`
+    - Description: Determines whether a summary is displayed.
+
+### Navigation Links
+
+- **`first-page-text`**
+    - Type: `string`
+    - Default: `«`
+    - Description: Text for the first page navigation link.
+
+- **`previous-page-text`**
+    - Type: `string`
+    - Default: `‹ Previous`
+    - Description: Text for the previous page navigation link.
+
+- **`skip-back-text`**
+    - Type: `string`
+    - Default: `..`
+    - Description: Text for skipping backward in pagination.
+
+- **`skip-forward-text`**
+    - Type: `string`
+    - Default: `..`
+    - Description: Text for skipping forward in pagination.
+
+- **`next-page-text`**
+    - Type: `string`
+    - Default: `Next ›`
+    - Description: Text for the next page navigation link.
+
+- **`next-page-aria-label`**
+    - Type: `string`
+    - Default: `go to next page`
+    - Description: ARIA label for the next page navigation link.
+
+- **`last-page-text`**
+    - Type: `string`
+    - Default: `»`
+    - Description: Text for the last page navigation link.
+
+- **`first-last-navigation`**
+    - Type: `bool`
+    - Default: `true`
+    - Description: Indicates whether first and last page navigation links should be displayed.
+
+- **`skip-forward-back-navigation`**
+    - Type: `bool`
+    - Default: `true`
+    - Description: Indicates whether skip forward/backward navigation should be enabled.
+
+### Styling & Customization
+
+- **`css-class`**
+    - Type: `string`
+    - Default: `btn-group`
+    - Description: The CSS class applied to the pager container.
+
+### Search & Sorting
+
+- **`search-term`**
+    - Type: `string?`
+    - Description: The search term used in pagination filtering.
+
+- **`order-by`**
+    - Type: `string?`
+    - Description: The column name to order by.
+
+- **`descending`**
+    - Type: `bool?`
+    - Description: Determines if sorting should be descending.
+
+### HTMX Integration
+
+- **`use-htmx`**
+    - Type: `bool`
+    - Default: `true`
+    - Description: Whether to enable HTMX use for the pagesize component.
+
+- **`htmx-target`**
+    - Type: `string`
+    - Default: `""`
+    - Description: Specifies the HTMX target for AJAX-based pagination.
+
+### Internal Processing
+
+- **`link-url`**
+    - Type: `string?`
+    - Description: The base URL for pagination links.
+
+- **`ViewContext`**
+    - Type: `ViewContext`
+    - Description: The current view context, automatically injected.
+
+---
+
+This `PagerTagHelper` allows for flexible pagination and supports different UI frameworks through the `view-type` property. It integrates with HTMX for enhanced AJAX navigation while providing various customization options for navigation text, styling, and sorting.
+
+
+
+# Flippy Header Tag Helper
+This adds a new taghelper which makes it easy to add a flippy header to your site. This is a simple tag helper that adds a header to your site that flips between two states.
+As with the paging tag helper this permits you to use HTMX to handle the form submission (transparently, it doesn't NEED HTMX but it's designed to work with it).
+
+
+```html
+        <sortable-header column="Id"
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="ServiceBus"
+                             hx-action="List"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#servicebus-list"
+                             hx-push-url="true">Id</sortable-header>
+```
+
 
 
 ## TBC
