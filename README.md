@@ -260,6 +260,16 @@ Additionally you can select from multiple Views using the `ViewType` property, s
 
 When set to Custom you are able to pass in the view name using the `UseLocalView` property / `"use-local-view="\ViewPath.cshtml"`. property.
 
+For the PlainView.cshtml you can use the following would specify the `Plain` view for the `ViewType` (`view-type`). I've also supplied some CSS for basic styling of the component.
+
+You can use the HTML snippet to inject it into your page:
+
+```csharp
+@Html.PlainCSS()
+```
+As with the Tailwind & DaisyUI view this enables both dark and light mode.
+
+
 This is handled within the `PagerViewComponent` which is used to render the pager. This is a ViewComponent that is used to render the pager. It uses the `PagerViewModel` to render the pager.
 
 ```csharp
@@ -367,7 +377,7 @@ By default the simplest way to use this is to pass in the `PagerViewModel`
 
 NOTE: If you're using HTMX you need to set the hx-target property to the ID of the element you want to update. This is handled by the tag helper. Otherwise it'll try and swap out itself to...bad results.
 ```html
-<page-size 
+<page-size
         hx-target="#list"
         model="Model">
 </page-size>
