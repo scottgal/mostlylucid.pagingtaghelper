@@ -1,39 +1,59 @@
 ﻿@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
 @{
     var pagerId = Model.PagerId;
-
     var htmxAttributes = "";
 
     if (Model.UseHtmx)
     {
-        htmxAttributes = $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\"";
-
-        var queryKeys = Context.Request.Query.Keys;
-        foreach (var key in queryKeys)
-        {
-
-            htmxAttributes += $",#{pagerId} [name='{key}']";
-        }
-        htmxAttributes += " hx-push-url=\"true\"";
+        htmxAttributes = $"hx-get=\"{Model.LinkUrl}\"  hx-push-url=\"true\"";
     }
     else
     {
         <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-<div class="flex items-center page-size-container">
-    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
+<div id="@pagerId" class="flex items-center page-size-container">
+    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()" />
+
     <label for="pageSize-@pagerId" class="text-sm text-gray-600 dark:text-gray-300 mr-2 whitespace-nowrap">Page size:</label>
     <select id="pageSize-@pagerId"
             name="pageSize"
-            class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black
-                               dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black dark:bg-gray-800 dark:text-white dark:border-gray-600"
             @Html.Raw(htmxAttributes)>
- 
-            @foreach (var option in Model.PageSizes)
-            {
-                <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
-            }
-   
+        @foreach (var option in Model.PageSizes)
+        {
+            <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">
+                @option
+            </option>
+        }
     </select>
 </div>
+@if (Model.UseHtmx)
+{
+    <script>
+    window.__pageSizeListenerAdded = window.__pageSizeListenerAdded || false;
+
+    if (!window.__pageSizeListenerAdded) {
+        document.addEventListener('htmx:configRequest', (event) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const triggeringElt = event.detail.elt;
+
+            if (triggeringElt && triggeringElt.matches('[name="pageSize"]')) {
+                // Remove old pageSize, it'll be replaced by new selection
+                urlParams.delete('pageSize');
+
+                // Include the newly selected pageSize explicitly
+                urlParams.set('pageSize', triggeringElt.value);
+
+                // Set parameters explicitly on the request URL
+                event.detail.parameters = {};
+                urlParams.forEach((value, key) => {
+                    event.detail.parameters[key] = value;
+                });
+            }
+        });
+
+        window.__pageSizeListenerAdded = true;
+    }
+</script>
+}
