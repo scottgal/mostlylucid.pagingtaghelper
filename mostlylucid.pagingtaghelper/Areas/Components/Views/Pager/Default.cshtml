@@ -1,36 +1,12 @@
-﻿@using mostlylucid.pagingtaghelper.Models
+﻿@using mostlylucid.pagingtaghelper.Extensions
 @model mostlylucid.pagingtaghelper.Models.PagerViewModel
 @{
     var totalPages = Model.TotalPages;
 
-    string GetUrl(int page)
-    {
-        var href = $"{Model.LinkUrl}?page={page}&pageSize={Model.PageSize}";
-        if (Model.Model is IPagingSearchModel searchModel && !string.IsNullOrEmpty(searchModel.SearchTerm))
-        {
-            href+= $"&search={searchModel.SearchTerm}";
-        }
-        if(!string.IsNullOrEmpty(Model.SearchTerm )) href += $"&search={Model.SearchTerm}";
-        if(Model.Model is IOrderableBasePagerModel orderableModel)
-        {
-            href += $"&orderBy={orderableModel.OrderBy}";
-            href += $"&descending={orderableModel.Descending}";
-        }
-        else
-        {
-            if(Model.Descending != null) href += $"&descending={Model.Descending}";
-            if(Model.OrderBy != null) href += $"&orderBy={Model.OrderBy}";
-        }
-      
-        
+    string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
 
-        return href;
 
-    }
 }
-
-
-
 @if (totalPages > 1)
 {
     <div class="@Model.CssClass flex items-center gap-2 justify-center pager-container">

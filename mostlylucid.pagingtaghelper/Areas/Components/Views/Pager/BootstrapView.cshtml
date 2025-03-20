@@ -1,6 +1,8 @@
-﻿@model mostlylucid.pagingtaghelper.Models.PagerViewModel
+﻿@using mostlylucid.pagingtaghelper.Extensions
+@model mostlylucid.pagingtaghelper.Models.PagerViewModel
 @{
     var totalPages = Model.TotalPages;
+    string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
 }
 
 @if (totalPages > 1)

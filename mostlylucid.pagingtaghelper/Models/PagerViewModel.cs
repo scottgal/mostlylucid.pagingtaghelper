@@ -51,10 +51,7 @@ public class PagerViewModel
     public int StartPage => Math.Max(1, Page - 2);
     public int EndPage => Math.Min(TotalPages, Page + 2);
 
-    public string GetPageUrl(int page)
-    {
-        return $"{LinkUrl}?page={page}&pageSize={PageSize}";
-    }
+
     
     public List<int> PageSizes => CalculatePageSizes();
 
