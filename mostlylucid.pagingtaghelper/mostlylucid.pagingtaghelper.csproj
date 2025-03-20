@@ -62,11 +62,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Remove="CSS/PlainView.css"/>
         <EmbeddedResource Include="CSS/PlainView.css">
             <LogicalName>PlainViewCSS</LogicalName>
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
+        <EmbeddedResource Remove="CSS/PlainViewMin.css"/>
         <EmbeddedResource Include="CSS/PlainViewMin.css">
             <LogicalName>PlainViewMinCSS</LogicalName>
         </EmbeddedResource>
