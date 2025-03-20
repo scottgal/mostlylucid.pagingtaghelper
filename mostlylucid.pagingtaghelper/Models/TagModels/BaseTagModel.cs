@@ -2,7 +2,12 @@
 
 public abstract class BaseTagModel
 {
-    public List<int> PageSizes => CalculatePageSizes();
+    private List<int>? _oageSizes;
+
+    public List<int> PageSizes
+    {
+        get { return _oageSizes ??= CalculatePageSizes(); }
+    }
 
     public IPagingModel? Model { get; set; }
 
@@ -37,10 +42,10 @@ public abstract class BaseTagModel
                     if (next < TotalItems) pageSizes.Add(next);
                 }
 
-                if (!pageSizes.Contains(TotalItems)) pageSizes.Add(TotalItems);
+              
             }
-
             if (!pageSizes.Contains(TotalItems)) pageSizes.Add(TotalItems);
+            
         
 
         return pageSizes;

@@ -1,29 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.body.addEventListener("change", function (event) {
-        const selectElement = event.target.closest(".pager-container select[name='pageSize']");
+        const selectElement = event.target.closest(".page-size-container select[name='pageSize']");
         if (!selectElement) return;
 
-        const pagerContainer = selectElement.closest(".pager-container");
+        const pagerContainer = selectElement.closest(".page-size-container");
         const useHtmxInput = pagerContainer.querySelector("input.useHtmx");
         const useHtmx = useHtmxInput ? useHtmxInput.value === "true" : true; // default to true
 
         if (!useHtmx) {
-            const pageInput = pagerContainer.querySelector("[name='page']");
-            const searchInput = pagerContainer.querySelector("[name='search']");
-
-            const page = pageInput ? pageInput.value : "1";
-            const search = searchInput ? searchInput.value : "";
-            const pageSize = selectElement.value;
-            const linkUrl =  pagerContainer.querySelector("input.linkUrl").value ?? "";
-            
+            const linkUrl = pagerContainer.querySelector("input.linkUrl")?.value || window.location.href;
             const url = new URL(linkUrl, window.location.origin);
-            url.searchParams.set("page", page);
-            url.searchParams.set("pageSize", pageSize);
+            // Preserve all existing query parameters
+            const currentParams = new URLSearchParams(window.location.search);
 
-            if (search) {
-                url.searchParams.set("search", search);
-            }
-
+           
+            // Ensure all other parameters from the current query string are included
+            currentParams.forEach((value, key) => {
+                    url.searchParams.set(key, value);
+                
+            });
+            url.searchParams.delete("pageSize");
+            url.searchParams.set("pageSize", selectElement.value);
             window.location.href = url.toString();
         }
     });

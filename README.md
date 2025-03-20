@@ -19,6 +19,8 @@ You can view the source for the sample site here: https://github.com/scottgal/mo
 
 Aditionally you can follow along with any articles on my [blog site here](https://www.mostlylucid.net/blog/category/PagingTagHelper).
 
+# Paging Tag Helper
+
 - [Basic use without HTMX](https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Views/Home/BasicWithModel.cshtml) - this sample shoows the very basic usage of the tag helper. It disables HTMX  using the `use-htmx` property set to false.
 ```html
 <paging model="Model"
@@ -54,147 +56,158 @@ These are the required fields and can either be supplied individually to the Tag
 
 The configuration on the TagHelper is as follows. As you can see it has many options, each of which I'll add to the sample (takes some time!).
 
+## `PagerTagHelper` Properties
 
+The `PagerTagHelper` provides various attributes to customize the pagination component. Below is a detailed list of each property and its purpose.
 
-```csharp
-    /// <summary>
-    /// The paging model containing the pagination details (OPTIONAL).
-    /// </summary>
-    [HtmlAttributeName("model")]
-    public IPagingModel? Model { get; set; }
+### General Properties
 
-    /// <summary>
-    /// Whether to enable HTMX use for the pagesize component. Defaults to true.
-    /// </summary>
-    [HtmlAttributeName("use-htmx")] public bool UseHtmx { get; set; } = true;
-    /// <summary>
-    /// Optionally pass in an id for the pager component.
-    /// </summary>
-    [HtmlAttributeName("id")]
-    public string? PagerId { get; set; }
+- **`model`** (optional)
+  - Type: `IPagingModel?`
+  - Description: The paging model containing the pagination details.
 
-    /// <summary>
-    /// The view model for the pager component (OPTIONAL).
-    /// </summary>
-    [HtmlAttributeName("pagingmodel")]
-    public PagerViewModel? PagerModel { get; set; } = null;
+- **`pagingmodel`** (optional)
+  - Type: `PagerViewModel?`
+  - Description: The view model for the pager component.
 
-    /// <summary>
-    /// Determines whether the page size selection is shown.
-    /// </summary>
-    [HtmlAttributeName("show-pagesize")]
-    public bool ShowPageSize { get; set; } = true;
-    
-    /// <summary>
-    /// The search term used in pagination filtering.
-    /// </summary>
-    [HtmlAttributeName("search-term")]
-    public string? SearchTerm { get; set; }
-    
-    /// <summary>
-    /// The base URL for pagination links.
-    /// </summary>
-    [HtmlAttributeName("link-url")]
-    public string? LinkUrl { get; set; }
+- **`id`**
+  - Type: `string?`
+  - Description: Optionally pass in an ID for the pager component.
 
-    /// <summary>
-    /// The current page number.
-    /// </summary>
-    [HtmlAttributeName("page")]
-    public int? Page { get; set; }
+- **`view-type`**
+  - Type: `ViewType`
+  - Default: `ViewType.TailwindANdDaisy`
+  - Description: Defines the type of view to be used for rendering the pager.
 
-    /// <summary>
-    /// The number of items per page.
-    /// </summary>
-    [HtmlAttributeName("page-size")]
-    public int? PageSize { get; set; }
-    
-    /// <summary>
-    /// Sets the view to use the local view or to use the taghelper view.
-    /// </summary>
+- **`use-local-view`**
+  - Type: `bool`
+  - Default: `false`
+  - Description: Determines whether the local view is used instead of the tag helper view.
 
-    [HtmlAttributeName("use-local-view")]
-    public bool UseLocalView { get; set; } = false;
-    
-    /// <summary>
-    /// The total number of items in the pagination set.
-    /// </summary>
-    [HtmlAttributeName("total-items")]
-    public int? TotalItems { get; set; }
+### Pagination Behavior
 
-    /// <summary>
-    /// The number of pages to display in the pager navigation.
-    /// </summary>
-    [HtmlAttributeName("pages-to-display")]
-    public int PagesToDisplay { get; set; } = 5;
+- **`page`**
+  - Type: `int?`
+  - Description: The current page number.
 
-    /// <summary>
-    /// The CSS class applied to the pager container.
-    /// </summary>
-    [HtmlAttributeName("css-class")]
-    public string CssClass { get; set; } = "btn-group";
+- **`page-size`**
+  - Type: `int?`
+  - Description: The number of items per page.
 
-    /// <summary>
-    /// Text for the first page navigation link.
-    /// </summary>
-    [HtmlAttributeName("first-page-text")]
-    public string FirstPageText { get; set; } = "«";
+- **`total-items`**
+  - Type: `int?`
+  - Description: The total number of items in the pagination set.
 
-    /// <summary>
-    /// Text for the previous page navigation link.
-    /// </summary>
-    [HtmlAttributeName("previous-page-text")]
-    public string PreviousPageText { get; set; } = "‹ Previous";
+- **`pages-to-display`**
+  - Type: `int`
+  - Default: `5`
+  - Description: The number of pages to display in the pager navigation.
 
-    /// <summary>
-    /// Text for skipping backward in pagination.
-    /// </summary>
-    [HtmlAttributeName("skip-back-text")]
-    public string SkipBackText { get; set; } = "..";
+- **`show-pagesize`**
+  - Type: `bool`
+  - Default: `true`
+  - Description: Determines whether the page size selection is shown.
 
-    /// <summary>
-    /// Text for skipping forward in pagination.
-    /// </summary>
-    [HtmlAttributeName("skip-forward-text")]
-    public string SkipForwardText { get; set; } = "..";
+- **`show-summary`**
+  - Type: `bool`
+  - Default: `true`
+  - Description: Determines whether a summary is displayed.
 
-    /// <summary>
-    /// Text for the next page navigation link.
-    /// </summary>
-    [HtmlAttributeName("next-page-text")]
-    public string NextPageText { get; set; } = "Next ›";
+### Navigation Links
 
-    /// <summary>
-    /// ARIA label for the next page navigation link.
-    /// </summary>
-    [HtmlAttributeName("next-page-aria-label")]
-    public string NextPageAriaLabel { get; set; } = "go to next page";
+- **`first-page-text`**
+  - Type: `string`
+  - Default: `«`
+  - Description: Text for the first page navigation link.
 
-    /// <summary>
-    /// Text for the last page navigation link.
-    /// </summary>
-    [HtmlAttributeName("last-page-text")]
-    public string LastPageText { get; set; } = "»";
+- **`previous-page-text`**
+  - Type: `string`
+  - Default: `‹ Previous`
+  - Description: Text for the previous page navigation link.
 
-    /// <summary>
-    /// Indicates whether first and last page navigation links should be displayed.
-    /// </summary>
-    [HtmlAttributeName("first-last-navigation")]
-    public bool FirstLastNavigation { get; set; } = true;
+- **`skip-back-text`**
+  - Type: `string`
+  - Default: `..`
+  - Description: Text for skipping backward in pagination.
 
-    /// <summary>
-    /// Indicates whether skip forward/backward navigation should be enabled.
-    /// </summary>
-    [HtmlAttributeName("skip-forward-back-navigation")]
-    public bool SkipForwardBackNavigation { get; set; } = true;
+- **`skip-forward-text`**
+  - Type: `string`
+  - Default: `..`
+  - Description: Text for skipping forward in pagination.
 
-    /// <summary>
-    /// Specifies the HTMX target for AJAX-based pagination.
-    /// </summary>
-    [HtmlAttributeName("htmx-target")]
-    public string HtmxTarget { get; set; } = "";
+- **`next-page-text`**
+  - Type: `string`
+  - Default: `Next ›`
+  - Description: Text for the next page navigation link.
 
-```
+- **`next-page-aria-label`**
+  - Type: `string`
+  - Default: `go to next page`
+  - Description: ARIA label for the next page navigation link.
+
+- **`last-page-text`**
+  - Type: `string`
+  - Default: `»`
+  - Description: Text for the last page navigation link.
+
+- **`first-last-navigation`**
+  - Type: `bool`
+  - Default: `true`
+  - Description: Indicates whether first and last page navigation links should be displayed.
+
+- **`skip-forward-back-navigation`**
+  - Type: `bool`
+  - Default: `true`
+  - Description: Indicates whether skip forward/backward navigation should be enabled.
+
+### Styling & Customization
+
+- **`css-class`**
+  - Type: `string`
+  - Default: `btn-group`
+  - Description: The CSS class applied to the pager container.
+
+### Search & Sorting
+
+- **`search-term`**
+  - Type: `string?`
+  - Description: The search term used in pagination filtering.
+
+- **`order-by`**
+  - Type: `string?`
+  - Description: The column name to order by.
+
+- **`descending`**
+  - Type: `bool?`
+  - Description: Determines if sorting should be descending.
+
+### HTMX Integration
+
+- **`use-htmx`**
+  - Type: `bool`
+  - Default: `true`
+  - Description: Whether to enable HTMX use for the pagesize component.
+
+- **`htmx-target`**
+  - Type: `string`
+  - Default: `""`
+  - Description: Specifies the HTMX target for AJAX-based pagination.
+
+### Internal Processing
+
+- **`link-url`**
+  - Type: `string?`
+  - Description: The base URL for pagination links.
+
+- **`ViewContext`**
+  - Type: `ViewContext`
+  - Description: The current view context, automatically injected.
+
+---
+
+This `PagerTagHelper` allows for flexible pagination and supports different UI frameworks through the `view-type` property. It integrates with HTMX for enhanced AJAX navigation while providing various customization options for navigation text, styling, and sorting.
+
+---
 
 This defines all the configuration options for the tag helper.
 
@@ -272,159 +285,9 @@ This is handled within the `PagerViewComponent` which is used to render the page
             var result = ViewEngine.FindView(ViewContext, viewName, false);
             return result.Success;
         }
+
+       
 ```
-## `PagerTagHelper` Properties
-
-The `PagerTagHelper` provides various attributes to customize the pagination component. Below is a detailed list of each property and its purpose.
-
-### General Properties
-
-- **`model`** (optional)
-    - Type: `IPagingModel?`
-    - Description: The paging model containing the pagination details.
-
-- **`pagingmodel`** (optional)
-    - Type: `PagerViewModel?`
-    - Description: The view model for the pager component.
-
-- **`id`**
-    - Type: `string?`
-    - Description: Optionally pass in an ID for the pager component.
-
-- **`view-type`**
-    - Type: `ViewType`
-    - Default: `ViewType.TailwindANdDaisy`
-    - Description: Defines the type of view to be used for rendering the pager.
-
-- **`use-local-view`**
-    - Type: `bool`
-    - Default: `false`
-    - Description: Determines whether the local view is used instead of the tag helper view.
-
-### Pagination Behavior
-
-- **`page`**
-    - Type: `int?`
-    - Description: The current page number.
-
-- **`page-size`**
-    - Type: `int?`
-    - Description: The number of items per page.
-
-- **`total-items`**
-    - Type: `int?`
-    - Description: The total number of items in the pagination set.
-
-- **`pages-to-display`**
-    - Type: `int`
-    - Default: `5`
-    - Description: The number of pages to display in the pager navigation.
-
-- **`show-pagesize`**
-    - Type: `bool`
-    - Default: `true`
-    - Description: Determines whether the page size selection is shown.
-
-- **`show-summary`**
-    - Type: `bool`
-    - Default: `true`
-    - Description: Determines whether a summary is displayed.
-
-### Navigation Links
-
-- **`first-page-text`**
-    - Type: `string`
-    - Default: `«`
-    - Description: Text for the first page navigation link.
-
-- **`previous-page-text`**
-    - Type: `string`
-    - Default: `‹ Previous`
-    - Description: Text for the previous page navigation link.
-
-- **`skip-back-text`**
-    - Type: `string`
-    - Default: `..`
-    - Description: Text for skipping backward in pagination.
-
-- **`skip-forward-text`**
-    - Type: `string`
-    - Default: `..`
-    - Description: Text for skipping forward in pagination.
-
-- **`next-page-text`**
-    - Type: `string`
-    - Default: `Next ›`
-    - Description: Text for the next page navigation link.
-
-- **`next-page-aria-label`**
-    - Type: `string`
-    - Default: `go to next page`
-    - Description: ARIA label for the next page navigation link.
-
-- **`last-page-text`**
-    - Type: `string`
-    - Default: `»`
-    - Description: Text for the last page navigation link.
-
-- **`first-last-navigation`**
-    - Type: `bool`
-    - Default: `true`
-    - Description: Indicates whether first and last page navigation links should be displayed.
-
-- **`skip-forward-back-navigation`**
-    - Type: `bool`
-    - Default: `true`
-    - Description: Indicates whether skip forward/backward navigation should be enabled.
-
-### Styling & Customization
-
-- **`css-class`**
-    - Type: `string`
-    - Default: `btn-group`
-    - Description: The CSS class applied to the pager container.
-
-### Search & Sorting
-
-- **`search-term`**
-    - Type: `string?`
-    - Description: The search term used in pagination filtering.
-
-- **`order-by`**
-    - Type: `string?`
-    - Description: The column name to order by.
-
-- **`descending`**
-    - Type: `bool?`
-    - Description: Determines if sorting should be descending.
-
-### HTMX Integration
-
-- **`use-htmx`**
-    - Type: `bool`
-    - Default: `true`
-    - Description: Whether to enable HTMX use for the pagesize component.
-
-- **`htmx-target`**
-    - Type: `string`
-    - Default: `""`
-    - Description: Specifies the HTMX target for AJAX-based pagination.
-
-### Internal Processing
-
-- **`link-url`**
-    - Type: `string?`
-    - Description: The base URL for pagination links.
-
-- **`ViewContext`**
-    - Type: `ViewContext`
-    - Description: The current view context, automatically injected.
-
----
-
-This `PagerTagHelper` allows for flexible pagination and supports different UI frameworks through the `view-type` property. It integrates with HTMX for enhanced AJAX navigation while providing various customization options for navigation text, styling, and sorting.
-
-
 
 # Flippy Header Tag Helper
 This adds a new taghelper which makes it easy to add a flippy header to your site. This is a simple tag helper that adds a header to your site that flips between two states.
@@ -448,6 +311,73 @@ You can see more detailed coverage of this 'bonus' tag helper [on my blog.](http
                              hx-push-url="true">Id</sortable-header>
 ```
 
+
+# Page Size Tag Helper
+This is a simple tag helper that adds a page size selector to your site. It's used internally within the Paging Tag Helper but can be used independently.
+
+```html
+<page-size 
+    model="Model"
+    view-type="TailwindANdDaisy"
+    use-htmx="true"
+    id="custom-pager"
+    page-size-model="CustomPageSizeModel"
+    search-term="searchQuery"
+    link-url="/search/results"
+    page="1"
+    page-size="25"
+    use-local-view="false"
+    total-items="500">
+</page-size>
+
+```
+
+As you can see it's closely related to the Paging Tag Helper and uses the same `PagerViewModel` to render the page size selector (actually it can also take the new
+
+```csharp
+public abstract class BaseTagModel
+{
+    private List<int>? _oageSizes;
+
+    public List<int> PageSizes
+    {
+        get { return _oageSizes ??= CalculatePageSizes(); }
+    }
+
+    public IPagingModel? Model { get; set; }
+
+    public int TotalPages => (int)Math.Ceiling(TotalItems! / (double)PageSize!);
+    public ViewType ViewType { get; set; } // ViewType.TailwindANdDaisy / ViewType.Bootstrap / ViewType.Plain / ViewType.Custom
+    public bool UseLocalView { get; set; } = false; // Use a local view instead of the default views
+    public string? PagerId { get; set; } // Optional local ID for the pager
+
+    public string? SearchTerm { get; set; } // Lets you pass in a search term (not REALLY necessary as it now auto-populates from the model / querystring)
+    public int PageSize { get; set; } // The current page size either passed in in the model or set here
+
+    public int TotalItems { get; set; } // The total number of items in the set either passed in in the model or set here
+    public int Page { get; set; } // The current page number either passed in in the model or set here (or populated from the querystring)
+ }
+public class PageSizeModel : BaseTagModel
+{
+    public bool UseHtmx { get; set; } = true; // Use HTMX to handle the form submission if NOT You MUST Set hx-target 
+    public string? LinkUrl { get; set; } // Optional link URL for the page size selector, defaults to the current page
+}
+```
+By default the simplest way to use this is to pass in the `PagerViewModel`
+
+NOTE: If you're using HTMX you need to set the hx-target property to the ID of the element you want to update. This is handled by the tag helper. Otherwise it'll try and swap out itself to...bad results.
+```html
+<page-size 
+        hx-target="#list"
+        model="Model">
+</page-size>
+```
+
+It also has support for non-JS use using the `use-htmx="false"` property. In this case you can use the following JS snippet to handle the form submission.
+
+```csharp
+@Html.PageSizeOnchangeSnippet()
+```
 
 
 ## TBC

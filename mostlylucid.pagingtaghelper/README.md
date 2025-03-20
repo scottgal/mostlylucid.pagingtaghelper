@@ -19,6 +19,8 @@ You can view the source for the sample site here: https://github.com/scottgal/mo
 
 Aditionally you can follow along with any articles on my [blog site here](https://www.mostlylucid.net/blog/category/PagingTagHelper).
 
+# Paging Tag Helper
+
 - [Basic use without HTMX](https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Views/Home/BasicWithModel.cshtml) - this sample shoows the very basic usage of the tag helper. It disables HTMX  using the `use-htmx` property set to false.
 ```html
 <paging model="Model"
@@ -54,225 +56,6 @@ These are the required fields and can either be supplied individually to the Tag
 
 The configuration on the TagHelper is as follows. As you can see it has many options, each of which I'll add to the sample (takes some time!).
 
-
-
-```csharp
-    /// <summary>
-    /// The paging model containing the pagination details (OPTIONAL).
-    /// </summary>
-    [HtmlAttributeName("model")]
-    public IPagingModel? Model { get; set; }
-
-    /// <summary>
-    /// Whether to enable HTMX use for the pagesize component. Defaults to true.
-    /// </summary>
-    [HtmlAttributeName("use-htmx")] public bool UseHtmx { get; set; } = true;
-    /// <summary>
-    /// Optionally pass in an id for the pager component.
-    /// </summary>
-    [HtmlAttributeName("id")]
-    public string? PagerId { get; set; }
-
-    /// <summary>
-    /// The view model for the pager component (OPTIONAL).
-    /// </summary>
-    [HtmlAttributeName("pagingmodel")]
-    public PagerViewModel? PagerModel { get; set; } = null;
-
-    /// <summary>
-    /// Determines whether the page size selection is shown.
-    /// </summary>
-    [HtmlAttributeName("show-pagesize")]
-    public bool ShowPageSize { get; set; } = true;
-    
-    /// <summary>
-    /// The search term used in pagination filtering.
-    /// </summary>
-    [HtmlAttributeName("search-term")]
-    public string? SearchTerm { get; set; }
-    
-    /// <summary>
-    /// The base URL for pagination links.
-    /// </summary>
-    [HtmlAttributeName("link-url")]
-    public string? LinkUrl { get; set; }
-
-    /// <summary>
-    /// The current page number.
-    /// </summary>
-    [HtmlAttributeName("page")]
-    public int? Page { get; set; }
-
-    /// <summary>
-    /// The number of items per page.
-    /// </summary>
-    [HtmlAttributeName("page-size")]
-    public int? PageSize { get; set; }
-    
-    /// <summary>
-    /// Sets the view to use the local view or to use the taghelper view.
-    /// </summary>
-
-    [HtmlAttributeName("use-local-view")]
-    public bool UseLocalView { get; set; } = false;
-    
-    /// <summary>
-    /// The total number of items in the pagination set.
-    /// </summary>
-    [HtmlAttributeName("total-items")]
-    public int? TotalItems { get; set; }
-
-    /// <summary>
-    /// The number of pages to display in the pager navigation.
-    /// </summary>
-    [HtmlAttributeName("pages-to-display")]
-    public int PagesToDisplay { get; set; } = 5;
-
-    /// <summary>
-    /// The CSS class applied to the pager container.
-    /// </summary>
-    [HtmlAttributeName("css-class")]
-    public string CssClass { get; set; } = "btn-group";
-
-    /// <summary>
-    /// Text for the first page navigation link.
-    /// </summary>
-    [HtmlAttributeName("first-page-text")]
-    public string FirstPageText { get; set; } = "«";
-
-    /// <summary>
-    /// Text for the previous page navigation link.
-    /// </summary>
-    [HtmlAttributeName("previous-page-text")]
-    public string PreviousPageText { get; set; } = "‹ Previous";
-
-    /// <summary>
-    /// Text for skipping backward in pagination.
-    /// </summary>
-    [HtmlAttributeName("skip-back-text")]
-    public string SkipBackText { get; set; } = "..";
-
-    /// <summary>
-    /// Text for skipping forward in pagination.
-    /// </summary>
-    [HtmlAttributeName("skip-forward-text")]
-    public string SkipForwardText { get; set; } = "..";
-
-    /// <summary>
-    /// Text for the next page navigation link.
-    /// </summary>
-    [HtmlAttributeName("next-page-text")]
-    public string NextPageText { get; set; } = "Next ›";
-
-    /// <summary>
-    /// ARIA label for the next page navigation link.
-    /// </summary>
-    [HtmlAttributeName("next-page-aria-label")]
-    public string NextPageAriaLabel { get; set; } = "go to next page";
-
-    /// <summary>
-    /// Text for the last page navigation link.
-    /// </summary>
-    [HtmlAttributeName("last-page-text")]
-    public string LastPageText { get; set; } = "»";
-
-    /// <summary>
-    /// Indicates whether first and last page navigation links should be displayed.
-    /// </summary>
-    [HtmlAttributeName("first-last-navigation")]
-    public bool FirstLastNavigation { get; set; } = true;
-
-    /// <summary>
-    /// Indicates whether skip forward/backward navigation should be enabled.
-    /// </summary>
-    [HtmlAttributeName("skip-forward-back-navigation")]
-    public bool SkipForwardBackNavigation { get; set; } = true;
-
-    /// <summary>
-    /// Specifies the HTMX target for AJAX-based pagination.
-    /// </summary>
-    [HtmlAttributeName("htmx-target")]
-    public string HtmxTarget { get; set; } = "";
-
-```
-
-This defines all the configuration options for the tag helper.
-
-NOTE: As it stands this site uses DaisyUI with TailwindCSS; later I'll document how to use it with any CSS framework.
-
-For Tailwind & DaisyUI I also add a piece of HTML to the _layout.cshtml file provide a hint to the tailwind processor for required classes.
-
-```html
-<!-- Dummy Hidden Span to Preserve Tailwind Classes -->
-<span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm
-        text-sm text-gray-600 text-neutral-500 border rounded flex items-center
-        justify-center min-w-[80px] pr-4 pt-0 mt-0 mr-2 btn-primary btn-outline
-bg-white text-black
-        dark:bg-blue-500 dark:border-blue-400 dark:text-white dark:hover:bg-blue-600 
-        dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700
-        dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap">
-</span>
-
-
-```
-
-- Use with HTMX - this sample shows how to use the tag helper with HTMX. It uses the same `PagerViewModel` as the basic sample but with the `UseHtmx` property set to `true`.
-
-```html
-<paging hx-boost="true"
-        class="mt-4"
-        hx-indicator="#loading-modal"
-        hx-target="#list"
-        hx-swap="show:none"
-        hx-headers='{"pagerequest": "true"}'
-        model="@Model">
-</paging>
-
-```
-
-The tag helper is designed to preserve the `hx` attributes and these cascade into the tag helper. The form submission is then handled using HTMX.
-
-As I designed this to be HTMX by default you only need to specify `ust-htmx="false"` if you AREN'T using HTMX. In that case you can use the Page Size JS snipept to handle the page size selector submission.
-
-```csharp
-@Html.PageSizeOnchangeSnippet()
-```
-
-Additionally you can select from multiple Views using the `ViewType` property, set using the ViewType attribute `view-type="Custom"`.
-
-
-```csharp
-    public ViewType ViewType { get; set; } = Models.ViewType.TailwindANdDaisy;
-  ```
-
-When set to Custom you are able to pass in the view name using the `UseLocalView` property / `"use-local-view="\ViewPath.cshtml"`. property.
-
-This is handled within the `PagerViewComponent` which is used to render the pager. This is a ViewComponent that is used to render the pager. It uses the `PagerViewModel` to render the pager.
-
-```csharp
-        var viewName = "Components/Pager/Default";
-
-            var useLocalView = model.UseLocalView;
-
-            return (useLocalView, model.ViewType) switch
-            {
-                (true, ViewType.Custom) when ViewExists(viewName) => View(viewName, model),
-                (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
-                (false, ViewType.Bootstrap) => View("/Areas/Components/Views/Pager/BootstrapView.cshtml", model),
-                (false, ViewType.Plain) => View("/Areas/Components/Views/Pager/PlainView.cshtml", model),
-                (false, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/Pager/Default.cshtml", model),
-                _ => View("/Areas/Components/Views/Pager/Default.cshtml", model)
-            };
-            
-         /// <summary>
-        /// Checks if a view exists in the consuming application.
-        /// </summary>
-        private bool ViewExists(string viewName)
-        {
-            var result = ViewEngine.FindView(ViewContext, viewName, false);
-            return result.Success;
-        }
-```
 ## `PagerTagHelper` Properties
 
 The `PagerTagHelper` provides various attributes to customize the pagination component. Below is a detailed list of each property and its purpose.
@@ -424,7 +207,87 @@ The `PagerTagHelper` provides various attributes to customize the pagination com
 
 This `PagerTagHelper` allows for flexible pagination and supports different UI frameworks through the `view-type` property. It integrates with HTMX for enhanced AJAX navigation while providing various customization options for navigation text, styling, and sorting.
 
+---
 
+This defines all the configuration options for the tag helper.
+
+NOTE: As it stands this site uses DaisyUI with TailwindCSS; later I'll document how to use it with any CSS framework.
+
+For Tailwind & DaisyUI I also add a piece of HTML to the _layout.cshtml file provide a hint to the tailwind processor for required classes.
+
+```html
+<!-- Dummy Hidden Span to Preserve Tailwind Classes -->
+<span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm
+        text-sm text-gray-600 text-neutral-500 border rounded flex items-center
+        justify-center min-w-[80px] pr-4 pt-0 mt-0 mr-2 btn-primary btn-outline
+bg-white text-black
+        dark:bg-blue-500 dark:border-blue-400 dark:text-white dark:hover:bg-blue-600 
+        dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700
+        dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap">
+</span>
+
+
+```
+
+- Use with HTMX - this sample shows how to use the tag helper with HTMX. It uses the same `PagerViewModel` as the basic sample but with the `UseHtmx` property set to `true`.
+
+```html
+<paging hx-boost="true"
+        class="mt-4"
+        hx-indicator="#loading-modal"
+        hx-target="#list"
+        hx-swap="show:none"
+        hx-headers='{"pagerequest": "true"}'
+        model="@Model">
+</paging>
+
+```
+
+The tag helper is designed to preserve the `hx` attributes and these cascade into the tag helper. The form submission is then handled using HTMX.
+
+As I designed this to be HTMX by default you only need to specify `ust-htmx="false"` if you AREN'T using HTMX. In that case you can use the Page Size JS snipept to handle the page size selector submission.
+
+```csharp
+@Html.PageSizeOnchangeSnippet()
+```
+
+Additionally you can select from multiple Views using the `ViewType` property, set using the ViewType attribute `view-type="Custom"`.
+
+
+```csharp
+    public ViewType ViewType { get; set; } = Models.ViewType.TailwindANdDaisy;
+  ```
+
+When set to Custom you are able to pass in the view name using the `UseLocalView` property / `"use-local-view="\ViewPath.cshtml"`. property.
+
+This is handled within the `PagerViewComponent` which is used to render the pager. This is a ViewComponent that is used to render the pager. It uses the `PagerViewModel` to render the pager.
+
+```csharp
+        var viewName = "Components/Pager/Default";
+
+            var useLocalView = model.UseLocalView;
+
+            return (useLocalView, model.ViewType) switch
+            {
+                (true, ViewType.Custom) when ViewExists(viewName) => View(viewName, model),
+                (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
+                (false, ViewType.Bootstrap) => View("/Areas/Components/Views/Pager/BootstrapView.cshtml", model),
+                (false, ViewType.Plain) => View("/Areas/Components/Views/Pager/PlainView.cshtml", model),
+                (false, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/Pager/Default.cshtml", model),
+                _ => View("/Areas/Components/Views/Pager/Default.cshtml", model)
+            };
+            
+         /// <summary>
+        /// Checks if a view exists in the consuming application.
+        /// </summary>
+        private bool ViewExists(string viewName)
+        {
+            var result = ViewEngine.FindView(ViewContext, viewName, false);
+            return result.Success;
+        }
+
+       
+```
 
 # Flippy Header Tag Helper
 This adds a new taghelper which makes it easy to add a flippy header to your site. This is a simple tag helper that adds a header to your site that flips between two states.
@@ -434,20 +297,87 @@ You can see more detailed coverage of this 'bonus' tag helper [on my blog.](http
 
 ```html
         <sortable-header column="Id"
-                         current-order-by="@Model.OrderBy"
-                         descending="@Model.Descending"
-                         hx-get
-                         hx-route-pagesize="@Model.PageSize"
-                         hx-route-page="@Model.Page"
-                         hx-route-search="@Model.SearchTerm"
-                         hx-controller="ServiceBus"
-                         hx-action="List"
-                         hx-params="*"
-                         hx-indicator="#loading-modal"
-                         hx-target="#servicebus-list"
-                         hx-push-url="true">Id</sortable-header>
+                             current-order-by="@Model.OrderBy"
+                             descending="@Model.Descending"
+                             hx-get
+                             hx-route-pagesize="@Model.PageSize"
+                             hx-route-page="@Model.Page"
+                             hx-route-search="@Model.SearchTerm"
+                             hx-controller="ServiceBus"
+                             hx-action="List"
+                             hx-params="*"
+                             hx-indicator="#loading-modal"
+                             hx-target="#servicebus-list"
+                             hx-push-url="true">Id</sortable-header>
 ```
 
+
+# Page Size Tag Helper
+This is a simple tag helper that adds a page size selector to your site. It's used internally within the Paging Tag Helper but can be used independently.
+
+```html
+<page-size 
+    model="Model"
+    view-type="TailwindANdDaisy"
+    use-htmx="true"
+    id="custom-pager"
+    page-size-model="CustomPageSizeModel"
+    search-term="searchQuery"
+    link-url="/search/results"
+    page="1"
+    page-size="25"
+    use-local-view="false"
+    total-items="500">
+</page-size>
+
+```
+
+As you can see it's closely related to the Paging Tag Helper and uses the same `PagerViewModel` to render the page size selector (actually it can also take the new 
+
+```csharp
+public abstract class BaseTagModel
+{
+    private List<int>? _oageSizes;
+
+    public List<int> PageSizes
+    {
+        get { return _oageSizes ??= CalculatePageSizes(); }
+    }
+
+    public IPagingModel? Model { get; set; }
+
+    public int TotalPages => (int)Math.Ceiling(TotalItems! / (double)PageSize!);
+    public ViewType ViewType { get; set; } // ViewType.TailwindANdDaisy / ViewType.Bootstrap / ViewType.Plain / ViewType.Custom
+    public bool UseLocalView { get; set; } = false; // Use a local view instead of the default views
+    public string? PagerId { get; set; } // Optional local ID for the pager
+
+    public string? SearchTerm { get; set; } // Lets you pass in a search term (not REALLY necessary as it now auto-populates from the model / querystring)
+    public int PageSize { get; set; } // The current page size either passed in in the model or set here
+
+    public int TotalItems { get; set; } // The total number of items in the set either passed in in the model or set here
+    public int Page { get; set; } // The current page number either passed in in the model or set here (or populated from the querystring)
+ }
+public class PageSizeModel : BaseTagModel
+{
+    public bool UseHtmx { get; set; } = true; // Use HTMX to handle the form submission if NOT You MUST Set hx-target 
+    public string? LinkUrl { get; set; } // Optional link URL for the page size selector, defaults to the current page
+}
+```
+By default the simplest way to use this is to pass in the `PagerViewModel`
+
+NOTE: If you're using HTMX you need to set the hx-target property to the ID of the element you want to update. This is handled by the tag helper. Otherwise it'll try and swap out itself to...bad results.
+```html
+<page-size 
+        hx-target="#list"
+        model="Model">
+</page-size>
+```
+
+It also has support for non-JS use using the `use-htmx="false"` property. In this case you can use the following JS snippet to handle the form submission.
+
+```csharp
+@Html.PageSizeOnchangeSnippet()
+```
 
 
 ## TBC

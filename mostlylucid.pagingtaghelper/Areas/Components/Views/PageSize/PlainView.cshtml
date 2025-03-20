@@ -1,39 +1,28 @@
 ﻿@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
 @{
     var pagerId = Model.PagerId;
-    var htmxAttributes = Model.UseHtmx
-        ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search'] "
-        : "";
+    
+    var htmxAttributes = "";
 
-    <input type="hidden" name="page" value="@Model.Page"/>
-    <input type="hidden" name="search" value="@Model.SearchTerm"/>
-    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
-
-    if (!Model.UseHtmx)
+    if (Model.UseHtmx)
     {
-
-        <input type="hidden" class="linkUrl" value="@Model.LinkUrl"/>
-    }
-    else
-    {
-
+        htmxAttributes = $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\"";
+        
         var queryKeys = Context.Request.Query.Keys;
         foreach (var key in queryKeys)
         {
-            if (key != "page" && key != "pageSize" && key != "search")
-            {
-                <input type="hidden" name="@key" value="@Context.Request.Query[key]"/>
-
-                htmxAttributes += $",#{pagerId} [name='{key}']";
-            }
+              
+            htmxAttributes += $",#{pagerId} [name='{key}']";
         }
-
-        htmxAttributes += "\" hx-push-url=\"true\"";
-
+        htmxAttributes += " hx-push-url=\"true\"";
+    }
+    else
+    {
+        <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-
 <div class="page-size-container">
+    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
     <label for="pageSize-@pagerId">Page size:</label>
     <select id="pageSize-@pagerId" name="pageSize" @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)

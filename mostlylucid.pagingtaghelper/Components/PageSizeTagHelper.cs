@@ -43,6 +43,7 @@ public class PageSizeTagHelper : TagHelper
 
     [HtmlAttributeName("use-local-view")]
     public bool UseLocalView { get; set; } = false;
+    
 
     [HtmlAttributeName("total-items")]
     public int? TotalItems { get; set; }
@@ -79,7 +80,7 @@ public class PageSizeTagHelper : TagHelper
             SearchTerm = searchModel?.SearchTerm ?? SearchTerm ?? "";
 
         output.Attributes.SetAttribute("id", pagerId);
-
+        
         // Get ViewComponentHelper
         var viewComponentHelper = ViewContext.HttpContext.RequestServices
             .GetRequiredService<IViewComponentHelper>();

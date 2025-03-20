@@ -1,3 +1,4 @@
+/* Pager Container */
 .pager-container {
     display: flex;
     align-items: center;
@@ -7,31 +8,23 @@
     margin-top: 16px;
 }
 
-.page-size-container {
-    display: flex;
-    align-items: center;
-}
-
-.page-size-container label {
-    color: #333;
-}
-
-.page-size-container select {
-    background-color: white;
-    color: #333;
-    border: 1px solid #ccc;
-}
-
+/* Pager Buttons */
 .pager-button {
     display: inline-block;
     padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
     color: #333;
     background-color: #fff;
     border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .pager-button:hover {
     background-color: #e9ecef;
+    border-color: #bbb;
 }
 
 .pager-button.active {
@@ -44,22 +37,72 @@
     background-color: #e9ecef;
     color: #6c757d;
     border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
+/* Pager Info */
 .pager-info {
-    color: #666;
+    font-size: 14px;
+    color: #333333;
 }
 
-/* Dark mode (class-based, matching Tailwind) */
+/* Page Size Selector */
+.page-size-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: white;
+}
 
-.dark .page-size-container label {
-    color: #ddd;
+/* Label */
+.page-size-container label {
+    font-weight: 500;
+    color: #333333;
+    font-size: 14px;
+}
+
+/* Dropdown */
+.page-size-container select {
+    appearance: none;
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    min-width: 80px;
+    outline: none;
+}
+
+
+.page-size-container select {
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
 .dark .page-size-container select {
-    background-color: #222;
-    color: #ddd;
-    border: 1px solid #555;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Dropdown Hover & Focus */
+.page-size-container select:hover {
+    background-color: #e9ecef;
+    border-color: #aaa;
+}
+
+.page-size-container select:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+/* Dark Mode Styles */
+.dark .pager-container {
+    background: transparent;
 }
 
 .dark .pager-button {
@@ -82,8 +125,49 @@
     background-color: #555;
     color: #777;
     border-color: #555;
+    opacity: 0.7;
 }
 
 .dark .pager-info {
-    color: #bbb;
+    font-size: 14px;
+    color: white;
+}
+
+/* Dark Mode - Page Size */
+.dark .page-size-container select {
+    background-color: #333;
+    color: #fff !important; /* Force white text */
+    border: 1px solid #555;
+}
+
+/* Ensure dropdown options are readable */
+.dark .page-size-container select option {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark .page-size-container label {
+    font-weight: 500;
+    color: white;
+    font-size: 14px;
+}
+/* Improve focus state */
+.dark .page-size-container select:focus {
+    border-color: #0d6efd;
+    background-color: #222;
+    box-shadow: 0 0 4px rgba(13, 110, 253, 0.5);
+}
+
+
+/* Mobile-Friendly Styles */
+@media (max-width: 600px) {
+    .page-size-container {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .pager-container {
+        flex-direction: column;
+        align-items: center;
+    }
 }

@@ -31,9 +31,12 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <None Remove="ReleaseNotes.txt" />
+        <EmbeddedResource Include="CSS\PlainView.css" />
         <Content Include="ReleaseNotes.txt">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <None Remove="CSS\PlainViewMin.css" />
+        <EmbeddedResource Include="CSS\PlainViewMin.css" />
     </ItemGroup>
 
     <ItemGroup>
@@ -59,14 +62,23 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="CSS/PlainView.css">
+            <LogicalName>PlainViewCSS</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="CSS/PlainViewMin.css">
+            <LogicalName>PlainViewMinCSS</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
       <AdditionalFiles Include="Areas\Components\Views\Pager\Default.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="JavaScript\PagsixeOnchange.js" />
       <EmbeddedResource Include="JavaScript\PagsizeOnchange.js" LogicalName="Pagesizeonchange" />
-      <None Remove="CSS\PlainView.css" />
-      <EmbeddedResource Include="CSS\PlainView.css" LogicalName="PlainCSS" />
+
     </ItemGroup>
 
 </Project>

@@ -15,7 +15,13 @@ public static class HtmlExtensions
     
     public static IHtmlContent PlainCSS(this IHtmlHelper helper)
     {
-        var css = MostlylucidSnippets.PlainCSS;
+        var css = MostlylucidSnippets.PlainViewCSS;
+        var script = helper.Raw($"<style>{css}</style>");
+        return script;
+    }
+    public static IHtmlContent PlainMinCSS(this IHtmlHelper helper)
+    {
+        var css = MostlylucidSnippets.PlainViewMinCSS;
         var script = helper.Raw($"<style>{css}</style>");
         return script;
     }

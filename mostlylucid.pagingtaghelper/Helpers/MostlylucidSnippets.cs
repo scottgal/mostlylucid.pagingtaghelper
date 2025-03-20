@@ -8,7 +8,8 @@ namespace mostlylucid.pagingtaghelper.Helpers;
             => GetString(nameof(Pagesizeonchange));
         
         
-        public static string PlainCSS => GetString(nameof(PlainCSS));
+        public static string PlainViewCSS => GetString(nameof(PlainViewCSS));
+        public static string PlainViewMinCSS => GetString(nameof(PlainViewMinCSS));
 
         private static string GetString(string name)
         {
