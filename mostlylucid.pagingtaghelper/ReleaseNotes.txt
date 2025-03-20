@@ -22,3 +22,5 @@ Fix to add an ability to return href plain when AutoAppend is set to false.
 Readme updates.
 0.7.0
 New functionality (in the Default Tailwind View) for preserving extra query parameters when paging.
+0.7.1
+Add preserve query string params to page size dropdown.
