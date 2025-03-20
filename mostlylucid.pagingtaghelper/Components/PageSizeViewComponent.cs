@@ -6,9 +6,9 @@ using mostlylucid.pagingtaghelper.Models.TagModels;
 namespace mostlylucid.pagingtaghelper.Components;
 
 
-public class PagerViewComponent : ViewComponent
+public class PageSizeViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(PagerViewModel model)
+        public IViewComponentResult Invoke(PageSizeModel model)
         {
             if(model.Model != null)
             {
@@ -31,10 +31,10 @@ public class PagerViewComponent : ViewComponent
             {
                 (true, ViewType.Custom) when ViewExists(viewName) => View(viewName, model),
                 (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
-                (false, ViewType.Bootstrap) => View("/Areas/Components/Views/Pager/BootstrapView.cshtml", model),
-                (false, ViewType.Plain) => View("/Areas/Components/Views/Pager/PlainView.cshtml", model),
-                (false, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/Pager/Default.cshtml", model),
-                _ => View("/Areas/Components/Views/Pager/Default.cshtml", model)
+                (false, ViewType.Bootstrap) => View("/Areas/Components/Views/PageSize/BootstrapView.cshtml", model),
+                (false, ViewType.Plain) => View("/Areas/Components/Views/PageSize/PlainView.cshtml", model),
+                (false, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/PageSize/Default.cshtml", model),
+                _ => View("/Areas/Components/Views/PageSize/Default.cshtml", model)
             };
 
             // If the view exists in the app, use it; otherwise, use the fallback RCL view

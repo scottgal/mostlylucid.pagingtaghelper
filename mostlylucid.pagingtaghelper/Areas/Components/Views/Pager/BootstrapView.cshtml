@@ -1,5 +1,6 @@
-﻿@using mostlylucid.pagingtaghelper.Extensions
-@model mostlylucid.pagingtaghelper.Models.PagerViewModel
+﻿@addTagHelper *, mostlylucid.pagingtaghelper
+@using mostlylucid.pagingtaghelper.Extensions
+@model mostlylucid.pagingtaghelper.Models.TagModels.PagerViewModel
 @{
     var totalPages = Model.TotalPages;
     string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
@@ -10,25 +11,7 @@
     <div class="d-flex flex-wrap align-items-center justify-content-center mt-3">
         @if (Model.ShowPageSize)
         {
-            var pagerId = Model.PagerId;
-            var htmxAttributes = Model.UseHtmx
-                ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search']\" hx-push-url=\"true\""
-                : "";
-
-            <input type="hidden" name="page" value="@Model.Page"/>
-            <input type="hidden" name="search" value="@Model.SearchTerm"/>
-            <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
-            if (!Model.UseHtmx) { <input type="hidden" class="linkUrl" value="@Model.LinkUrl"/> }
-
-            <div class="me-3">
-                <label for="pageSize-@pagerId" class="form-label me-2">Page size:</label>
-                <select id="pageSize-@pagerId" name="pageSize" class="form-select form-select-sm d-inline w-auto" @Html.Raw(htmxAttributes)>
-                    @foreach (var option in Model.PageSizes)
-                    {
-                        <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
-                    }
-                </select>
-            </div>
+            <page-size page-size-model="Model"></page-size>
         }
 
         <nav aria-label="Pagination">

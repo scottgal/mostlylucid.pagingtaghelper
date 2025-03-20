@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using mostlylucid.pagingtaghelper.Models;
+using mostlylucid.pagingtaghelper.Models.TagModels;
 
 namespace mostlylucid.pagingtaghelper.Components;
 

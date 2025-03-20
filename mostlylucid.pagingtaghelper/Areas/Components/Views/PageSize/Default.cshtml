@@ -1,0 +1,47 @@
+﻿@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
+
+@{
+    var pagerId = Model.PagerId;
+    var htmxAttributes = Model.UseHtmx
+        ? $"hx-get=\"{Model.LinkUrl}\" hx-trigger=\"change\" hx-include=\"#{pagerId} [name='page'], #{pagerId} [name='search'] "
+        : "";
+    <input type="hidden" name="page" value="@Model.Page"/>
+    <input type="hidden" name="search" value="@Model.SearchTerm"/>
+    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
+
+    if (!Model.UseHtmx)
+    {
+
+        <input type="hidden" class="linkUrl" value="@Model.LinkUrl"/>
+    }
+    else
+    {
+
+        var queryKeys = Context.Request.Query.Keys;
+        foreach (var key in queryKeys)
+        {
+            if (key != "page" && key != "pageSize" && key != "search")
+            {
+                <input type="hidden" name="@key" value="@Context.Request.Query[key]"/>
+
+                htmxAttributes += $",#{pagerId} [name='{key}']'";
+            }
+        }
+
+        htmxAttributes += "\" hx-push-url=\"true\"";
+
+    }
+}
+<div class="flex items-center">
+    <label for="pageSize-@pagerId" class="text-sm text-gray-600 dark:text-gray-300 mr-2 whitespace-nowrap">Page size:</label>
+    <select id="pageSize-@pagerId"
+            name="pageSize"
+            class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black
+                               dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            @Html.Raw(htmxAttributes)>
+        @foreach (var option in Model.PageSizes)
+        {
+            <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
+        }
+    </select>
+</div>
