@@ -24,3 +24,6 @@ Readme updates.
 New functionality (in the Default Tailwind View) for preserving extra query parameters when paging.
 0.7.1
 Add preserve query string params to page size dropdown.
+0.8.0-0.8.9
+Update PageSize to accept MaxPageSize, update query string logic to presrve query string params (client size). 
+Fix Table Sort to work properly with HTMX action links.

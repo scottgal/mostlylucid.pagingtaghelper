@@ -11,6 +11,9 @@ public abstract class BaseTagModel
 
     public IPagingModel? Model { get; set; }
 
+        
+    public int MaxPageSize { get; set; } = 100;
+    
     public int TotalPages => (int)Math.Ceiling(TotalItems! / (double)PageSize!);
     public ViewType ViewType { get; set; }
     public bool UseLocalView { get; set; } = false;
@@ -30,8 +33,12 @@ public abstract class BaseTagModel
             int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
 
             foreach (var step in fixedSteps)
-                if (step <= TotalItems)
+            {
+                
+         
+                if (step <= TotalItems && step<MaxPageSize)
                     pageSizes.Add(step);
+            }
 
             if (TotalItems > fixedSteps.Last())
             {
@@ -44,7 +51,7 @@ public abstract class BaseTagModel
 
               
             }
-            if (!pageSizes.Contains(TotalItems)) pageSizes.Add(TotalItems);
+            if (!pageSizes.Contains(TotalItems) && TotalItems < MaxPageSize) pageSizes.Add(TotalItems);
             
         
 

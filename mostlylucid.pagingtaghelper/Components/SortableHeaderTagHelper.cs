@@ -134,6 +134,12 @@ public class SortableHeaderTagHelper(IUrlHelperFactory urlHelperFactory) : TagHe
         {
             href = output.Attributes["href"]?.Value?.ToString() ?? "";
         }
+        else if(HXAction != null && HXController != null)
+        {
+            href = "#";
+            return href;
+        }
+        
 
         if (string.IsNullOrEmpty(href))
         {
