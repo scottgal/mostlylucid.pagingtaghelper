@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using mostlylucid.pagingtaghelper.Extensions;
 using mostlylucig.pagingtaghelper.sample.Models;
 using mostlylucig.pagingtaghelper.sample.Services;
-using  mostlylucid.pagingtaghelper.Helpers;
 using mostlylucid.pagingtaghelper.Models;
 
 namespace mostlylucig.pagingtaghelper.sample.Controllers;
@@ -17,8 +16,89 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
 
     public IActionResult Index()
     {
-        return View();
-    }
+        
+            var sectionModels = new List<CardSectionModel>
+            {
+                    new CardSectionModel()
+                    {
+                       Title= "Pagination",
+                       Cards=
+                       {
+                           
+                           new CardPartialModel
+                           {
+                               Title = "Basic Pagination with Model",
+                               Description = "Demonstrates basic paging using a model to manage data.",
+                               Controller = "Home",
+                               Action = "BasicWithModel"
+                           },
+                           new CardPartialModel
+                           {
+                               Title = "HTMX Integration",
+                               Description = "Demonstrates how to use HTMX for AJAX-based paging without full page reloads.",
+                               Controller = "Home",
+                               Action = "BasicHtmxWithModel"
+                           },
+                           new CardPartialModel
+                           {
+                               Title = "Search With HTMX",
+                               Description = "This shows how to use a search function with HTMX.",
+                               Controller = "Home",
+                               Action = "SearchWithHtmx"
+                           },
+                           new CardPartialModel
+                           {
+                               Title = "Plain CSS",
+                               Description = "This demonstrates using 'Plain' CSS which is injected into the view.",
+                               Controller = "Home",
+                               Action = "PlainView"
+                           }
+                       },
+                       
+                       
+                    },
+                    new CardSectionModel()
+                    {
+                       Title="Flippy Headers",
+                          Cards=
+                          {
+                              new CardPartialModel
+                              {
+                                  Title = "Page Sort",
+                                  Description = "This demonstrates the use of the Header Tag Helper.",
+                                  Controller = "Home",
+                                  Action = "PageSortTagHelper"
+                              },
+                              new CardPartialModel
+                              {
+                                  Title = "Page Sort No HTMX",
+                                  Description = "This demonstrates the use of the Header Tag Helper Without HTMX.",
+                                  Controller = "Home",
+                                  Action = "PageSortTagHelperNoHtmx"
+                              },
+                          }
+                    },
+                    new CardSectionModel()
+                    {
+                        Title="Page Size",
+                        Cards =
+                        {
+                        new CardPartialModel
+                        {
+                            Title = "Page Size With HTMX",
+                            Description = "This demonstrates the use of the Page Size Tag Helper With HTMX.",
+                            Controller = "Home",
+                            Action = "PageSizeWithHtmx"
+                        }
+                        }
+                    }
+                
+            };
+        
+            return View(sectionModels);
+        }
+    
+
 
 
     
@@ -28,6 +108,8 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         pagingModel.ViewType = ViewType.Plain;
         return View(pagingModel);
     }
+    
+    [Route("BasicWithModel")]
 
     public async Task<IActionResult> BasicWithModel(int page = 1,int pageSize = 10)
     {
@@ -37,6 +119,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
 
+    [Route("BasicHtmxWithModel")]
 
     public async  Task<IActionResult> BasicHtmxWithModel(int page = 1,int pageSize = 10)
     {
@@ -50,6 +133,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     
+    [Route("SearchWithHtmx")]
     public async Task<IActionResult> SearchWithHtmx(string? search, int pageSize = 10,int page = 1)
     {
         search = search?.Trim().ToLowerInvariant();
@@ -103,6 +187,18 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         return View("PageSortTagHelperNoHtmx", pagingModel);
     }
 
+    [Route("PageSizeWithHTMX")]
+    public async Task<IActionResult> PageSizeWithHtmx(int pageSize = 10)
+    {
+        var pagingModel = await GenerateModel(1, pageSize, 1234);
+        if (Request.IsHtmxBoosted() || Request.IsHtmx())
+        {
+            return PartialView("_ResultsList", pagingModel);
+        }
+        return View("PageSizeWithHtmx", pagingModel);
+        
+    }
+    
     private async Task<OrderedPagingViewModel> SortResults(string? search, int pageSize, int page, string? orderBy, bool descending)
     {
         search = search?.Trim().ToLowerInvariant();
@@ -145,9 +241,11 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
     
-    private async Task<PagingViewModel> GenerateModel(int page, int pageSize)
+    
+    
+    private async Task<PagingViewModel> GenerateModel(int page, int pageSize, int totalItems = 256)
     {
-        var fakeModel =await dataFakerService.GenerateData(256);
+        var fakeModel =await dataFakerService.GenerateData(totalItems);
         var pagingModel = new PagingViewModel();
         pagingModel.TotalItems = fakeModel.Count();
         pagingModel.Page = page;

@@ -19,6 +19,13 @@ public static class HtmlExtensions
         var script = helper.Raw($"<style>{css}</style>");
         return script;
     }
+    
+    public static IHtmlContent HTMXPageSizeChange(this IHtmlHelper helper)
+    {
+        var javaScript = MostlylucidSnippets.HTMXPageSizeChange;
+        var script = helper.Raw($"<script>{javaScript}</script>");
+        return script;
+    }
     public static IHtmlContent PlainMinCSS(this IHtmlHelper helper)
     {
         var css = MostlylucidSnippets.PlainViewMinCSS;

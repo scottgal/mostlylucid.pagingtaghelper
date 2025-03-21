@@ -16,9 +16,20 @@ public class PageSizeTagHelper : TagHelper
 {
     [HtmlAttributeName("model")]
     public IPagingModel? Model { get; set; }
+    
+
+    /// <summary>
+    /// The maximum page size to display in the dropdown.
+    /// </summary>
+    [HtmlAttributeName("max-page-size")]
+    public int MaxPageSize { get; set; } = 100;
+    
+    /// <summary>
+    /// The view Type to use for the pagination control.
+    /// </summary>
 
     [HtmlAttributeName("view-type")]
-    public ViewType ViewType { get; set; } = ViewType.TailwindANdDaisy;
+    public ViewType ViewType { get; set; } = ViewType.TailwindAndDaisy;
 
     [HtmlAttributeName("use-htmx")]
     public bool UseHtmx { get; set; } = true;

@@ -1,0 +1,10 @@
+﻿@model CardPartialModel
+
+<div class="border p-4 rounded-md hover:outline-double transition">
+    <h2 class="text-lg font-semibold">@Model.Title</h2>
+    <p class="text-sm">@Model.Description</p>
+    <a asp-action="@Model.Action" asp-controller="@Model.Controller"
+       class="inline-block mt-2 px-4 py-2 text-white rounded  bg-blue-600 hover:bg-blue-700 transition">
+        View Example
+    </a>
+</div>

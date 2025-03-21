@@ -37,6 +37,8 @@
         </Content>
         <None Remove="CSS\PlainViewMin.css" />
         <EmbeddedResource Include="CSS\PlainViewMin.css" />
+        <None Remove="JavaScript\HTMXPageSizeChange.js" />
+        <EmbeddedResource Include="JavaScript\HTMXPageSizeChange.js" />
     </ItemGroup>
 
     <ItemGroup>
@@ -78,9 +80,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="JavaScript\PagsixeOnchange.js" />
+      <EmbeddedResource Remove="JavaScript\PagsixeOnchange.js" />
       <EmbeddedResource Include="JavaScript\PagsizeOnchange.js" LogicalName="Pagesizeonchange" />
 
     </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="JavaScript\HTMXPageSizeChange.js" />
+        <EmbeddedResource Include="JavaScript\HTMXPageSizeChange.js">
+            <LogicalName>HTMXPageSizeChange</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+
 
 </Project>

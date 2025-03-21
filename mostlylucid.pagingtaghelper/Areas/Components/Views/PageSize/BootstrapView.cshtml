@@ -1,4 +1,5 @@
-﻿@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
+﻿@using mostlylucid.pagingtaghelper.Extensions
+@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
 @{
     var pagerId = Model.PagerId;
     var htmxAttributes = "";
@@ -25,30 +26,5 @@
 
 @if (Model.UseHtmx)
 {
-    <script>
-    window.__pageSizeListenerAdded = window.__pageSizeListenerAdded || false;
-
-    if (!window.__pageSizeListenerAdded) {
-        document.addEventListener('htmx:configRequest', (event) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const triggeringElt = event.detail.elt;
-
-            if (triggeringElt && triggeringElt.matches('[name="pageSize"]')) {
-                // Remove old pageSize, it'll be replaced by new selection
-                urlParams.delete('pageSize');
-
-                // Include the newly selected pageSize explicitly
-                urlParams.set('pageSize', triggeringElt.value);
-
-                // Set parameters explicitly on the request URL
-                event.detail.parameters = {};
-                urlParams.forEach((value, key) => {
-                    event.detail.parameters[key] = value;
-                });
-            }
-        });
-
-        window.__pageSizeListenerAdded = true;
-    }
-</script>
+@Html.HTMXPageSizeChange()
 }
