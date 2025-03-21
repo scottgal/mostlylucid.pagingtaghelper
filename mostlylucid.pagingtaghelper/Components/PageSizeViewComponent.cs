@@ -19,10 +19,7 @@ public class PageSizeViewComponent : ViewComponent
                     model.SearchTerm ??= searchModel.SearchTerm;
                 }
             }
-
-            // Ensure the current page is within valid bounds.
-            model.Page = Math.Max(1, Math.Min(model.Page, model.TotalPages));
-
+            
             var viewName = "Components/Pager/Default";
 
             var useLocalView = model.UseLocalView;
@@ -33,7 +30,7 @@ public class PageSizeViewComponent : ViewComponent
                 (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
                 (false, ViewType.Bootstrap) => View("/Areas/Components/Views/PageSize/BootstrapView.cshtml", model),
                 (false, ViewType.Plain) => View("/Areas/Components/Views/PageSize/PlainView.cshtml", model),
-                (false, ViewType.TailwindANdDaisy) => View("/Areas/Components/Views/PageSize/Default.cshtml", model),
+                (false, ViewType.TailwindAndDaisy) => View("/Areas/Components/Views/PageSize/Default.cshtml", model),
                 _ => View("/Areas/Components/Views/PageSize/Default.cshtml", model)
             };
 

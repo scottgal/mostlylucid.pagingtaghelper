@@ -8,11 +8,14 @@
 <partial name="_PreviewPartial" hx-target="#list" model="previewModel"/>
 
 <page-size
-    hx-target="#list"
-    hx-swap="innerHTML"
-    model="Model">
-    
+    use-htmx="false"
+    total-items="@Model.TotalItems"
+    page-size="@Model.PageSize"
+    max-page-size="250"
+    page-size-steps="1,3,5,6"
+    action="Home"
+    contoller="PageSizeNoHTMX"
+    >
 </page-size>
-<div id="list">
-    <partial name="_ResultsList" model="Model"/>
-</div>
+
+<partial name="_ResultsList" model="Model"/>

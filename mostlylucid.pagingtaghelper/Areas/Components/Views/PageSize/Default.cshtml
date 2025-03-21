@@ -6,6 +6,7 @@
 
     if (Model.UseHtmx)
     {
+        
         htmxAttributes = $"hx-get=\"{Model.LinkUrl}\"  hx-push-url=\"true\"";
     }
     else
@@ -32,4 +33,8 @@
 @if (Model.UseHtmx)
 {
 @Html.HTMXPageSizeChange()
+}
+else
+{
+    @Html.PageSizeOnchangeSnippet()
 }

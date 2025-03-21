@@ -89,10 +89,19 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
                             Description = "This demonstrates the use of the Page Size Tag Helper With HTMX.",
                             Controller = "Home",
                             Action = "PageSizeWithHtmx"
-                        }
+                        },
+                        {
+                            new CardPartialModel
+                            {
+                                Title = "Page Size Without HTMX",
+                                Description = "This demonstrates the use of the Page Size Tag Helper Without HTMX.",
+                                Controller = "Home",
+                                Action = "PageSizeNoHtmx"
+                            }
                         }
                     }
-                
+                    
+                }
             };
         
             return View(sectionModels);
@@ -198,6 +207,15 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         return View("PageSizeWithHtmx", pagingModel);
         
     }
+    
+    [Route("PageSizeNoHTMX")]
+    public async Task<IActionResult> PageSizeNoHtmx(int pageSize = 10)
+    {
+        var pagingModel = await GenerateModel(1, pageSize, 1234);
+        return View("PageSizeNoHtmx", pagingModel);
+        
+    }
+
     
     private async Task<OrderedPagingViewModel> SortResults(string? search, int pageSize, int page, string? orderBy, bool descending)
     {

@@ -1,253 +1,284 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JetBrains.Annotations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.DependencyInjection;
 using mostlylucid.pagingtaghelper.Models;
 using mostlylucid.pagingtaghelper.Models.TagModels;
 
 namespace mostlylucid.pagingtaghelper.Components;
 
 /// <summary>
-/// A tag helper that renders a pagination control using a view component.
+/// Renders a pagination control via a ViewComponent.
 /// </summary>
 [HtmlTargetElement("paging", TagStructure = TagStructure.NormalOrSelfClosing)]
-public class PagerTagHelper : TagHelper
+public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
 {
-    
-
-    /// <summary>
-    /// The paging model containing the pagination details (OPTIONAL).
-    /// </summary>
+    private IUrlHelper UrlHelper => urlHelperFactory.GetUrlHelper(ViewContext);
+    /// <summary>Paging model containing pagination details (optional).</summary>
     [HtmlAttributeName("model")]
     public IPagingModel? Model { get; set; }
-    
-    [HtmlAttributeName("view-type")]
-    public ViewType ViewType { get; set; } = Models.ViewType.TailwindANdDaisy;
 
     /// <summary>
-    /// Whether to enable HTMX use for the pagesize component. Defaults to true.
+    /// The maximum page size allowed in the dropdown. (Default: 1000)
     /// </summary>
-    [HtmlAttributeName("use-htmx")] public bool UseHtmx { get; set; } = true;
-    /// <summary>
-    /// Optionally pass in an id for the pager component.
-    /// </summary>
+    [HtmlAttributeName("max-page-size")]
+    public int MaxPageSize { get; set; } = 1000;
+    
+    /// <summary>Determines the UI style (default: TailwindANdDaisy).</summary>
+    [HtmlAttributeName("view-type")]
+    public ViewType ViewType { get; set; } = ViewType.TailwindAndDaisy;
+
+    /// <summary>Enable HTMX usage (default: true).</summary>
+    [HtmlAttributeName("use-htmx")]
+    public bool UseHtmx { get; set; } = true;
+
+    /// <summary>Optional custom ID for the pager container.</summary>
     [HtmlAttributeName("id")]
     public string? PagerId { get; set; }
 
-    /// <summary>
-    /// The view model for the pager component (OPTIONAL).
-    /// </summary>
+    /// <summary>Optional pre-configured PagerViewModel.</summary>
     [HtmlAttributeName("pagingmodel")]
-    public PagerViewModel? PagerModel { get; set; } = null;
+    public PagerViewModel? PagerModel { get; set; }
 
-    /// <summary>
-    /// Determines whether the page size selection is shown.
-    /// </summary>
+    /// <summary>Whether to show the page-size dropdown (default: true).</summary>
     [HtmlAttributeName("show-pagesize")]
     public bool ShowPageSize { get; set; } = true;
-    
-    /// <summary>
-    /// The search term used in pagination filtering.
-    /// </summary>
+
+    /// <summary>Search term used for filtering.</summary>
     [HtmlAttributeName("search-term")]
     public string? SearchTerm { get; set; }
-    
+
     /// <summary>
-    /// The base URL for pagination links.
+    /// Hard-coded link URL to use for the page-size control. (Optional)
     /// </summary>
     [HtmlAttributeName("link-url")]
     public string? LinkUrl { get; set; }
 
     /// <summary>
-    /// The current page number.
+    /// Alias for link-url, so you can write href="..." in your Razor. (Optional)
     /// </summary>
+    [HtmlAttributeName("href")]
+    public string? Href
+    {
+        get => LinkUrl;
+        set => LinkUrl = value;
+    }
+
+    /// <summary>
+    /// For ASP.NET Core MVC, the action to use for the page-size control. (Optional)
+    /// </summary>
+    [AspMvcAction]
+    [HtmlAttributeName("action")]
+    public string? Action { get; set; }
+
+    /// <summary>
+    /// For ASP.NET Core MVC, the controller to use for the page-size control. (Optional)
+    /// </summary>
+    [AspMvcController]
+    [HtmlAttributeName("controller")]
+    public string? Controller { get; set; }
+
+    /// <summary>Current page number.</summary>
     [HtmlAttributeName("page")]
     public int? Page { get; set; }
 
-    /// <summary>
-    /// The number of items per page.
-    /// </summary>
+    /// <summary>Number of items per page.</summary>
     [HtmlAttributeName("page-size")]
     public int? PageSize { get; set; }
-    
-    /// <summary>
-    /// Sets the view to use the local view or to use the taghelper view.
-    /// </summary>
 
+    /// <summary>Use a local (custom) view or the built-in one (default: false).</summary>
     [HtmlAttributeName("use-local-view")]
     public bool UseLocalView { get; set; } = false;
-    
-    /// <summary>
-    /// The total number of items in the pagination set.
-    /// </summary>
+
+    /// <summary>Total number of items in the data set.</summary>
     [HtmlAttributeName("total-items")]
     public int? TotalItems { get; set; }
 
-    /// <summary>
-    /// The number of pages to display in the pager navigation.
-    /// </summary>
+    /// <summary>Number of pages to display at once (default: 5).</summary>
     [HtmlAttributeName("pages-to-display")]
     public int PagesToDisplay { get; set; } = 5;
 
-    /// <summary>
-    /// The CSS class applied to the pager container.
-    /// </summary>
+    /// <summary>CSS class for the pager container (default: "btn-group").</summary>
     [HtmlAttributeName("css-class")]
     public string CssClass { get; set; } = "btn-group";
 
-    /// <summary>
-    /// Text for the first page navigation link.
-    /// </summary>
+    /// <summary>Text for the first page link (default: "«").</summary>
     [HtmlAttributeName("first-page-text")]
     public string FirstPageText { get; set; } = "«";
 
-    /// <summary>
-    /// Text for the previous page navigation link.
-    /// </summary>
+    /// <summary>Text for the previous page link (default: "‹ Previous").</summary>
     [HtmlAttributeName("previous-page-text")]
     public string PreviousPageText { get; set; } = "‹ Previous";
 
-    /// <summary>
-    /// Text for skipping backward in pagination.
-    /// </summary>
+    /// <summary>Text for skipping backward in pagination (default: "..").</summary>
     [HtmlAttributeName("skip-back-text")]
     public string SkipBackText { get; set; } = "..";
 
-    /// <summary>
-    /// Text for skipping forward in pagination.
-    /// </summary>
+    /// <summary>Text for skipping forward in pagination (default: "..").</summary>
     [HtmlAttributeName("skip-forward-text")]
     public string SkipForwardText { get; set; } = "..";
 
-    /// <summary>
-    /// Text for the next page navigation link.
-    /// </summary>
+    /// <summary>Text for the next page link (default: "Next ›").</summary>
     [HtmlAttributeName("next-page-text")]
     public string NextPageText { get; set; } = "Next ›";
 
-    /// <summary>
-    /// ARIA label for the next page navigation link.
-    /// </summary>
+    /// <summary>ARIA label for the next page link (default: "go to next page").</summary>
     [HtmlAttributeName("next-page-aria-label")]
     public string NextPageAriaLabel { get; set; } = "go to next page";
 
-    /// <summary>
-    /// Text for the last page navigation link.
-    /// </summary>
+    /// <summary>Text for the last page link (default: "»").</summary>
     [HtmlAttributeName("last-page-text")]
     public string LastPageText { get; set; } = "»";
 
-    /// <summary>
-    /// Indicates whether first and last page navigation links should be displayed.
-    /// </summary>
+    /// <summary>Show first/last page navigation links (default: true).</summary>
     [HtmlAttributeName("first-last-navigation")]
     public bool FirstLastNavigation { get; set; } = true;
 
-    /// <summary>
-    /// Indicates whether skip forward/backward navigation should be enabled.
-    /// </summary>
+    /// <summary>Show skip forward/backward links (default: true).</summary>
     [HtmlAttributeName("skip-forward-back-navigation")]
     public bool SkipForwardBackNavigation { get; set; } = true;
 
-    /// <summary>
-    /// Specifies the HTMX target for AJAX-based pagination.
-    /// </summary>
+    /// <summary>HTMX target for AJAX-based pagination.</summary>
     [HtmlAttributeName("htmx-target")]
-    public string HtmxTarget { get; set; } = "";
-    
-    
+    public string HtmxTarget { get; set; } = string.Empty;
+
+    /// <summary>Enable descending sort (optional).</summary>
     [HtmlAttributeName("descending")]
     public bool? Descending { get; set; }
-    
-    
+
+    /// <summary>Property name used for sorting (optional).</summary>
     [HtmlAttributeName("order-by")]
     public string? OrderBy { get; set; }
-    
+
+    /// <summary>Whether to show the pagination summary text (default: true).</summary>
     [HtmlAttributeName("show-summary")]
     public bool ShowSummary { get; set; } = true;
 
-    /// <summary>
-    /// The current view context, automatically injected.
-    /// </summary>
-    [ViewContext]
-    [HtmlAttributeNotBound]
+    /// <summary>Captures the current ViewContext (injected by the runtime).</summary>
+    [ViewContext, HtmlAttributeNotBound]
     public required ViewContext ViewContext { get; set; }
 
-    /// <summary>
-    /// Processes the tag helper to generate the pagination component.
-    /// </summary>
-    /// <param name="context">The tag helper context.</param>
-    /// <param name="output">The tag helper output.</param>
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-   
+        // Render as a <div> by default
         output.TagName = "div";
-        
-        //Remove all the properties that are not needed for the rendered content.
-        output.Attributes.RemoveAll("page");
-        output.Attributes.RemoveAll("link-url");
-        output.Attributes.RemoveAll("page-size");
-        output.Attributes.RemoveAll("total-items");
-        output.Attributes.RemoveAll("pages-to-display");
-        output.Attributes.RemoveAll("css-class");
-        output.Attributes.RemoveAll("first-page-text");
-        output.Attributes.RemoveAll("previous-page-text");
-        output.Attributes.RemoveAll("skip-back-text");
-        output.Attributes.RemoveAll("skip-forward-text");
-        output.Attributes.RemoveAll("next-page-text");
-        output.Attributes.RemoveAll("next-page-aria-label");
-        output.Attributes.RemoveAll("last-page-text");
-        output.Attributes.RemoveAll("first-last-navigation");
-        output.Attributes.RemoveAll("skip-forward-back-navigation");
-        output.Attributes.RemoveAll("model");
-        output.Attributes.RemoveAll("show-pagesize");
-        output.Attributes.RemoveAll("pagingmodel");
-        output.Attributes.RemoveAll("use-local-view");
-        
-        var pagerId =  PagerId ?? $"pager-{Guid.NewGuid():N}";
-        var linkUrl = LinkUrl ?? ViewContext.HttpContext.Request.Path;
+
+        // Remove attributes we handle ourselves
+        RemoveUnwantedAttributes(output);
+
+        // Generate or reuse a pager ID
+        var finalPagerId = PagerId ?? $"pager-{Guid.NewGuid():N}";
+
+        // Derive linkUrl or fallback to current request path
+        var finalLinkUrl = LinkUrl ?? ViewContext.HttpContext.Request.Path;
+
+        // Merge in any values from the IPagingModel if present
         PageSize = Model?.PageSize ?? PageSize ?? 10;
-        Page = Model?.Page ?? Page ?? 1;
+        Page     = Model?.Page     ?? Page     ?? 1;
         ViewType = Model?.ViewType ?? ViewType;
         TotalItems = Model?.TotalItems ?? TotalItems ?? 0;
-        if(Model is IPagingSearchModel searchModel)
-            SearchTerm = searchModel?.SearchTerm ?? SearchTerm ?? "";
-        output.Attributes.SetAttribute("id", pagerId);
-        var viewComponentHelper = (IViewComponentHelper)ViewContext.HttpContext.RequestServices.GetService(typeof(IViewComponentHelper))!;
-        ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
 
-        var pagerModel = PagerModel ?? new PagerViewModel()
+        // If the model is IPagingSearchModel, sync SearchTerm
+        if (Model is IPagingSearchModel searchModel)
         {
-            OrderBy = OrderBy,
-            Descending = Descending,
-            ShowSummary = ShowSummary,
-            ViewType = ViewType,
-            UseLocalView = UseLocalView,
-            UseHtmx = UseHtmx,
-            PagerId = pagerId,
-            SearchTerm = SearchTerm,
-            ShowPageSize = ShowPageSize,
-            Model = Model,
-            LinkUrl = linkUrl,
-            Page = Page.Value,
-            PageSize = PageSize.Value,
-            TotalItems = TotalItems.Value,
-            PagesToDisplay = PagesToDisplay,
-            CssClass = CssClass,
-            FirstPageText = FirstPageText,
-            PreviousPageText = PreviousPageText,
-            SkipBackText = SkipBackText,
-            SkipForwardText = SkipForwardText,
-            NextPageText = NextPageText,
-            NextPageAriaLabel = NextPageAriaLabel,
-            LastPageText = LastPageText,
-            FirstLastNavigation = FirstLastNavigation,
-            SkipForwardBackNavigation = SkipForwardBackNavigation,
-            HtmxTarget = HtmxTarget,
-            
+            SearchTerm = searchModel.SearchTerm ?? SearchTerm;
+        }
+
+        // Assign ID to the container
+        output.Attributes.SetAttribute("id", finalPagerId);
+
+        // Acquire the IViewComponentHelper
+        var services = ViewContext.HttpContext.RequestServices;
+        var vcHelper = (IViewComponentHelper)services.GetRequiredService(typeof(IViewComponentHelper));
+        ((IViewContextAware)vcHelper).Contextualize(ViewContext);
+
+        // Build or reuse the PagerViewModel
+        var pagerModel = PagerModel ?? new PagerViewModel
+        {
+            OrderBy                    = OrderBy,
+            Descending                 = Descending,
+            ShowSummary                = ShowSummary,
+            ViewType                   = ViewType,
+            UseLocalView               = UseLocalView,
+            UseHtmx                    = UseHtmx,
+            PagerId                    = finalPagerId,
+            SearchTerm                 = SearchTerm,
+            ShowPageSize               = ShowPageSize,
+            Model                      = Model,
+            LinkUrl                    = finalLinkUrl,
+            MaxPageSize                = MaxPageSize,
+            Page                       = Page.Value,
+            PageSize                   = PageSize.Value,
+            TotalItems                 = TotalItems.Value,
+            PagesToDisplay             = PagesToDisplay,
+            CssClass                   = CssClass,
+            FirstPageText              = FirstPageText,
+            PreviousPageText           = PreviousPageText,
+            SkipBackText               = SkipBackText,
+            SkipForwardText            = SkipForwardText,
+            NextPageText               = NextPageText,
+            NextPageAriaLabel          = NextPageAriaLabel,
+            LastPageText               = LastPageText,
+            FirstLastNavigation        = FirstLastNavigation,
+            SkipForwardBackNavigation  = SkipForwardBackNavigation,
+            HtmxTarget                 = HtmxTarget
         };
 
-        var result = await viewComponentHelper.InvokeAsync("Pager", pagerModel);
-        output.Content.SetHtmlContent(result);
+        // Safely invoke the "Pager" ViewComponent
+        try
+        {
+            var result = await vcHelper.InvokeAsync("Pager", pagerModel);
+            output.Content.SetHtmlContent(result);
+        }
+        catch (Exception ex)
+        {
+            // Optional: log the exception or show a user-friendly message
+            output.Content.SetHtmlContent(
+                $"<div style=\"color:red\">Error rendering pager: {ex.Message}</div>"
+            );
+        }
+    }
+
+    /// <summary>
+    /// Builds a link URL from the given attributes or falls back to the current request path.
+    /// </summary>
+    private string? BuildLinkUrl()
+    {
+        // Priority 1: link-url / href
+        var linkUrl = LinkUrl ??  PagerModel?.LinkUrl;
+        if (!string.IsNullOrEmpty(linkUrl))
+        {
+            return linkUrl;
+        }
+
+        // Priority 2: If we have an action and controller, build the route
+        if (!string.IsNullOrEmpty(Action) && !string.IsNullOrEmpty(Controller))
+        {
+            return UrlHelper.ActionLink(Action, Controller);
+        }
+
+        // Priority 3: Fallback to the current request path
+        var fallbackUrl = ViewContext.HttpContext.Request.Path.ToString();
+        return !string.IsNullOrEmpty(fallbackUrl) ? fallbackUrl : null;
+    }
+    
+    private static void RemoveUnwantedAttributes(TagHelperOutput output)
+    {
+        var attrs = new[]
+        {
+            "page", "link-url", "page-size", "total-items", "pages-to-display",
+            "css-class", "first-page-text", "previous-page-text", "skip-back-text",
+            "skip-forward-text", "next-page-text", "next-page-aria-label", "last-page-text",
+            "first-last-navigation", "skip-forward-back-navigation", "model", "show-pagesize",
+            "pagingmodel", "use-local-view", "search-term", "htmx-target", "descending",
+            "order-by", "show-summary"
+        };
+        foreach (var attr in attrs)
+        {
+            output.Attributes.RemoveAll(attr);
+        }
     }
 }

@@ -5,8 +5,7 @@ public class PagerViewModel : PageSizeModel
     public bool? Descending { get; set; }
 
     public string? OrderBy { get; set; }
-
-
+    
     public bool ShowSummary { get; set; } = true;
 
     public bool ShowPageSize { get; set; } = true;
@@ -22,6 +21,10 @@ public class PagerViewModel : PageSizeModel
 
     public string PageSizeString { get; set; } = "age size:";
 
+    
+    public int Page { get; set; }
+
+    public int TotalPages => (int)Math.Ceiling(TotalItems! / (double)PageSize!);
     public string LastPageText { get; set; } = "»";
     public bool FirstLastNavigation { get; set; } = true;
     public bool SkipForwardBackNavigation { get; set; } = true;
