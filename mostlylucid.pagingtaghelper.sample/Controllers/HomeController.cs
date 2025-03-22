@@ -37,6 +37,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
                                Title = "HTMX Integration",
                                Description = "Demonstrates how to use HTMX for AJAX-based paging without full page reloads.",
                                Controller = "Home",
+                            
                                Action = "BasicHtmxWithModel"
                            },
                            new CardPartialModel

@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
     <title>@ViewData["Title"] - mostlylucid.pagingtaghelper.sample</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link id="hljs-theme-light" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+
+    <!-- Dark theme (initially disabled) -->
+    <link id="hljs-theme-dark" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+          disabled />
     <link rel="stylesheet" href="~/css/dist/main.css" asp-append-version="true"/>
     <link rel="icon" type="image/png" href="/img/smalllogo.svg" />
 </head>
@@ -49,8 +56,8 @@ bg-white text-black
         integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" 
         crossorigin="anonymous"></script>
 <script src="~/js/dist/main.js" asp-append-version="true"></script>
-<script type="text/javascript" defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script type="text/javascript" defer src="https://unpkg.com/highlightjs-cshtml-razor/dist/cshtml-razor.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
 

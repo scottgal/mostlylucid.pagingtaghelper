@@ -6,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<DataFakerService>();
+builder.Services.AddHttpClient<GitHubCodeService>();
 builder.Services.AddLogging(options => options.AddConsole());
+builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

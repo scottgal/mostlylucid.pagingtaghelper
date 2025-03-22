@@ -3,6 +3,7 @@
 @{
     var previewModel = new PreviewPartialViewModel();
     previewModel.Description = "This example shows how to use the PageSize tag helper with HTMX.";
+    previewModel.SourceLink="/Views/Home/PageSizeNoHTMX.cshtml";
 }
 
 <partial name="_PreviewPartial" hx-target="#list" model="previewModel"/>

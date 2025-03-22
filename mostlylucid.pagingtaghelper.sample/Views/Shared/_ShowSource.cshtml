@@ -1,0 +1,7 @@
+﻿@model string
+
+ <pre class="bg-gray-200 dark:bg-gray-800 p-3 rounded text-sm overflow-auto whitespace-pre-wrap">
+<code class="html">
+@Html.Raw(HtmlEncoder.Encode(Model))
+</code>
+</pre>
