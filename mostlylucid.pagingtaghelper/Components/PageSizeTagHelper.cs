@@ -141,7 +141,12 @@ public class PageSizeTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
         // Clamp the page size to MaxPageSize
 
         var finalTotalItems = TotalItems ?? Model?.TotalItems ?? PageSizeModel?.TotalItems ?? 0;
-        if (finalTotalItems == 0) throw new ArgumentNullException(nameof(finalTotalItems), "TotalItems is required");
+        
+        if (finalTotalItems == 0)
+        {
+            output.Content.SetHtmlContent("<p>No items found.</p>");
+            return;
+        }
         var maxPageSize = Math.Min(finalTotalItems, MaxPageSize);
 
         // Fallback to model's properties if not set
