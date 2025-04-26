@@ -6,14 +6,15 @@
     string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
 }
 
-@if (totalPages > 1)
-{
+
     <div class="d-flex flex-wrap align-items-center justify-content-center mt-3">
         @if (Model.ShowPageSize)
         {
             <page-size page-size-model="Model"></page-size>
         }
-
+        @if (totalPages > 1)
+        {
+            <text>
         <nav aria-label="Pagination">
             <ul class="pagination pagination-sm mb-0">
                 @if (Model.FirstLastNavigation && Model.Page > 1)
@@ -77,5 +78,6 @@
         <div class="ms-3 text-muted small">
             Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
         </div>
+        </text>
+        }
     </div>
-}

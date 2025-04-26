@@ -25,56 +25,59 @@
         }
     }
 }
-@if (totalPages > 1)
-{
+
     <div class="pager-container" >
         @if (Model.ShowPageSize)
         {
             <page-size page-size-model="Model"></page-size>
         }
 
-        @if (Model.FirstLastNavigation && Model.Page > 1)
+        @if (totalPages > 1)
         {
-            <a class="pager-button" href="@($"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}")">@Model.FirstPageText</a>
-        }
+            <text>
+                @if (Model.FirstLastNavigation && Model.Page > 1)
+                {
+                    <a class="pager-button" href="@($"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}")">@Model.FirstPageText</a>
+                }
 
-        @if (Model.Page > 1)
-        {
-            <a class="pager-button" href="@($"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}")">@Model.PreviousPageText</a>
-        }
+                @if (Model.Page > 1)
+                {
+                    <a class="pager-button" href="@($"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}")">@Model.PreviousPageText</a>
+                }
 
-        @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
-        {
-            <span class="pager-button disabled">@Model.SkipBackText</span>
-        }
+                @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
+                {
+                    <span class="pager-button disabled">@Model.SkipBackText</span>
+                }
 
-        @{
-            int halfDisplay = Model.PagesToDisplay / 2;
-            int startPage = Math.Max(1, Model.Page - halfDisplay);
-            int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
-            startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
-        }
+                @{
+                    int halfDisplay = Model.PagesToDisplay / 2;
+                    int startPage = Math.Max(1, Model.Page - halfDisplay);
+                    int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
+                    startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
+                }
 
-        @for (int i = startPage; i <= endPage; i++)
-        {
-            <a class="pager-button @(i == Model.Page ? "active" : "")" href="@($"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}")">@i</a>
-        }
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <a class="pager-button @(i == Model.Page ? "active" : "")" href="@($"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}")">@i</a>
+                }
 
-        @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
-        {
-            <span class="pager-button disabled">@Model.SkipForwardText</span>
-        }
+                @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
+                {
+                    <span class="pager-button disabled">@Model.SkipForwardText</span>
+                }
 
-        @if (Model.Page < totalPages)
-        {
-            <a class="pager-button" href="@($"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}")">@Model.NextPageText</a>
-        }
+                @if (Model.Page < totalPages)
+                {
+                    <a class="pager-button" href="@($"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}")">@Model.NextPageText</a>
+                }
 
-        @if (Model.FirstLastNavigation && Model.Page < totalPages)
-        {
-            <a class="pager-button" href="@($"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}")">@Model.LastPageText</a>
-        }
+                @if (Model.FirstLastNavigation && Model.Page < totalPages)
+                {
+                    <a class="pager-button" href="@($"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}")">@Model.LastPageText</a>
+                }
 
-        <div class="pager-info">Page @Model.Page of @totalPages (Total items: @Model.TotalItems)</div>
+                <div class="pager-info">Page @Model.Page of @totalPages (Total items: @Model.TotalItems)</div>
+            </text>
+        }
     </div>
-}

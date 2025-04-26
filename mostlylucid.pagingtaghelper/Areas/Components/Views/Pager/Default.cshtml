@@ -8,8 +8,7 @@
 
 
 }
-@if (totalPages > 1)
-{
+
     <div class="@Model.CssClass flex items-center gap-2 justify-center pager-container">
         @if (Model.ShowPageSize)
         {
@@ -24,75 +23,78 @@
                 @Model.FirstPageText
             </a>
         }
-
-        @if (Model.Page > 1)
+        @if (totalPages > 1)
         {
-            var href = GetUrl(Model.Page - 1);
+            <text>
+                @if (Model.Page > 1)
+                {
+                    var href = GetUrl(Model.Page - 1);
 
-            <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
-               href="@href">
-                @Model.PreviousPageText
-            </a>
-        }
+                    <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                       href="@href">
+                        @Model.PreviousPageText
+                    </a>
+                }
 
-        @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
-        {
-            <a class="btn btn-sm btn-disabled dark:bg-gray-700 dark:text-gray-400">
-                @Model.SkipBackText
-            </a>
-        }
+                @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
+                {
+                    <a class="btn btn-sm btn-disabled dark:bg-gray-700 dark:text-gray-400">
+                        @Model.SkipBackText
+                    </a>
+                }
 
-        @* Pagination Numbers *@
-        @{
-            int halfDisplay = Model.PagesToDisplay / 2;
-            int startPage = Math.Max(1, Model.Page - halfDisplay);
-            int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
-            startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
-        }
-        @for (int i = startPage; i <= endPage; i++)
-        {
-            var href = GetUrl(i);
-            <a data-page="@i"
-               class="pager-button btn btn-sm 
+                @* Pagination Numbers *@
+                @{
+                    int halfDisplay = Model.PagesToDisplay / 2;
+                    int startPage = Math.Max(1, Model.Page - halfDisplay);
+                    int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
+                    startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
+                }
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    var href = GetUrl(i);
+                    <a data-page="@i"
+                       class="pager-button btn btn-sm 
                       @(i == Model.Page ? "btn-primary btn-active dark:bg-blue-500 dark:border-blue-400 dark:text-white" : "btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600")"
-               href="@href">
-                @i
-            </a>
-        }
+                       href="@href">
+                        @i
+                    </a>
+                }
 
-        @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
-        {
-            <a class="btn btn-sm btn-disabled dark:bg-gray-700 dark:text-gray-400">
-                @Model.SkipForwardText
-            </a>
-        }
+                @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
+                {
+                    <a class="btn btn-sm btn-disabled dark:bg-gray-700 dark:text-gray-400">
+                        @Model.SkipForwardText
+                    </a>
+                }
 
-        @if (Model.Page < totalPages)
-        {
-            var href = GetUrl(Model.Page + 1);
-            <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
-               href="@href"
-               aria-label="@Model.NextPageAriaLabel">
-                @Model.NextPageText
-            </a>
-        }
+                @if (Model.Page < totalPages)
+                {
+                    var href = GetUrl(Model.Page + 1);
+                    <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                       href="@href"
+                       aria-label="@Model.NextPageAriaLabel">
+                        @Model.NextPageText
+                    </a>
+                }
 
-        @if (Model.FirstLastNavigation && Model.Page < totalPages)
-        {
-            var href = GetUrl(Model.TotalPages);
+                @if (Model.FirstLastNavigation && Model.Page < totalPages)
+                {
+                    var href = GetUrl(Model.TotalPages);
 
-            <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
-               href="@href">
-                @Model.LastPageText
-            </a>
-        }
-        @if (Model.ShowSummary)
-        {
+                    <a class="btn btn-sm btn-outline dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                       href="@href">
+                        @Model.LastPageText
+                    </a>
+                }
+                @if (Model.ShowSummary)
+                {
 
 
-            <div class="text-sm text-gray-600 dark:text-gray-300">
-                Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
-            </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">
+                        Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
+                    </div>
+                }
+            </text>
         }
     </div>
-}
