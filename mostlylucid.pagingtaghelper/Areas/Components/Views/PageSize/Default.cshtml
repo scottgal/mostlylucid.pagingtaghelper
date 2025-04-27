@@ -20,7 +20,7 @@
     <label for="pageSize-@pagerId" class="text-sm text-gray-600 dark:text-gray-300 mr-2 whitespace-nowrap">Page size:</label>
     <select id="pageSize-@pagerId"
             name="pageSize"
-            class="border rounded select select-primary select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            class="border rounded select  select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black dark:bg-gray-800 dark:text-white dark:border-gray-600"
             @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {

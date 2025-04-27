@@ -10,3 +10,8 @@ public interface IPagingModel
     
     public string LinkUrl { get; set; }
 }
+
+public interface IPagingModel<T> : IPagingModel where T: class
+{
+public T Data { get; set; }
+}
