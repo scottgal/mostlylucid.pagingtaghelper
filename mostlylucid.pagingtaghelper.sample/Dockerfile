@@ -16,7 +16,7 @@ RUN apk add --no-cache nodejs npm \
 WORKDIR /src
 COPY ["mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj", "mostlylucid.pagingtaghelper.sample/"]
 COPY ["mostlylucid.pagingtaghelper/mostlylucid.pagingtaghelper.csproj", "mostlylucid.pagingtaghelper/"]
-COPY ["mostlylucid.pagingtaghelper/ReleaseNotes.txt", "mostlylucid.pagingtaghelper/"]
+COPY ["mostlylucid.pagingtaghelper/Properties/ReleaseNotes.txt", "mostlylucid.pagingtaghelper/Properties/"]
 
 # Restore dependencies WITH the correct runtime
 RUN dotnet restore "mostlylucid.pagingtaghelper.sample/mostlylucid.pagingtaghelper.sample.csproj" \
