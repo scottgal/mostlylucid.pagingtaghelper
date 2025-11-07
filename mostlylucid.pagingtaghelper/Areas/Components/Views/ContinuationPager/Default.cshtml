@@ -76,7 +76,14 @@
     var swapValue = "outerHTML";
 }
 
+TEST VIEW IS RENDERING!!!
+
 <div class="@Model.CssClass" id="@Model.PagerId">
+    @* Debug Info *@
+    <div style="border: 2px solid red; padding: 10px; margin: 10px 0;">
+        DEBUG: jsMode=@jsMode, hxTarget=@hxTarget, canGoNext=@canGoNext, canGoBack=@canGoBack
+    </div>
+
     @* Previous Button *@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {

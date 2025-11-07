@@ -13,15 +13,13 @@
             type="text"
             placeholder="Search..."
             class="border-0 grow input-sm text-black dark:text-white bg-transparent w-half justify-center"
-            hx-get
-            hx-controller="Home"
-            hx-action="SearchWithHtmx"
+            hx-get="/SearchWithHtmx"
             name="search"
             hx-push-url="true"
-            hx-trigger="keyup changed delay:300ms if(this.value.length >= 3)"
+            hx-trigger="keyup changed delay:300ms, search"
             hx-target="#list"
             hx-indicator="#loading-modal"
-            hx-params="*"
+            hx-include="[name='search']"
         />
 
         <i class="bx bx-search"></i>

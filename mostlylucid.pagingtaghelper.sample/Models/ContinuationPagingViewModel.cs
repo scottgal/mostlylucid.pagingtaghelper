@@ -10,6 +10,7 @@ public class ContinuationPagingViewModel : IContinuationPagingModel
     public int CurrentPage { get; set; } = 1;
     public Dictionary<int, string>? PageTokenHistory { get; set; }
     public ViewType ViewType { get; set; } = ViewType.TailwindAndDaisy;
+    public string LinkUrl { get; set; } = "";
 
     public List<FakeDataModel> Products { get; set; } = new();
 }

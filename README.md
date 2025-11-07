@@ -6,6 +6,8 @@
 
 **The most flexible, powerful, and easy-to-use pagination library for ASP.NET Core.**
 
+> **v1.0 is 100% backward compatible!** Upgrading from pre-v1 is safe and requires zero code changes. All existing attributes and defaults continue to work exactly as before. [See migration guide](docs/migration-v1.md)
+
 Built for modern web apps with HTMX, Alpine.js, or vanilla JavaScript support. Style it with TailwindCSS, DaisyUI, Bootstrap, or bring your own CSS. Zero configuration required to get started, infinitely customizable when you need it.
 
 ```html

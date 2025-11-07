@@ -2,6 +2,8 @@
 
 This guide will walk you through setting up and using the Mostlylucid Paging TagHelper in your ASP.NET Core application.
 
+> **Upgrading from pre-v1?** Great news! v1.0 is 100% backward compatible. Just update your NuGet package and you're done. All existing code will continue to work without any changes. [See migration guide](migration-v1.md)
+
 ## Installation
 
 Install via NuGet Package Manager:
@@ -329,26 +331,33 @@ Give each pager a unique ID:
 2. **Check Page** - Must be >= 1
 3. **Check PageSize** - Must be > 0
 
-### Styling Issues
+### Styling Issues with TailwindCSS
 
-If using Tailwind CSS, ensure your purge/content configuration includes the library:
+**Problem:** TailwindCSS's tree-shaking (PurgeCSS) removes classes that aren't found in your source files. Since the pager views are embedded in the library DLL, Tailwind can't detect which classes are needed.
 
-```js
-// tailwind.config.js
-module.exports = {
-    content: [
-        './Pages/**/*.cshtml',
-        './Views/**/*.cshtml',
-        './node_modules/mostlylucid.pagingtaghelper/**/*.cshtml', // Add this
-    ],
-}
-```
-
-Or use the helper span in your layout:
+**Solution:** Include this placeholder span in your `_Layout.cshtml` to preserve all required classes:
 
 ```html
-<span class="hidden btn btn-sm btn-active select select-sm"></span>
+<!--
+    Preserve Tailwind & DaisyUI classes used in embedded pager views.
+    Without this, TailwindCSS tree-shaking will remove classes that are only
+    referenced in the embedded Razor views (which are compiled into the library DLL).
+-->
+<span class="hidden
+    btn btn-sm btn-active btn-disabled btn-primary btn-outline join join-item badge badge-ghost badge-sm select select-primary select-sm
+    inline-flex flex items-center justify-center gap-2 px-4 py-2 mr-2 text-sm font-medium shadow-sm rounded-md rounded-l-lg rounded-r-lg rounded-full border border-gray-300
+    text-white text-gray-700 text-gray-400 text-gray-600 bg-white bg-gray-100 bg-blue-600 border-blue-600
+    hover:bg-gray-50 hover:bg-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 cursor-not-allowed whitespace-nowrap block w-auto
+    dark:bg-gray-800 dark:bg-gray-700 dark:bg-blue-500 dark:text-gray-300 dark:text-gray-500 dark:text-gray-200 dark:text-white
+    dark:border-gray-600 dark:border-blue-500 dark:hover:bg-gray-700 dark:hover:bg-blue-600 dark:focus:ring-blue-400
+    dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active">
+</span>
 ```
+
+**What's Preserved:**
+- **DaisyUI components** (for `view-type="TailwindAndDaisy"`): `btn`, `join`, `badge`, `select` and variants
+- **Pure Tailwind utilities** (for `view-type="Tailwind"`): Layout, spacing, colors, borders, focus states, dark mode
+- **Not needed for** `Bootstrap`, `Plain`, or `NoJS` view types
 
 ### HTMX Not Working
 

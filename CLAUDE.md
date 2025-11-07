@@ -213,18 +213,32 @@ This is a `Microsoft.NET.Sdk.Razor` project with embedded Razor views. Views in 
 - When not using HTMX, consumers must include `@Html.PageSizeOnchangeSnippet()` for page size handling
 
 ### TailwindCSS Considerations
-When using TailwindCSS in consuming apps, include this hidden span in `_Layout.cshtml` to preserve required classes (TailwindCSS's tree-shaking might remove classes only referenced in the embedded views):
+**IMPORTANT:** TailwindCSS's tree-shaking (PurgeCSS) removes classes not found in source files. Since pager views are embedded in the DLL, Tailwind can't detect which classes are needed.
+
+**Solution:** Include this placeholder span in `_Layout.cshtml`:
 
 ```html
-<span class="hidden btn btn-sm btn-active btn-disabled select select-primary select-sm
-    text-sm text-gray-600 text-neutral-500 border rounded flex items-center
-    justify-center min-w-[80px] pr-4 pt-0 mt-0 mr-2 btn-primary btn-outline
-    bg-white text-black
-    dark:bg-blue-500 dark:border-blue-400 dark:text-white dark:hover:bg-blue-600
-    dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700
-    dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active gap-2 whitespace-nowrap">
+<!--
+    Preserve Tailwind & DaisyUI classes used in embedded pager views.
+    Without this, TailwindCSS tree-shaking will remove classes that are only
+    referenced in the embedded Razor views (which are compiled into the library DLL).
+-->
+<span class="hidden
+    btn btn-sm btn-active btn-disabled btn-primary btn-outline join join-item badge badge-ghost badge-sm select select-primary select-sm
+    inline-flex flex items-center justify-center gap-2 px-4 py-2 mr-2 text-sm font-medium shadow-sm rounded-md rounded-l-lg rounded-r-lg rounded-full border border-gray-300
+    text-white text-gray-700 text-gray-400 text-gray-600 bg-white bg-gray-100 bg-blue-600 border-blue-600
+    hover:bg-gray-50 hover:bg-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 cursor-not-allowed whitespace-nowrap block w-auto
+    dark:bg-gray-800 dark:bg-gray-700 dark:bg-blue-500 dark:text-gray-300 dark:text-gray-500 dark:text-gray-200 dark:text-white
+    dark:border-gray-600 dark:border-blue-500 dark:hover:bg-gray-700 dark:hover:bg-blue-600 dark:focus:ring-blue-400
+    dark:btn-accent dark:btn-outline dark:btn-disabled dark:btn-primary dark:btn-active">
 </span>
 ```
+
+**What's Included:**
+- **DaisyUI components** (TailwindAndDaisy view): `btn`, `join`, `badge`, `select` classes
+- **Pure Tailwind utilities** (Tailwind view): Layout, spacing, colors, borders, focus states
+- **Dark mode variants**: All `dark:` prefixed classes
+- **Not needed for**: Bootstrap, Plain, or NoJS views (they don't use Tailwind)
 
 ### Custom View Support
 To use a custom view:

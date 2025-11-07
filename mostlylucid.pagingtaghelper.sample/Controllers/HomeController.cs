@@ -414,7 +414,8 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
             NextPageToken = nextToken,
             HasMoreResults = hasMore,
             PageTokenHistory = history,
-            Products = pageData
+            Products = pageData,
+            LinkUrl = "/ContinuationPager"
         };
 
         if (Request.IsHtmx())

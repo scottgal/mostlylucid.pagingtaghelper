@@ -50,7 +50,8 @@
         <paging
             model="Model"
             language="@selectedLanguage"
-            link-url="/Localization"
+            link-url="/Localization?language=@selectedLanguage"
+            hx-target="#localization-content"
             show-summary="true"
             first-last-navigation="true" />
     </div>

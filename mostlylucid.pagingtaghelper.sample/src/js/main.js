@@ -2,7 +2,9 @@ function setTheme(theme) {
     const html = document.documentElement;
     const isDark = theme === 'dark';
 
+    // Set both class for Tailwind and data-theme for DaisyUI
     html.classList.toggle('dark', isDark);
+    html.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
 
     // Update icons or labels

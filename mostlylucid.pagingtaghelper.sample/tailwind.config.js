@@ -20,7 +20,13 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require('daisyui')],
+  plugins: [
+    require('daisyui')
+  ],
+  daisyui: {
+    themes: ["light", "dark"],
+    logs: true,
+  },
   // Optimize for production
   ...(process.env.NODE_ENV === 'production' && {
     experimental: {

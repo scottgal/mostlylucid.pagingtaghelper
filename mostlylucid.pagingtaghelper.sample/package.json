@@ -10,16 +10,17 @@
     "build:js": "cross-env NODE_ENV=production webpack --env production",
     "build:tw": "cross-env NODE_ENV=production npx tailwindcss -i ./src/css/main.css -o ./wwwroot/css/dist/main.css --minify"
   },
-
   "devDependencies": {
     "@types/alpinejs": "^3.13.10",
     "autoprefixer": "^10.4.19",
     "cross-env": "^10.1.0",
     "cssnano": "^7.1.2",
-    "daisyui": "^5.4.7",
     "npm-run-all": "^4.1.5",
     "tailwindcss": "^3.4.17",
     "webpack": "^5.102.1",
     "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "daisyui": "^4.12.24"
   }
 }

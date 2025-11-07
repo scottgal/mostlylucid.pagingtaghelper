@@ -106,7 +106,8 @@
                 <paging
                     model="Model"
                     language="@selectedLanguage"
-                    link-url="/Localization"
+                    link-url="/Localization?language=@selectedLanguage"
+                    hx-target="#localization-content"
                     show-summary="true"
                     first-last-navigation="true" />
             </div>
@@ -142,11 +143,3 @@
     </div>
 </div>
 
-<script>
-    // Preserve the selected language in HTMX requests from the pager
-    htmx.on('htmx:configRequest', function(event) {
-        if (event.detail.path.includes('/Localization')) {
-            event.detail.parameters.language = '@selectedLanguage';
-        }
-    });
-</script>

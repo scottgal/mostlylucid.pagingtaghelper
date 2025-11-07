@@ -26,17 +26,17 @@ public class ContinuationPagerViewComponent : ViewComponent
     {
         if (model.UseLocalView)
         {
-            return "Custom";
+            return "Components/ContinuationPager/Default";
         }
 
         return model.ViewType switch
         {
-            ViewType.TailwindAndDaisy => "Default",
-            ViewType.Tailwind => "TailwindView",
-            ViewType.Bootstrap => "BootstrapView",
-            ViewType.Plain => "PlainView",
-            ViewType.NoJS => "NoJSView",
-            _ => "Default"
+            ViewType.TailwindAndDaisy => "/Areas/Components/Views/ContinuationPager/Default.cshtml",
+            ViewType.Tailwind => "/Areas/Components/Views/ContinuationPager/TailwindView.cshtml",
+            ViewType.Bootstrap => "/Areas/Components/Views/ContinuationPager/BootstrapView.cshtml",
+            ViewType.Plain => "/Areas/Components/Views/ContinuationPager/PlainView.cshtml",
+            ViewType.NoJS => "/Areas/Components/Views/ContinuationPager/NoJSView.cshtml",
+            _ => "/Areas/Components/Views/ContinuationPager/Default.cshtml"
         };
     }
 }

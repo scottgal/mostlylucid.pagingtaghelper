@@ -28,7 +28,8 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
     [HtmlAttributeName("view-type")]
     public ViewType ViewType { get; set; } = ViewType.TailwindAndDaisy;
 
-    /// <summary>Enable HTMX usage (default: true).</summary>
+    /// <summary>Enable HTMX usage (default: true). Deprecated: use js-mode instead.</summary>
+    [Obsolete("use-htmx is deprecated. Use js-mode=\"HTMX\" instead. This attribute will be removed in v2.0.", false)]
     [HtmlAttributeName("use-htmx")]
     public bool UseHtmx { get; set; } = true;
 
@@ -234,7 +235,9 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
         {
             ViewType = ViewType,
             UseLocalView = UseLocalView,
+#pragma warning disable CS0618 // Type or member is obsolete
             UseHtmx = UseHtmx,
+#pragma warning restore CS0618 // Type or member is obsolete
             JSMode = JSMode,
             PagerId = finalPagerId,
             SearchTerm = SearchTerm,
