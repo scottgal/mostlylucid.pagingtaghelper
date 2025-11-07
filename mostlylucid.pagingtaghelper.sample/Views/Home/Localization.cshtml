@@ -1,0 +1,149 @@
+@model mostlylucig.pagingtaghelper.sample.Models.PagingViewModel
+@{
+    ViewData["Title"] = "Localization Demo";
+    var selectedLanguage = ViewBag.SelectedLanguage as string ?? "en";
+
+    var languages = new Dictionary<string, string>
+    {
+        { "en", "English" },
+        { "de", "German (Deutsch)" },
+        { "es", "Spanish (Español)" },
+        { "fr", "French (Français)" },
+        { "it", "Italian (Italiano)" },
+        { "pt", "Portuguese (Português)" },
+        { "ja", "Japanese (日本語)" },
+        { "zh-Hans", "Chinese Simplified (简体中文)" }
+    };
+}
+
+<div class="max-w-7xl mx-auto p-6">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-4 dark:text-white">Localization Demo</h1>
+        <div class="bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 p-4 mb-6">
+            <p class="text-sm dark:text-blue-100">
+                <strong>About this demo:</strong> The paging controls automatically adapt to the selected language.
+                Change the language using the dropdown below to see pagination text, button labels, and summary text
+                translated into 8 different languages.
+            </p>
+        </div>
+
+        <div class="flex justify-between items-center mb-6">
+            <a href="/" class="text-blue-600 dark:text-blue-400 hover:underline">← Back to Demos</a>
+            <a href="https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Controllers/HomeController.cs#L381"
+               target="_blank"
+               class="text-blue-600 dark:text-blue-400 hover:underline">
+                View Source Code →
+            </a>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-6">
+            <label for="language-selector" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Select Language / 言語を選択 / Seleccionar idioma / Sélectionner la langue:
+            </label>
+            <select id="language-selector"
+                    class="select select-bordered w-full max-w-xs dark:bg-gray-700 dark:text-white"
+                    onchange="window.location.href='/Localization?language=' + this.value + '&page=@Model.Page&pageSize=@Model.PageSize'">
+                @foreach (var lang in languages)
+                {
+                    <option value="@lang.Key" selected="@(lang.Key == selectedLanguage)">
+                        @lang.Value
+                    </option>
+                }
+            </select>
+
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <p><strong>Currently selected:</strong> @languages[selectedLanguage]</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-900 rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Product
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Company
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Location
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Price
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach (var item in Model.Data)
+                    {
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">@item.Name</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">@item.Description.Substring(0, Math.Min(50, item.Description.Length))...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                @item.CompanyName
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">@item.CompanyCity</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">@item.CompanyCountry</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                $@((item.Id * 10.99m).ToString("N2"))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <paging
+                model="Model"
+                language="@selectedLanguage"
+                link-url="/Localization"
+                show-summary="true"
+                first-last-navigation="true" />
+        </div>
+    </div>
+
+    <div class="mt-8 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+        <h3 class="font-semibold mb-3 dark:text-white">Supported Languages:</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm dark:text-gray-300">
+            @foreach (var lang in languages)
+            {
+                <div class="@(lang.Key == selectedLanguage ? "font-bold text-blue-600 dark:text-blue-400" : "")">
+                    <span class="inline-block w-10">@lang.Key:</span> @lang.Value
+                </div>
+            }
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded">
+            <p class="text-sm dark:text-blue-100">
+                <strong>How it works:</strong> Simply add the <code class="bg-white dark:bg-gray-700 px-1 rounded">language="@selectedLanguage"</code> attribute to the paging tag helper.
+                The library automatically loads the appropriate resource file and translates all text (button labels, summary, aria labels, etc.).
+            </p>
+        </div>
+
+        <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900 rounded">
+            <p class="text-sm dark:text-yellow-100">
+                <strong>Custom translations:</strong> You can override any text by using attributes like
+                <code class="bg-white dark:bg-gray-700 px-1 rounded">previous-page-text</code>,
+                <code class="bg-white dark:bg-gray-700 px-1 rounded">next-page-text</code>, or provide a custom
+                <code class="bg-white dark:bg-gray-700 px-1 rounded">summary-template</code>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preserve the selected language in the page size changes
+    htmx.on('htmx:configRequest', function(event) {
+        if (event.detail.path.includes('/Localization')) {
+            event.detail.parameters.language = '@selectedLanguage';
+        }
+    });
+</script>

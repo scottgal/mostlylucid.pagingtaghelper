@@ -1,0 +1,58 @@
+@model mostlylucig.pagingtaghelper.sample.Models.ContinuationPagingViewModel
+@{
+    ViewData["Title"] = "Continuation Pager Demo - Cosmos DB Style";
+}
+
+<div class="max-w-7xl mx-auto p-6">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-4 dark:text-white">Continuation Token Pagination</h1>
+        <div class="bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 p-4 mb-6">
+            <p class="text-sm dark:text-blue-100">
+                <strong>About this demo:</strong> This demonstrates pagination using continuation tokens, similar to how Cosmos DB, DynamoDB, and Azure Table Storage work.
+                Instead of traditional page numbers, we use tokens to navigate forward and backward. The token history enables "Previous" navigation.
+            </p>
+        </div>
+
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-6">
+            <h3 class="font-semibold mb-2 dark:text-white">Current State:</h3>
+            <ul class="text-sm space-y-1 dark:text-gray-300">
+                <li><strong>Current Page:</strong> @Model.CurrentPage</li>
+                <li><strong>Page Size:</strong> @Model.PageSize items</li>
+                <li><strong>Has More Results:</strong> @(Model.HasMoreResults ? "Yes" : "No")</li>
+                <li><strong>Next Token:</strong> @(string.IsNullOrEmpty(Model.NextPageToken) ? "None (last page)" : Model.NextPageToken.Substring(0, Math.Min(20, Model.NextPageToken.Length)) + "...")</li>
+                <li><strong>Token History Size:</strong> @(Model.PageTokenHistory?.Count ?? 0) pages</li>
+            </ul>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+            <a href="/" class="text-blue-600 dark:text-blue-400 hover:underline">← Back to Demos</a>
+            <a href="https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Controllers/HomeController.cs#L310"
+               target="_blank"
+               class="text-blue-600 dark:text-blue-400 hover:underline">
+                View Source Code →
+            </a>
+        </div>
+    </div>
+
+    <div id="products-container">
+        @await Html.PartialAsync("_ContinuationPagerList", Model)
+    </div>
+
+    <div class="mt-8 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+        <h3 class="font-semibold mb-3 dark:text-white">How Continuation Tokens Work:</h3>
+        <ol class="list-decimal list-inside space-y-2 text-sm dark:text-gray-300">
+            <li>The database returns a batch of results plus a continuation token</li>
+            <li>The token represents where to start the next query (opaque to the client)</li>
+            <li>For backward navigation, we store token history in a dictionary</li>
+            <li>Token history maps page numbers to the tokens needed to reach those pages</li>
+            <li>This demo simulates tokens using Base64-encoded start indices</li>
+        </ol>
+
+        <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900 rounded">
+            <p class="text-sm dark:text-yellow-100">
+                <strong>Real-world usage:</strong> In production, tokens come from the database (e.g., Cosmos DB's continuation token,
+                DynamoDB's LastEvaluatedKey). You'd typically store token history in session state, cookies, or pass it in query parameters.
+            </p>
+        </div>
+    </div>
+</div>

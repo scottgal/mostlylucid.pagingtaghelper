@@ -1,0 +1,121 @@
+@model mostlylucid.pagingtaghelper.Models.TagModels.ContinuationPagerViewModel
+@using mostlylucid.pagingtaghelper.Models
+@{
+    var linkUrl = Model.LinkUrl;
+    var currentPage = Model.CurrentPage;
+    var pageSize = Model.PageSize;
+    var searchTerm = Model.SearchTerm;
+    var nextToken = Model.NextPageToken;
+    var canGoBack = Model.CanNavigatePrevious;
+    var canGoNext = Model.CanNavigateNext;
+    var previousToken = Model.GetPreviousPageToken();
+
+    // Serialize token history for passing to next page
+    var tokenHistoryJson = Model.PageTokenHistory != null
+        ? System.Text.Json.JsonSerializer.Serialize(Model.PageTokenHistory)
+        : "{}";
+
+    // Build query strings - preserves all current query parameters except our own
+    string BuildQueryString(string? token, int page)
+    {
+        var query = new Dictionary<string, string>();
+
+        // First, preserve all existing query parameters except continuation pager's own
+        var excludeParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "pageSize", "currentPage", "pageToken", "tokenHistory"
+        };
+
+        foreach (var param in ViewContext.HttpContext.Request.Query)
+        {
+            if (!excludeParams.Contains(param.Key))
+            {
+                query[param.Key] = param.Value.ToString();
+            }
+        }
+
+        // Then add/override with continuation pager parameters
+        query["pageSize"] = pageSize.ToString();
+        query["currentPage"] = page.ToString();
+
+        if (!string.IsNullOrEmpty(token))
+            query["pageToken"] = token;
+
+        if (Model.EnableTokenAccumulation)
+            query["tokenHistory"] = tokenHistoryJson;
+
+        return string.Join("&", query.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
+    }
+
+    var prevUrl = canGoBack ? $"{linkUrl}?{BuildQueryString(previousToken, currentPage - 1)}" : "#";
+    var nextUrl = canGoNext ? $"{linkUrl}?{BuildQueryString(nextToken, currentPage + 1)}" : "#";
+}
+
+<div class="pager-container @Model.CssClass" id="@Model.PagerId">
+    @* Previous Link (anchor only, no JavaScript) *@
+    @if (canGoBack)
+    {
+        <a href="@prevUrl"
+           class="pager-button"
+           aria-label="@Model.PreviousPageAriaLabel">
+            @Model.PreviousPageText
+        </a>
+    }
+    else
+    {
+        <span class="pager-button disabled">@Model.PreviousPageText</span>
+    }
+
+    @* Current Page Indicator *@
+    @if (Model.ShowPageNumber)
+    {
+        <div class="page-indicator">
+            <text>Page </text>@currentPage
+        </div>
+    }
+
+    @* Next Link (anchor only, no JavaScript) *@
+    @if (canGoNext)
+    {
+        <a href="@nextUrl"
+           class="pager-button"
+           aria-label="@Model.NextPageAriaLabel">
+            @Model.NextPageText
+        </a>
+    }
+    else
+    {
+        <span class="pager-button disabled">@Model.NextPageText</span>
+    }
+
+    @* Page Size Selector as a form (no JavaScript) *@
+    @if (Model.ShowPageSize)
+    {
+        <div class="page-size-container">
+            <form method="get" action="@linkUrl" class="page-size-form">
+                @* Preserve all existing query parameters except pageSize and page-related ones *@
+                @foreach (var param in ViewContext.HttpContext.Request.Query)
+                {
+                    if (!new[] { "pageSize", "currentPage", "pageToken", "tokenHistory" }.Contains(param.Key, StringComparer.OrdinalIgnoreCase))
+                    {
+                        <input type="hidden" name="@param.Key" value="@param.Value" />
+                    }
+                }
+
+                @* Reset to page 1 when changing page size *@
+                <input type="hidden" name="currentPage" value="1" />
+
+                <label for="pageSize-@Model.PagerId">Items per page:</label>
+                <select name="pageSize" id="pageSize-@Model.PagerId" onchange="this.form.submit()">
+                    @foreach (var size in new[] { 10, 25, 50, 100 })
+                    {
+                        <option value="@size" selected="@(size == pageSize)">@size</option>
+                    }
+                </select>
+                <noscript>
+                    <button type="submit" class="page-size-button">Update</button>
+                </noscript>
+            </form>
+        </div>
+    }
+</div>

@@ -129,8 +129,36 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
                             }
                         }
                     }
-                    
-                }
+
+                },
+                    new CardSectionModel()
+                    {
+                        Title="Continuation Pager (NoSQL)",
+                        Cards =
+                        {
+                            new CardPartialModel
+                            {
+                                Title = "Continuation Token Pagination",
+                                Description = "Demonstrates pagination using continuation tokens like Cosmos DB, DynamoDB, and Azure Table Storage. Supports token history for backward navigation.",
+                                Controller = "Home",
+                                Action = "ContinuationPager"
+                            }
+                        }
+                    },
+                    new CardSectionModel()
+                    {
+                        Title="Localization",
+                        Cards =
+                        {
+                            new CardPartialModel
+                            {
+                                Title = "Multi-Language Support",
+                                Description = "Interactive demo showing pagination in 8 languages: English, German, Spanish, French, Italian, Portuguese, Japanese, and Chinese.",
+                                Controller = "Home",
+                                Action = "Localization"
+                            }
+                        }
+                    }
             };
         
             return View(sectionModels);
@@ -307,6 +335,88 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
 
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    [Route("ContinuationPager")]
+    public async Task<IActionResult> ContinuationPager(
+        int currentPage = 1,
+        int pageSize = 25,
+        string? pageToken = null,
+        string? tokenHistory = null)
+    {
+        // Simulate continuation token-based pagination (like Cosmos DB)
+        const int totalItems = 500;
+        var allData = await dataFakerService.GenerateData(totalItems);
+
+        // Deserialize token history
+        var history = string.IsNullOrEmpty(tokenHistory)
+            ? new Dictionary<int, string>()
+            : System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, string>>(tokenHistory)
+              ?? new Dictionary<int, string>();
+
+        // Simulate token-based navigation
+        int startIndex = 0;
+        if (!string.IsNullOrEmpty(pageToken))
+        {
+            // Decode the token (it's just a base64-encoded start index for this demo)
+            try
+            {
+                var tokenBytes = Convert.FromBase64String(pageToken);
+                var tokenString = System.Text.Encoding.UTF8.GetString(tokenBytes);
+                startIndex = int.Parse(tokenString);
+            }
+            catch
+            {
+                startIndex = 0;
+            }
+        }
+
+        var pageData = allData.Skip(startIndex).Take(pageSize).ToList();
+        var hasMore = (startIndex + pageSize) < totalItems;
+
+        // Generate next token
+        string? nextToken = null;
+        if (hasMore)
+        {
+            var nextStartIndex = startIndex + pageSize;
+            var tokenString = nextStartIndex.ToString();
+            var tokenBytes = System.Text.Encoding.UTF8.GetBytes(tokenString);
+            nextToken = Convert.ToBase64String(tokenBytes);
+        }
+
+        // Store current token in history
+        if (!string.IsNullOrEmpty(pageToken))
+        {
+            history[currentPage] = pageToken;
+        }
+
+        var viewModel = new ContinuationPagingViewModel
+        {
+            CurrentPage = currentPage,
+            PageSize = pageSize,
+            NextPageToken = nextToken,
+            HasMoreResults = hasMore,
+            PageTokenHistory = history,
+            Products = pageData
+        };
+
+        if (Request.IsHtmx())
+        {
+            return PartialView("_ContinuationPagerList", viewModel);
+        }
+
+        return View(viewModel);
+    }
+
+    [Route("Localization")]
+    public async Task<IActionResult> Localization(
+        int page = 1,
+        int pageSize = 10,
+        string language = "en")
+    {
+        var pagingModel = await GenerateModel(page, pageSize);
+        ViewBag.SelectedLanguage = language;
+        return View(pagingModel);
+    }
+
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
