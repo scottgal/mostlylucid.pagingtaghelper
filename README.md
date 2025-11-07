@@ -47,9 +47,10 @@ Built for modern web apps with HTMX, Alpine.js, or vanilla JavaScript support. S
 - **HTMX-First** - But works great without it
 
 ### **Bonus Features**
+- **Continuation Token Pagination** - Support for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage)
 - **Sortable Headers** - Flip between ascending/descending with visual indicators
 - **Page Size Selector** - Standalone component for changing items per page
-- **Search Integration** - Preserve search terms across pages
+- **Search Integration** - Preserve search terms and filters across pages automatically
 - **Dark Mode** - Automatic dark mode support for all views
 
 ---
@@ -313,6 +314,43 @@ Use the page size component standalone:
 
 <!-- With HTMX target -->
 <page-size model="Model" hx-target="#results" />
+```
+
+---
+
+## Continuation Pager (NoSQL Pagination)
+
+For NoSQL databases that use continuation tokens (Cosmos DB, DynamoDB, Azure Table Storage):
+
+```html
+<continuation-pager
+    model="Model"
+    htmx-target="#results-container"
+    show-page-number="true"
+    show-pagesize="true"
+    max-history-pages="20"
+    preserve-query-parameters="true" />
+```
+
+**Key Features:**
+- **Token-based navigation** - Uses database continuation tokens instead of page offsets
+- **Numbered pages** - Shows visited pages: [← Prev] [1] [2] [3 active] [4 disabled] [Next →]
+- **Backward navigation** - Stores token history to enable clicking previous page numbers
+- **Query parameter preservation** - Automatically preserves filters/searches (critical for token validity)
+- **Configurable history limit** - Set `max-history-pages` to limit memory usage (default: 20)
+
+Implement `IContinuationPagingModel` in your view model:
+
+```csharp
+public class ProductsViewModel : IContinuationPagingModel
+{
+    public string? NextPageToken { get; set; }
+    public bool HasMoreResults { get; set; }
+    public int PageSize { get; set; } = 25;
+    public int CurrentPage { get; set; } = 1;
+    public Dictionary<int, string>? PageTokenHistory { get; set; }
+    public List<Product> Products { get; set; } = new();
+}
 ```
 
 ---

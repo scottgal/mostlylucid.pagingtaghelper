@@ -15,34 +15,52 @@
         ? System.Text.Json.JsonSerializer.Serialize(Model.PageTokenHistory)
         : "{}";
 
-    // Build query strings - preserves all current query parameters except our own
+    // Build query strings - preserves all current query parameters except our own (when enabled)
     string BuildQueryString(string? token, int page)
     {
         var query = new Dictionary<string, string>();
 
-        // First, preserve all existing query parameters except continuation pager's own
-        var excludeParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        // Define continuation pager's own parameters that should be excluded from preservation
+        var pagerParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "pageSize", "currentPage", "pageToken", "tokenHistory"
         };
 
-        foreach (var param in ViewContext.HttpContext.Request.Query)
+        // Add parameter prefix variants if using prefixed parameters
+        if (!string.IsNullOrEmpty(Model.ParameterPrefix))
         {
-            if (!excludeParams.Contains(param.Key))
+            pagerParams.Add($"{Model.ParameterPrefix}_pageSize");
+            pagerParams.Add($"{Model.ParameterPrefix}_currentPage");
+            pagerParams.Add($"{Model.ParameterPrefix}_pageToken");
+            pagerParams.Add($"{Model.ParameterPrefix}_tokenHistory");
+        }
+
+        // Preserve all existing query parameters (except pager's own) if enabled
+        if (Model.PreserveQueryParameters)
+        {
+            foreach (var param in ViewContext.HttpContext.Request.Query)
             {
-                query[param.Key] = param.Value.ToString();
+                if (!pagerParams.Contains(param.Key))
+                {
+                    query[param.Key] = param.Value.ToString();
+                }
             }
         }
 
-        // Then add/override with continuation pager parameters
-        query["pageSize"] = pageSize.ToString();
-        query["currentPage"] = page.ToString();
+        // Add continuation pager parameters (with prefix if specified)
+        var pageSizeParam = Model.GetParameterName("pageSize");
+        var currentPageParam = Model.GetParameterName("currentPage");
+        var pageTokenParam = Model.GetParameterName("pageToken");
+        var tokenHistoryParam = Model.GetParameterName("tokenHistory");
+
+        query[pageSizeParam] = pageSize.ToString();
+        query[currentPageParam] = page.ToString();
 
         if (!string.IsNullOrEmpty(token))
-            query["pageToken"] = token;
+            query[pageTokenParam] = token;
 
         if (Model.EnableTokenAccumulation)
-            query["tokenHistory"] = tokenHistoryJson;
+            query[tokenHistoryParam] = tokenHistoryJson;
 
         return string.Join("&", query.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
     }

@@ -228,6 +228,87 @@ For full navigation, the token history is automatically serialized as JSON in th
 
 The `tokenHistory` parameter contains the encoded dictionary, making backward navigation seamless.
 
+### Numbered Page Navigation {#numbered-page-navigation}
+
+One of the most important UX improvements in the continuation pager is **numbered page buttons**. As you navigate forward, the pager displays clickable page numbers for all visited pages:
+
+```
+Initial page 1:    [Next →]
+After next click:  [← Prev] [1] [2 active] [3 disabled] [Next →]
+After next click:  [← Prev] [1] [2] [3 active] [4 disabled] [Next →]
+Click page 2:      [← Prev] [1] [2 active] [3] [4 disabled] (no next - not visited yet)
+```
+
+This provides traditional pagination UX while maintaining token-based backend architecture. The implementation stores tokens for each visited page, allowing direct navigation to any previously accessed page.
+
+**Limiting History Growth:**
+
+To prevent unbounded memory usage, set `max-history-pages` (default: 20):
+
+```razor
+<continuation-pager
+    model="Model"
+    max-history-pages="50"
+    show-page-number="true" />
+```
+
+When the limit is reached, the oldest page tokens are automatically trimmed.
+
+### Critical: Query Parameter Preservation {#query-parameter-preservation}
+
+**This is the most important feature of the continuation pager implementation.**
+
+Continuation tokens are only valid with the same query context (filters, sorts, searches) that generated them. Using a token with different query parameters will return incorrect data or fail entirely.
+
+The continuation pager automatically preserves ALL query parameters except its own:
+
+```html
+<!-- URL with filters -->
+/Products?category=electronics&brand=acme&minPrice=100
+
+<!-- After clicking Next -->
+/Products?category=electronics&brand=acme&minPrice=100&currentPage=2&pageToken=xyz123&tokenHistory={...}
+
+<!-- All filters preserved! Token is valid because query context matches. -->
+```
+
+You can disable this behavior if needed:
+
+```razor
+<continuation-pager
+    model="Model"
+    preserve-query-parameters="false" />
+```
+
+But this is **strongly discouraged** unless you're absolutely certain your tokens don't depend on query context.
+
+**Why This Matters:**
+
+Cosmos DB example:
+```csharp
+// Page 1 with filter
+var query = container.GetItemQueryIterator<Product>(
+    "SELECT * FROM c WHERE c.category = 'electronics'",
+    continuationToken: null
+);
+var response = await query.ReadNextAsync();
+// Returns: Products + Token_A
+
+// Page 2 with SAME filter - Token_A is valid
+var query2 = container.GetItemQueryIterator<Product>(
+    "SELECT * FROM c WHERE c.category = 'electronics'",
+    continuationToken: Token_A  // ✅ Works!
+);
+
+// Page 2 with DIFFERENT filter - Token_A is invalid
+var query3 = container.GetItemQueryIterator<Product>(
+    "SELECT * FROM c WHERE c.category = 'computers'",
+    continuationToken: Token_A  // ❌ Wrong results or error!
+);
+```
+
+The continuation pager's automatic parameter preservation ensures tokens are always used with their original query context.
+
 ---
 
 ## Localization Support {#localization-support}
@@ -631,36 +712,56 @@ The `onchange="this.form.submit()"` provides convenience when JavaScript is avai
 
 One of the most frustrating aspects of pagination implementations is losing your filters, search terms, or sort order when navigating between pages. Version 1.0.0 solves this elegantly by **automatically preserving all query parameters except the pagination control's own parameters**.
 
-Here's how it works internally (from the ContinuationPager view, but the same logic applies to all views):
+This feature works identically across **both regular pagers and continuation pagers**, and across **all JavaScript modes and ViewTypes**.
+
+Here's how it works internally:
 
 ```csharp
 string BuildQueryString(string? token, int page)
 {
     var query = new Dictionary<string, string>();
 
-    // First, preserve all existing query parameters except our own
-    var excludeParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    // Define continuation pager's own parameters that should be excluded from preservation
+    var pagerParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "pageSize", "currentPage", "pageToken", "tokenHistory"
     };
 
-    foreach (var param in ViewContext.HttpContext.Request.Query)
+    // Add parameter prefix variants if using prefixed parameters
+    if (!string.IsNullOrEmpty(Model.ParameterPrefix))
     {
-        if (!excludeParams.Contains(param.Key))
+        pagerParams.Add($"{Model.ParameterPrefix}_pageSize");
+        pagerParams.Add($"{Model.ParameterPrefix}_currentPage");
+        pagerParams.Add($"{Model.ParameterPrefix}_pageToken");
+        pagerParams.Add($"{Model.ParameterPrefix}_tokenHistory");
+    }
+
+    // Preserve all existing query parameters (except pager's own) if enabled
+    if (Model.PreserveQueryParameters)
+    {
+        foreach (var param in ViewContext.HttpContext.Request.Query)
         {
-            query[param.Key] = param.Value.ToString();
+            if (!pagerParams.Contains(param.Key))
+            {
+                query[param.Key] = param.Value.ToString();
+            }
         }
     }
 
-    // Then add/override with our pagination parameters
-    query["pageSize"] = pageSize.ToString();
-    query["currentPage"] = page.ToString();
+    // Add continuation pager parameters (with prefix if specified)
+    var pageSizeParam = Model.GetParameterName("pageSize");
+    var currentPageParam = Model.GetParameterName("currentPage");
+    var pageTokenParam = Model.GetParameterName("pageToken");
+    var tokenHistoryParam = Model.GetParameterName("tokenHistory");
+
+    query[pageSizeParam] = pageSize.ToString();
+    query[currentPageParam] = page.ToString();
 
     if (!string.IsNullOrEmpty(token))
-        query["pageToken"] = token;
+        query[pageTokenParam] = token;
 
-    if (EnableTokenAccumulation)
-        query["tokenHistory"] = tokenHistoryJson;
+    if (Model.EnableTokenAccumulation)
+        query[tokenHistoryParam] = tokenHistoryJson;
 
     return string.Join("&", query.Select(kvp =>
         $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));

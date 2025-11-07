@@ -3,20 +3,37 @@ MAJOR UPDATE - Breaking changes and new features:
 
 NEW FEATURES:
 - ContinuationPager TagHelper for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage)
+  * Numbered page navigation showing visited pages with clickable buttons
+  * Token history management with configurable max limit (default: 20 pages)
+  * Automatic query parameter preservation (filters, searches, sorts)
+  * Support for all JavaScript modes (HTMX, Alpine, PlainJS, NoJS)
+  * Forward/backward navigation using continuation tokens
 - JavaScript Modes: js-mode attribute with 5 options (HTMX, HTMXWithAlpine, Alpine, PlainJS, NoJS)
 - Pure Tailwind View: No DaisyUI dependency. TailwindAndDaisy now fully uses DaisyUI components
 - NoJS View: Zero-JavaScript using forms and links. Perfect for accessibility
 - Localization: 8 languages (EN, FR, DE, ES, IT, PT, JA, ZH)
 - Custom Summary Templates with placeholders
+- URL Parameter Preservation: All query parameters automatically preserved across pagination
+
+CONTINUATION PAGER FEATURES:
+- preserve-query-parameters attribute (default: true) - Preserves all URL parameters except pager's own
+- max-history-pages attribute (default: 20) - Limits stored continuation tokens
+- enable-token-accumulation attribute - Controls token history storage
+- Numbered page display showing: [← Prev] [1] [2] [3 active] [4 disabled] [Next →]
+- Parameter prefix support for multiple pagers on same page
+- Dark mode support with proper background colors
 
 IMPROVEMENTS:
 - Updated to HTMX 2.0.4, DaisyUI 5.4.7, webpack 5.102.1
-- Comprehensive documentation and 196 passing unit tests
+- Comprehensive documentation and 196+ passing unit tests
+- Fixed dark mode background colors in sample application
+- Enhanced token validity by preserving query context
 
 BUG FIXES:
 - Fixed namespace typos causing Docker build failures
 - Fixed styling consistency across view types
 - Fixed dark mode toggle and Alpine.js Razor compatibility
+- Fixed dark mode page background not changing (bg-gray-900)
 
 BREAKING CHANGES:
 - use-htmx deprecated. Use js-mode instead
