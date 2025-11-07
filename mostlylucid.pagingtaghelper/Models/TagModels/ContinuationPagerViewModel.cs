@@ -80,6 +80,12 @@ public class ContinuationPagerViewModel : PageSizeModel
     public bool EnableTokenAccumulation { get; set; } = true;
 
     /// <summary>
+    /// Optional prefix for query parameters to support multiple pagers on the same page.
+    /// Example: "products" will generate "products_pageToken", "products_currentPage", etc.
+    /// </summary>
+    public string? ParameterPrefix { get; set; }
+
+    /// <summary>
     /// Gets the token for the previous page from history.
     /// </summary>
     public string? GetPreviousPageToken()
@@ -100,4 +106,16 @@ public class ContinuationPagerViewModel : PageSizeModel
     /// Checks if we can navigate to the next page.
     /// </summary>
     public bool CanNavigateNext => HasMoreResults && !string.IsNullOrEmpty(NextPageToken);
+
+    /// <summary>
+    /// Gets a parameter name with the prefix applied (if set).
+    /// </summary>
+    /// <param name="paramName">The base parameter name</param>
+    /// <returns>The prefixed parameter name, or the base name if no prefix is set</returns>
+    public string GetParameterName(string paramName)
+    {
+        return string.IsNullOrWhiteSpace(ParameterPrefix)
+            ? paramName
+            : $"{ParameterPrefix}_{paramName}";
+    }
 }

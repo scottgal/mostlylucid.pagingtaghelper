@@ -1,5 +1,7 @@
 @model PagingViewModel
 @{
+    Layout = "_LayoutTailwind";
+    ViewData["Title"] = "Pure Tailwind View";
     var previewModel = new PreviewPartialViewModel();
     previewModel.Description = "This example demonstrates the pure Tailwind CSS view type without DaisyUI components. It uses only Tailwind utility classes for styling, making it framework-independent.";
     previewModel.SourceLink="/Views/Home/TailwindView.cshtml";

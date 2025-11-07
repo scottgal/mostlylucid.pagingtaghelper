@@ -134,6 +134,10 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
     [HtmlAttributeName("page-token-history")]
     public string? PageTokenHistoryJson { get; set; }
 
+    /// <summary>Optional prefix for query parameters to support multiple pagers on the same page (e.g., "products" -> "products_pageToken").</summary>
+    [HtmlAttributeName("parameter-prefix")]
+    public string? ParameterPrefix { get; set; }
+
     /// <summary>Captures the current ViewContext (injected by the runtime).</summary>
     [ViewContext, HtmlAttributeNotBound]
     public required ViewContext ViewContext { get; set; }
@@ -224,7 +228,8 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
             NextPageAriaLabel = NextPageAriaLabel,
             HtmxTarget = HtmxTarget,
             Localizer = localizer,
-            EnableTokenAccumulation = EnableTokenAccumulation
+            EnableTokenAccumulation = EnableTokenAccumulation,
+            ParameterPrefix = ParameterPrefix
         };
 
         // Safely invoke the "ContinuationPager" ViewComponent
@@ -251,7 +256,7 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
             "next-page-token", "has-more-results", "page-size", "current-page", "use-local-view",
             "css-class", "previous-page-text", "next-page-text", "previous-page-aria-label",
             "next-page-aria-label", "htmx-target", "language", "enable-token-accumulation",
-            "page-token-history"
+            "page-token-history", "parameter-prefix"
         };
         foreach (var attr in attrs)
         {
