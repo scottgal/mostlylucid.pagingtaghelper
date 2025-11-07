@@ -6,7 +6,7 @@
         if (elt?.matches('[name="pageSize"]')) {
             const params = new URLSearchParams(window.location.search);
 
-            // Update the pageSize parameter
+            // Update the pageSize parameterOk
             params.set('pageSize', elt.value);
 
             // 🔥 Reset page to 1 if it exists

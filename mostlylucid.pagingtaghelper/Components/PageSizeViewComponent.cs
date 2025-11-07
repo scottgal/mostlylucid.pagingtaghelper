@@ -30,6 +30,8 @@ public class PageSizeViewComponent : ViewComponent
                 (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
                 (false, ViewType.Bootstrap) => View("/Areas/Components/Views/PageSize/BootstrapView.cshtml", model),
                 (false, ViewType.Plain) => View("/Areas/Components/Views/PageSize/PlainView.cshtml", model),
+                (false, ViewType.NoJS) => View("/Areas/Components/Views/PageSize/NoJSView.cshtml", model),
+                (false, ViewType.Tailwind) => View("/Areas/Components/Views/PageSize/TailwindView.cshtml", model),
                 (false, ViewType.TailwindAndDaisy) => View("/Areas/Components/Views/PageSize/Default.cshtml", model),
                 _ => View("/Areas/Components/Views/PageSize/Default.cshtml", model)
             };

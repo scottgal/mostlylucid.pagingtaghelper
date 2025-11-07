@@ -53,10 +53,38 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
                                Description = "This demonstrates using 'Plain' CSS which is injected into the view.",
                                Controller = "Home",
                                Action = "PlainView"
+                           },
+                           new CardPartialModel
+                           {
+                               Title = "Pure Tailwind",
+                               Description = "Uses pure TailwindCSS without DaisyUI components.",
+                               Controller = "Home",
+                               Action = "TailwindView"
+                           },
+                           new CardPartialModel
+                           {
+                               Title = "No JavaScript",
+                               Description = "Fully functional pagination with zero JavaScript - uses forms and standard links.",
+                               Controller = "Home",
+                               Action = "NoJSView"
                            }
                        },
-                       
-                       
+
+
+                    },
+                    new CardSectionModel()
+                    {
+                       Title="JavaScript Modes",
+                          Cards=
+                          {
+                              new CardPartialModel
+                              {
+                                  Title = "JavaScript Framework Modes",
+                                  Description = "Demonstrates all JavaScript modes: HTMX, HTMXWithAlpine, Alpine, PlainJS, and NoJS.",
+                                  Controller = "Home",
+                                  Action = "JavaScriptModes"
+                              }
+                          }
                     },
                     new CardSectionModel()
                     {
@@ -116,6 +144,30 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     {
         var pagingModel = await GenerateModel(page, pageSize);
         pagingModel.ViewType = ViewType.Plain;
+        return View(pagingModel);
+    }
+
+    [Route("TailwindView")]
+    public async Task<IActionResult> TailwindView(int page = 1, int pageSize = 10)
+    {
+        var pagingModel = await GenerateModel(page, pageSize);
+        pagingModel.ViewType = ViewType.Tailwind;
+        return View(pagingModel);
+    }
+
+    [Route("NoJSView")]
+    public async Task<IActionResult> NoJSView(int page = 1, int pageSize = 10)
+    {
+        var pagingModel = await GenerateModel(page, pageSize);
+        pagingModel.ViewType = ViewType.NoJS;
+        return View(pagingModel);
+    }
+
+    [Route("JavaScriptModes")]
+    public async Task<IActionResult> JavaScriptModes(int page = 1, int pageSize = 10, string mode = "HTMX")
+    {
+        var pagingModel = await GenerateModel(page, pageSize);
+        ViewBag.SelectedMode = mode;
         return View(pagingModel);
     }
     

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using mostlylucid.pagingtaghelper.Models;
 using mostlylucid.pagingtaghelper.Models.TagModels;
+using mostlylucid.pagingtaghelper.Services;
 
 namespace mostlylucid.pagingtaghelper.Components;
 
@@ -31,9 +32,13 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
     [HtmlAttributeName("view-type")]
     public ViewType ViewType { get; set; } = ViewType.TailwindAndDaisy;
 
-    /// <summary>Enable HTMX usage (default: true).</summary>
+    /// <summary>Enable HTMX usage (default: true). Deprecated: use js-mode instead.</summary>
     [HtmlAttributeName("use-htmx")]
     public bool UseHtmx { get; set; } = true;
+
+    /// <summary>JavaScript framework mode (HTMX, HTMXWithAlpine, Alpine, PlainJS, NoJS). If not set, derives from use-htmx.</summary>
+    [HtmlAttributeName("js-mode")]
+    public JavaScriptMode? JSMode { get; set; }
 
     /// <summary>Optional custom ID for the pager container.</summary>
     [HtmlAttributeName("id")]
@@ -157,6 +162,19 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
     [HtmlAttributeName("show-summary")]
     public bool ShowSummary { get; set; } = true;
 
+    /// <summary>
+    /// Custom template for the page summary. Supports placeholders: {currentPage}, {totalPages}, {totalItems}, {pageSize}, {startItem}, {endItem}.
+    /// Example: "Showing {startItem}-{endItem} of {totalItems} items"
+    /// </summary>
+    [HtmlAttributeName("summary-template")]
+    public string? SummaryTemplate { get; set; }
+
+    /// <summary>
+    /// Language/culture code for localization (e.g., "en", "fr", "de"). If not specified, uses current UI culture.
+    /// </summary>
+    [HtmlAttributeName("language")]
+    public string? Language { get; set; }
+
     /// <summary>Captures the current ViewContext (injected by the runtime).</summary>
     [ViewContext, HtmlAttributeNotBound]
     public required ViewContext ViewContext { get; set; }
@@ -195,6 +213,20 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
         var vcHelper = (IViewComponentHelper)services.GetRequiredService(typeof(IViewComponentHelper));
         ((IViewContextAware)vcHelper).Contextualize(ViewContext);
 
+        // Create localizer instance and set culture if specified
+        var localizer = new PagingLocalizer();
+        if (!string.IsNullOrEmpty(Language))
+        {
+            try
+            {
+                localizer.SetCulture(new System.Globalization.CultureInfo(Language));
+            }
+            catch (System.Globalization.CultureNotFoundException)
+            {
+                // Fallback to current culture if invalid language code provided
+            }
+        }
+
         // Build or reuse the PagerViewModel
         var pagerModel = PagerModel ?? new PagerViewModel
         {
@@ -204,6 +236,7 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
             ViewType                   = ViewType,
             UseLocalView               = UseLocalView,
             UseHtmx                    = UseHtmx,
+            JSMode                     = JSMode,
             PagerId                    = finalPagerId,
             SearchTerm                 = SearchTerm,
             ShowPageSize               = ShowPageSize,
@@ -224,7 +257,9 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
             LastPageText               = LastPageText,
             FirstLastNavigation        = FirstLastNavigation,
             SkipForwardBackNavigation  = SkipForwardBackNavigation,
-            HtmxTarget                 = HtmxTarget
+            HtmxTarget                 = HtmxTarget,
+            Localizer                  = localizer,
+            SummaryTemplate            = SummaryTemplate
         };
 
         // Safely invoke the "Pager" ViewComponent
@@ -274,7 +309,7 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
             "skip-forward-text", "next-page-text", "next-page-aria-label", "last-page-text",
             "first-last-navigation", "skip-forward-back-navigation", "model", "show-pagesize",
             "pagingmodel", "use-local-view", "search-term", "htmx-target", "descending",
-            "order-by", "show-summary"
+            "order-by", "show-summary", "summary-template", "language"
         };
         foreach (var attr in attrs)
         {

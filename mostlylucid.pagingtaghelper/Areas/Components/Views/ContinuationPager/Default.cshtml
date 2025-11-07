@@ -1,0 +1,197 @@
+@model mostlylucid.pagingtaghelper.Models.TagModels.ContinuationPagerViewModel
+@using mostlylucid.pagingtaghelper.Models
+@{
+    var jsMode = Model.EffectiveJSMode;
+    var linkUrl = Model.LinkUrl;
+    var currentPage = Model.CurrentPage;
+    var pageSize = Model.PageSize;
+    var searchTerm = Model.SearchTerm;
+    var nextToken = Model.NextPageToken;
+    var canGoBack = Model.CanNavigatePrevious;
+    var canGoNext = Model.CanNavigateNext;
+    var previousToken = Model.GetPreviousPageToken();
+
+    // Serialize token history for passing to next page
+    var tokenHistoryJson = Model.PageTokenHistory != null
+        ? System.Text.Json.JsonSerializer.Serialize(Model.PageTokenHistory)
+        : "{}";
+
+    // Build query strings
+    string BuildQueryString(string? token, int page)
+    {
+        var query = new Dictionary<string, string>
+        {
+            ["pageSize"] = pageSize.ToString(),
+            ["currentPage"] = page.ToString()
+        };
+
+        if (!string.IsNullOrEmpty(token))
+            query["pageToken"] = token;
+
+        if (!string.IsNullOrEmpty(searchTerm))
+            query["searchTerm"] = searchTerm;
+
+        if (Model.EnableTokenAccumulation)
+            query["tokenHistory"] = tokenHistoryJson;
+
+        return string.Join("&", query.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
+    }
+
+    var prevUrl = canGoBack ? $"{linkUrl}?{BuildQueryString(previousToken, currentPage - 1)}" : "#";
+    var nextUrl = canGoNext ? $"{linkUrl}?{BuildQueryString(nextToken, currentPage + 1)}" : "#";
+
+    // HTMX attributes
+    var hxGet = !string.IsNullOrEmpty(Model.HtmxTarget) ? "hx-get" : null;
+    var hxTarget = !string.IsNullOrEmpty(Model.HtmxTarget) ? Model.HtmxTarget : null;
+    var hxSwap = !string.IsNullOrEmpty(Model.HtmxTarget) ? "hx-swap" : null;
+    var swapValue = "outerHTML";
+}
+
+<div class="@Model.CssClass" id="@Model.PagerId">
+    @* Previous Button *@
+    @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
+    {
+        <button
+            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            hx-get="@prevUrl"
+            hx-target="@hxTarget"
+            hx-swap="@swapValue"
+            aria-label="@Model.PreviousPageAriaLabel"
+            disabled="@(!canGoBack)">
+            @Model.PreviousPageText
+        </button>
+    }
+    else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
+    {
+        <button
+            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            x-data
+            hx-get="@prevUrl"
+            hx-target="@hxTarget"
+            hx-swap="@swapValue"
+            aria-label="@Model.PreviousPageAriaLabel"
+            disabled="@(!canGoBack)">
+            @Model.PreviousPageText
+        </button>
+    }
+    else if (jsMode == JavaScriptMode.Alpine)
+    {
+        <button
+            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            x-data
+            @@click="window.location.href = '@prevUrl'"
+            aria-label="@Model.PreviousPageAriaLabel"
+            disabled="@(!canGoBack)">
+            @Model.PreviousPageText
+        </button>
+    }
+    else if (jsMode == JavaScriptMode.PlainJS)
+    {
+        <button
+            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            onclick="window.location.href = '@prevUrl'"
+            aria-label="@Model.PreviousPageAriaLabel"
+            disabled="@(!canGoBack)">
+            @Model.PreviousPageText
+        </button>
+    }
+    else
+    {
+        @if (canGoBack)
+        {
+            <a href="@prevUrl"
+               class="btn btn-sm"
+               aria-label="@Model.PreviousPageAriaLabel">
+                @Model.PreviousPageText
+            </a>
+        }
+        else
+        {
+            <span class="btn btn-sm btn-disabled">@Model.PreviousPageText</span>
+        }
+    }
+
+    @* Current Page Indicator *@
+    @if (Model.ShowPageNumber)
+    {
+        <div class="badge badge-lg">
+            <text>Page </text>@currentPage
+        </div>
+    }
+
+    @* Next Button *@
+    @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
+    {
+        <button
+            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            hx-get="@nextUrl"
+            hx-target="@hxTarget"
+            hx-swap="@swapValue"
+            aria-label="@Model.NextPageAriaLabel"
+            disabled="@(!canGoNext)">
+            @Model.NextPageText
+        </button>
+    }
+    else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
+    {
+        <button
+            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            x-data
+            hx-get="@nextUrl"
+            hx-target="@hxTarget"
+            hx-swap="@swapValue"
+            aria-label="@Model.NextPageAriaLabel"
+            disabled="@(!canGoNext)">
+            @Model.NextPageText
+        </button>
+    }
+    else if (jsMode == JavaScriptMode.Alpine)
+    {
+        <button
+            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            x-data
+            @@click="window.location.href = '@nextUrl'"
+            aria-label="@Model.NextPageAriaLabel"
+            disabled="@(!canGoNext)">
+            @Model.NextPageText
+        </button>
+    }
+    else if (jsMode == JavaScriptMode.PlainJS)
+    {
+        <button
+            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            onclick="window.location.href = '@nextUrl'"
+            aria-label="@Model.NextPageAriaLabel"
+            disabled="@(!canGoNext)">
+            @Model.NextPageText
+        </button>
+    }
+    else
+    {
+        @if (canGoNext)
+        {
+            <a href="@nextUrl"
+               class="btn btn-sm"
+               aria-label="@Model.NextPageAriaLabel">
+                @Model.NextPageText
+            </a>
+        }
+        else
+        {
+            <span class="btn btn-sm btn-disabled">@Model.NextPageText</span>
+        }
+    }
+
+    @* Page Size Selector (optional) *@
+    @if (Model.ShowPageSize)
+    {
+        <div class="ml-4">
+            <page-size
+                page-size="@pageSize"
+                total-items="@(pageSize * 10)"
+                link-url="@linkUrl"
+                view-type="@Model.ViewType"
+                js-mode="@jsMode" />
+        </div>
+    }
+</div>

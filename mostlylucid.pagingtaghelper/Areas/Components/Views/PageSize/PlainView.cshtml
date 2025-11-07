@@ -15,7 +15,7 @@
 }
 <div class="page-size-container">
     <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
-    <label for="pageSize-@pagerId">Page size:</label>
+    <label for="pageSize-@pagerId">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
     <select id="pageSize-@pagerId" name="pageSize" @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {

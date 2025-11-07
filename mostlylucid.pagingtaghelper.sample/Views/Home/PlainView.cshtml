@@ -1,19 +1,21 @@
-﻿
 @model PagingViewModel
 @{
     var previewModel = new PreviewPartialViewModel();
-    previewModel.Description = "This example shows the basic usage of the PagingTagHelper with a model. It also disables the HTMX functionality and uses the Javascript snippet to handle the paging.";
+    previewModel.Description = "This example demonstrates the Plain CSS view type with custom styling injected into the view. It uses plain JavaScript for interactivity without any framework dependencies.";
     previewModel.SourceLink="/Views/Home/PlainView.cshtml";
 }
+
+<partial name="_PreviewPartial" model="previewModel"/>
+
 <div class="no-tailwind">
     @Html.PlainCSS()
     <paging model="Model"
-            use-htmx="false"
+            view-type="Plain"
+            js-mode="@JavaScriptMode.PlainJS"
             class="my-4">
     </paging>
 </div>
-<partial name="_PreviewPartial" model="previewModel"/>
 
-    <partial name="_ResultsList" model="Model"/>
+<partial name="_ResultsList" model="Model"/>
 
 @Html.PageSizeOnchangeSnippet()

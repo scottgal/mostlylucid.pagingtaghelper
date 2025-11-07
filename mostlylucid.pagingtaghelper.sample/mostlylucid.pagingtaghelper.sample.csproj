@@ -11,9 +11,9 @@
       <ProjectReference Include="..\mostlylucid.pagingtaghelper\mostlylucid.pagingtaghelper.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Bogus" Version="35.6.2" />
-      <PackageReference Include="Htmx" Version="1.8.1" />
-      <PackageReference Include="Htmx.TagHelpers" Version="1.8.1" />
+      <PackageReference Include="Bogus" Version="35.6.5" />
+      <PackageReference Include="Htmx" Version="1.9.0" />
+      <PackageReference Include="Htmx.TagHelpers" Version="1.9.0" />
     </ItemGroup>
 
     <ItemGroup>

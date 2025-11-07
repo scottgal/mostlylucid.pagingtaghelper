@@ -4,100 +4,141 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 /* Pager Buttons */
 .pager-button {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    color: #333;
+    line-height: 1.25rem;
+    color: #374151;
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
 }
 
 .pager-button:hover {
-    background-color: #e9ecef;
-    border-color: #bbb;
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
 }
 
 .pager-button.active {
-    background-color: #007bff;
+    background-color: #3b82f6;
     color: white;
-    border-color: #007bff;
+    border-color: #3b82f6;
+}
+
+.pager-button.active:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
 }
 
 .pager-button.disabled {
-    background-color: #e9ecef;
-    color: #6c757d;
-    border-color: #ccc;
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    border-color: #d1d5db;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.65;
 }
 
 /* Pager Info */
 .pager-info {
-    font-size: 14px;
-    color: #333333;
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-left: 0.25rem;
 }
 
 /* Page Size Selector */
 .page-size-container {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
     background: transparent;
-    color: white;
+    margin-right: 0.5rem;
+}
+
+/* Page Size Form (for NoJS view) */
+.page-size-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Page Size Button */
+.page-size-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #fff;
+    background-color: #3b82f6;
+    border: 1px solid #3b82f6;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    white-space: nowrap;
+}
+
+.page-size-button:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.page-size-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
 /* Label */
 .page-size-container label {
     font-weight: 500;
-    color: #333333;
-    font-size: 14px;
+    color: #4b5563;
+    font-size: 0.875rem;
+    white-space: nowrap;
 }
 
 /* Dropdown */
 .page-size-container select {
     appearance: none;
     background-color: white;
-    color: #333;
-    border: 1px solid #ccc;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+    padding: 0.25rem 2rem 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.15s ease-in-out;
     min-width: 80px;
     outline: none;
-}
-
-
-.page-size-container select {
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-}
-
-.dark .page-size-container select {
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 16px;
 }
 
 /* Dropdown Hover & Focus */
 .page-size-container select:hover {
-    background-color: #e9ecef;
-    border-color: #aaa;
+    background-color: #f9fafb;
+    border-color: #9ca3af;
 }
 
 .page-size-container select:focus {
-    border-color: #007bff;
+    border-color: #3b82f6;
     background-color: #fff;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* Dark Mode Styles */
@@ -106,56 +147,81 @@
 }
 
 .dark .pager-button {
-    color: #ddd;
-    background-color: #333;
-    border: 1px solid #555;
+    color: #e5e7eb;
+    background-color: #1f2937;
+    border: 1px solid #4b5563;
 }
 
 .dark .pager-button:hover {
-    background-color: #444;
+    background-color: #374151;
+    border-color: #6b7280;
 }
 
 .dark .pager-button.active {
-    background-color: #0d6efd;
+    background-color: #3b82f6;
     color: white;
-    border-color: #0d6efd;
+    border-color: #60a5fa;
+}
+
+.dark .pager-button.active:hover {
+    background-color: #2563eb;
+    border-color: #3b82f6;
 }
 
 .dark .pager-button.disabled {
-    background-color: #555;
-    color: #777;
-    border-color: #555;
-    opacity: 0.7;
+    background-color: #374151;
+    color: #9ca3af;
+    border-color: #4b5563;
+    opacity: 0.65;
 }
 
 .dark .pager-info {
-    font-size: 14px;
-    color: white;
+    color: #d1d5db;
 }
 
 /* Dark Mode - Page Size */
 .dark .page-size-container select {
-    background-color: #333;
-    color: #fff !important; /* Force white text */
-    border: 1px solid #555;
+    background-color: #1f2937;
+    color: #e5e7eb;
+    border: 1px solid #4b5563;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
 /* Ensure dropdown options are readable */
 .dark .page-size-container select option {
-    background-color: #333;
-    color: #fff;
+    background-color: #1f2937;
+    color: #e5e7eb;
 }
 
 .dark .page-size-container label {
-    font-weight: 500;
-    color: white;
-    font-size: 14px;
+    color: #d1d5db;
 }
-/* Improve focus state */
+
+.dark .page-size-container select:hover {
+    background-color: #111827;
+    border-color: #6b7280;
+}
+
 .dark .page-size-container select:focus {
-    border-color: #0d6efd;
-    background-color: #222;
-    box-shadow: 0 0 4px rgba(13, 110, 253, 0.5);
+    border-color: #3b82f6;
+    background-color: #111827;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Dark Mode - Page Size Button */
+.dark .page-size-button {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+.dark .page-size-button:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.dark .page-size-button:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
 

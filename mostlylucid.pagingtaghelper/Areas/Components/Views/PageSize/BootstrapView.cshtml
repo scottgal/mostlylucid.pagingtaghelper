@@ -15,7 +15,7 @@
 }
 <div class="me-3 page-size-container">
     <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
-    <label for="pageSize-@pagerId" class="form-label me-2">Page size:</label>
+    <label for="pageSize-@pagerId" class="form-label me-2">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
     <select id="pageSize-@pagerId" name="pageSize" class="form-select form-select-sm d-inline w-auto" @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {
@@ -27,4 +27,8 @@
 @if (Model.UseHtmx)
 {
 @Html.HTMXPageSizeChange()
+}
+else
+{
+    @Html.PageSizeOnchangeSnippet()
 }

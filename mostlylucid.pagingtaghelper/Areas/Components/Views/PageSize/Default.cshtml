@@ -1,26 +1,52 @@
 ﻿@using mostlylucid.pagingtaghelper.Extensions
+@using mostlylucid.pagingtaghelper.Models
 @model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
 @{
     var pagerId = Model.PagerId;
+    var jsMode = Model.EffectiveJSMode;
     var htmxAttributes = "";
+    var alpineAttributes = "";
 
-    if (Model.UseHtmx)
+    // Configure attributes based on JS mode
+    switch (jsMode)
     {
-        
-        htmxAttributes = $"hx-get=\"{Model.LinkUrl}\"  hx-push-url=\"true\"";
+        case JavaScriptMode.HTMX:
+            htmxAttributes = $"hx-get=\"{Model.LinkUrl}\" hx-push-url=\"true\"";
+            break;
+
+        case JavaScriptMode.HTMXWithAlpine:
+            htmxAttributes = $"hx-get=\"{Model.LinkUrl}\" hx-push-url=\"true\"";
+            alpineAttributes = "x-data=\"{ pageSize: " + Model.PageSize + " }\" @change=\"pageSize = $event.target.value\"";
+            break;
+
+        case JavaScriptMode.Alpine:
+            alpineAttributes = $"x-data=\"{{ pageSize: {Model.PageSize} }}\" @change=\"window.location.href = '{Model.LinkUrl}?pageSize=' + $event.target.value\"";
+            break;
+
+        case JavaScriptMode.PlainJS:
+            // Handled via onchange event below
+            break;
+
+        case JavaScriptMode.NoJS:
+            // No JS - will use form submission
+            break;
     }
-    else
+
+    if (jsMode != JavaScriptMode.HTMX && jsMode != JavaScriptMode.HTMXWithAlpine)
     {
         <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-<div id="@pagerId" class="flex items-center page-size-container">
-    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()" />
+<div id="@pagerId" class="flex items-center gap-2 page-size-container" @Html.Raw(alpineAttributes)>
+    <input type="hidden" class="useHtmx" value="@(jsMode == JavaScriptMode.HTMX || jsMode == JavaScriptMode.HTMXWithAlpine ? "true" : "false")" />
+    <input type="hidden" class="jsMode" value="@jsMode.ToString()" />
 
-    <label for="pageSize-@pagerId" class="text-sm text-gray-600 dark:text-gray-300 mr-2 whitespace-nowrap">Page size:</label>
+    <label for="pageSize-@pagerId" class="label label-text whitespace-nowrap">
+        <span>@(Model.Localizer?.PageSizeLabel ?? "Page size:")</span>
+    </label>
     <select id="pageSize-@pagerId"
             name="pageSize"
-            class="border rounded select  select-sm pt-0 mt-0 min-w-[80px] pr-4 bg-white text-black dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            class="select select-bordered select-sm"
             @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {
@@ -30,11 +56,28 @@
         }
     </select>
 </div>
-@if (Model.UseHtmx)
+
+@* Include JavaScript based on mode *@
+@switch (jsMode)
 {
-@Html.HTMXPageSizeChange()
-}
-else
-{
-    @Html.PageSizeOnchangeSnippet()
+    case JavaScriptMode.HTMX:
+        @Html.HTMXPageSizeChange()
+        break;
+
+    case JavaScriptMode.HTMXWithAlpine:
+        @Html.HTMXPageSizeChange()
+        @* Alpine is included via attributes above *@
+        break;
+
+    case JavaScriptMode.Alpine:
+        @* Alpine is included via attributes above *@
+        break;
+
+    case JavaScriptMode.PlainJS:
+        @Html.PageSizeOnchangeSnippet()
+        break;
+
+    case JavaScriptMode.NoJS:
+        @* No JavaScript needed *@
+        break;
 }

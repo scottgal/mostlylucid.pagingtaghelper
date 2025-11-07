@@ -128,7 +128,7 @@ public class SortableHeaderTagHelper(IUrlHelperFactory urlHelperFactory) : TagHe
 
         if (!string.IsNullOrEmpty(Controller) && !string.IsNullOrEmpty(Action))
         {
-            href = Url.ActionLink(Action, Controller) ?? "";
+            href = Url.Action(Action, Controller) ?? "";
         }
         else if (output.Attributes.ContainsName("href"))
         {

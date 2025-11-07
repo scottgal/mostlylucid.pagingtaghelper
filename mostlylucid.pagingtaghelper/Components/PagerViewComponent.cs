@@ -33,6 +33,8 @@ public class PagerViewComponent : ViewComponent
                 (true, ViewType.Custom) when !ViewExists(viewName) => throw new ArgumentException("View not found: " + viewName),
                 (false, ViewType.Bootstrap) => View("/Areas/Components/Views/Pager/BootstrapView.cshtml", model),
                 (false, ViewType.Plain) => View("/Areas/Components/Views/Pager/PlainView.cshtml", model),
+                (false, ViewType.NoJS) => View("/Areas/Components/Views/Pager/NoJSView.cshtml", model),
+                (false, ViewType.Tailwind) => View("/Areas/Components/Views/Pager/TailwindView.cshtml", model),
                 (false, ViewType.TailwindAndDaisy) => View("/Areas/Components/Views/Pager/Default.cshtml", model),
                 _ => View("/Areas/Components/Views/Pager/Default.cshtml", model)
             };

@@ -1,0 +1,15 @@
+@model PagingViewModel
+@{
+    var previewModel = new PreviewPartialViewModel();
+    previewModel.Description = "This example demonstrates fully functional pagination with zero JavaScript. It uses standard anchor links for paging and a form with a submit button for changing page size. Perfect for progressive enhancement or environments where JavaScript is disabled.";
+    previewModel.SourceLink="/Views/Home/NoJSView.cshtml";
+}
+
+<partial name="_PreviewPartial" model="previewModel"/>
+
+<paging model="Model"
+        view-type="NoJS"
+        class="my-4">
+</paging>
+
+<partial name="_ResultsList" model="Model"/>

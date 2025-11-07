@@ -39,3 +39,33 @@ Show page size even when there is no paging.
 
 0.9.4.1
 Small tweak to remove the daisyui select-primary class from the page size dropdown.
+
+1.0.0
+MAJOR UPDATE - Breaking changes and new features:
+
+NEW FEATURES:
+- ContinuationPager TagHelper: <continuation-pager> for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage) that use continuation tokens instead of page numbers. Supports token history for backward navigation.
+- JavaScript Modes: New js-mode attribute with 5 options (HTMX, HTMXWithAlpine, Alpine, PlainJS, NoJS). Replaces use-htmx for better control.
+- Pure Tailwind View: New Tailwind view type using only Tailwind utilities (no DaisyUI dependency). TailwindAndDaisy view now fully exploits DaisyUI components.
+- NoJS View: Complete zero-JavaScript view using forms and standard links. Perfect for accessibility and progressive enhancement.
+- Localization: Built-in support for 8 languages (English, French, German, Spanish, Italian, Portuguese, Japanese, Chinese). Use language attribute.
+- Custom Summary Templates: Customize pagination summary with placeholders: {currentPage}, {totalPages}, {totalItems}, {pageSize}, {startItem}, {endItem}.
+
+IMPROVEMENTS:
+- Updated to HTMX 2.0.4 (from 1.9.x)
+- Updated all NuGet dependencies (JetBrains.Annotations 2025.2.2, etc.)
+- Updated npm packages (DaisyUI 5.4.7, webpack 5.102.1, cssnano 7.1.2, cross-env 10.1.0)
+- Comprehensive documentation: Separate guides for each TagHelper, JavaScript modes, custom views, and getting started.
+- 106 passing unit tests
+
+BREAKING CHANGES:
+- use-htmx is deprecated (still works for backward compatibility). Use js-mode instead.
+- ViewType.TailwindAndDaisy now uses full DaisyUI components. For pure Tailwind, use ViewType.Tailwind.
+
+USAGE:
+Pager: <paging model="Model" js-mode="HTMX" />
+PageSize: <page-size model="Model" />
+SortableHeader: <sortable-header column="Name" current-order-by="@Model.OrderBy" descending="@Model.Descending">Name</sortable-header>
+ContinuationPager: <continuation-pager model="Model" />
+
+See documentation at https://github.com/scottgal/mostlylucid.pagingtaghelper

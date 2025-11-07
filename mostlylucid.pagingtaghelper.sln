@@ -8,6 +8,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		LICENSE = LICENSE
 		.github\workflows\main.yml = .github\workflows\main.yml
 		README.md = README.md
+		.github\workflows\dockerfilepush.yml = .github\workflows\dockerfilepush.yml
+		docs\getting-started.md = docs\getting-started.md
+		docs\javascript-modes.md = docs\javascript-modes.md
+		docs\pager-taghelper.md = docs\pager-taghelper.md
+		docs\pagesize-taghelper.md = docs\pagesize-taghelper.md
+		docs\sortable-header-taghelper.md = docs\sortable-header-taghelper.md
+		docs\continuation-pager-taghelper.md = docs\continuation-pager-taghelper.md
+		docs\custom-views.md = docs\custom-views.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mostlylucid.pagingtaghelper.tests", "mostlylucid.pagingtaghelper.tests\mostlylucid.pagingtaghelper.tests.csproj", "{3833FB78-1CFF-47CF-B538-54D49E46A872}"

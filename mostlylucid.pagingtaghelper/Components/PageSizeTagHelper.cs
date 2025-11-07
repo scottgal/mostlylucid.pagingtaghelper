@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using mostlylucid.pagingtaghelper.Models;
 using mostlylucid.pagingtaghelper.Models.TagModels;
+using mostlylucid.pagingtaghelper.Services;
 
 namespace mostlylucid.pagingtaghelper.Components;
 
@@ -44,10 +45,16 @@ public class PageSizeTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
     public ViewType ViewType { get; set; } = ViewType.TailwindAndDaisy;
 
     /// <summary>
-    /// Specifies whether to use htmx for the page-size control. (Default: true)
+    /// Specifies whether to use htmx for the page-size control. (Default: true). Deprecated: use js-mode instead.
     /// </summary>
     [HtmlAttributeName("use-htmx")]
     public bool UseHtmx { get; set; } = true;
+
+    /// <summary>
+    /// JavaScript framework mode (HTMX, HTMXWithAlpine, Alpine, PlainJS, NoJS). If not set, derives from use-htmx.
+    /// </summary>
+    [HtmlAttributeName("js-mode")]
+    public JavaScriptMode? JSMode { get; set; }
 
     /// <summary>
     /// The client-side id of the pager control. (Optional)
@@ -108,6 +115,12 @@ public class PageSizeTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
     /// </summary>
     [HtmlAttributeName("total-items")]
     public int? TotalItems { get; set; }
+
+    /// <summary>
+    /// Language/culture code for localization (e.g., "en", "fr", "de"). If not specified, uses current UI culture.
+    /// </summary>
+    [HtmlAttributeName("language")]
+    public string? Language { get; set; }
 
     /// <summary>
     /// Captures the current ViewContext so we can render the view component.
@@ -178,19 +191,35 @@ public class PageSizeTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
             .GetRequiredService<IViewComponentHelper>();
         ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
 
+        // Create localizer instance and set culture if specified
+        var localizer = new PagingLocalizer();
+        if (!string.IsNullOrEmpty(Language))
+        {
+            try
+            {
+                localizer.SetCulture(new System.Globalization.CultureInfo(Language));
+            }
+            catch (System.Globalization.CultureNotFoundException)
+            {
+                // Fallback to current culture if invalid language code provided
+            }
+        }
+
         // Construct the PageSizeModel (if not provided) with final settings
         var pagerModel = new PageSizeModel
         {
             ViewType = finalViewType,
             UseLocalView = useLocalView,
             UseHtmx = useHtmx,
+            JSMode = JSMode,
             PageSizes = pageSizes,
             PagerId = pagerId,
             Model = Model,
             LinkUrl = finalLinkUrl,
             MaxPageSize = maxPageSize,
             PageSize = finalPageSize,
-            TotalItems = finalTotalItems
+            TotalItems = finalTotalItems,
+            Localizer = localizer
         };
 
         // Safely invoke the "PageSize" view component
@@ -217,7 +246,7 @@ public class PageSizeTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
         {
             "page", "link-url", "page-size", "total-items", "pages-to-display",
             "model", "page-size-model", "use-local-view", "action", "controller",
-            "view-type", "max-page-size", "use-htmx","page-size-steps"
+            "view-type", "max-page-size", "use-htmx","page-size-steps", "language"
         };
 
         foreach (var attr in attributesToRemove)

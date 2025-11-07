@@ -6,78 +6,84 @@
     string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
 }
 
-
-    <div class="d-flex flex-wrap align-items-center justify-content-center mt-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 pager-container mt-3">
         @if (Model.ShowPageSize)
         {
             <page-size page-size-model="Model"></page-size>
         }
+
+        @if (Model.FirstLastNavigation && Model.Page > 1)
+        {
+            var href = GetUrl(1);
+            <a class="btn btn-sm btn-outline-secondary" href="@href">
+                @Model.FirstPageText
+            </a>
+        }
         @if (totalPages > 1)
         {
             <text>
-        <nav aria-label="Pagination">
-            <ul class="pagination pagination-sm mb-0">
-                @if (Model.FirstLastNavigation && Model.Page > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="@($"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}")">@Model.FirstPageText</a>
-                    </li>
-                }
-
                 @if (Model.Page > 1)
                 {
-                    <li class="page-item">
-                        <a class="page-link" href="@($"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}")">@Model.PreviousPageText</a>
-                    </li>
+                    var href = GetUrl(Model.Page - 1);
+                    <a class="btn btn-sm btn-outline-secondary" href="@href">
+                        @Model.PreviousPageText
+                    </a>
                 }
 
                 @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
                 {
-                    <li class="page-item disabled">
-                        <span class="page-link">@Model.SkipBackText</span>
-                    </li>
+                    <span class="btn btn-sm btn-secondary disabled">
+                        @Model.SkipBackText
+                    </span>
                 }
 
+                @* Pagination Numbers *@
                 @{
                     int halfDisplay = Model.PagesToDisplay / 2;
                     int startPage = Math.Max(1, Model.Page - halfDisplay);
                     int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
                     startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
                 }
-
                 @for (int i = startPage; i <= endPage; i++)
                 {
-                    <li class="page-item @(i == Model.Page ? "active" : "")">
-                        <a class="page-link" href="@($"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}")">@i</a>
-                    </li>
+                    var href = GetUrl(i);
+                    <a data-page="@i"
+                       class="pager-button btn btn-sm @(i == Model.Page ? "btn-primary" : "btn-outline-secondary")"
+                       href="@href">
+                        @i
+                    </a>
                 }
 
                 @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
                 {
-                    <li class="page-item disabled">
-                        <span class="page-link">@Model.SkipForwardText</span>
-                    </li>
+                    <span class="btn btn-sm btn-secondary disabled">
+                        @Model.SkipForwardText
+                    </span>
                 }
 
                 @if (Model.Page < totalPages)
                 {
-                    <li class="page-item">
-                        <a class="page-link" href="@($"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}")">@Model.NextPageText</a>
-                    </li>
+                    var href = GetUrl(Model.Page + 1);
+                    <a class="btn btn-sm btn-outline-secondary"
+                       href="@href"
+                       aria-label="@Model.NextPageAriaLabel">
+                        @Model.NextPageText
+                    </a>
                 }
 
                 @if (Model.FirstLastNavigation && Model.Page < totalPages)
                 {
-                    <li class="page-item">
-                        <a class="page-link" href="@($"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}")">@Model.LastPageText</a>
-                    </li>
+                    var href = GetUrl(Model.TotalPages);
+                    <a class="btn btn-sm btn-outline-secondary" href="@href">
+                        @Model.LastPageText
+                    </a>
                 }
-            </ul>
-        </nav>
-
-        <div class="ms-3 text-muted small">
-            Page @Model.Page of @totalPages (Total items: @Model.TotalItems)
-        </div>
-        </text>
+                @if (Model.ShowSummary)
+                {
+                    <div class="text-muted small">
+                        @Model.GetPageSummary()
+                    </div>
+                }
+            </text>
         }
     </div>

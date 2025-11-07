@@ -1,0 +1,53 @@
+@using mostlylucid.pagingtaghelper.Extensions
+@using Microsoft.AspNetCore.Http.Extensions
+@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
+@{
+    var pagerId = Model.PagerId;
+    var currentUrl = Model.LinkUrl ?? Context.Request.GetEncodedPathAndQuery();
+
+    // Parse the URL - handle both relative and absolute URLs
+    string path;
+    string queryStringPart;
+
+    if (currentUrl.Contains("?"))
+    {
+        var parts = currentUrl.Split('?', 2);
+        path = parts[0];
+        queryStringPart = parts[1];
+    }
+    else
+    {
+        path = currentUrl;
+        queryStringPart = string.Empty;
+    }
+
+    // Parse and modify the query string
+    var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(queryStringPart);
+    query.Remove("pageSize");
+    query.Remove("page"); // Reset to page 1 when changing page size
+
+    var queryString = string.Join("&", query.SelectMany(kvp =>
+        kvp.Value.Select(v => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(v ?? string.Empty)}")));
+
+    var actionUrl = path + (string.IsNullOrEmpty(queryString) ? "" : "?" + queryString);
+}
+<div class="page-size-container">
+    <form method="get" action="@actionUrl" class="page-size-form">
+        @foreach (var kvp in query)
+        {
+            foreach (var value in kvp.Value)
+            {
+                <input type="hidden" name="@kvp.Key" value="@value" />
+            }
+        }
+
+        <label for="pageSize-@pagerId">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
+        <select id="pageSize-@pagerId" name="pageSize">
+            @foreach (var option in Model.PageSizes)
+            {
+                <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
+            }
+        </select>
+        <button type="submit" class="page-size-button">Change</button>
+    </form>
+</div>

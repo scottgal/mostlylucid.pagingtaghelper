@@ -1,0 +1,39 @@
+@using mostlylucid.pagingtaghelper.Extensions
+@model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
+@{
+    var pagerId = Model.PagerId;
+    var htmxAttributes = "";
+
+    if (Model.UseHtmx)
+    {
+        htmxAttributes = $"hx-get=\"{Model.LinkUrl}\"  hx-push-url=\"true\"";
+    }
+    else
+    {
+        <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
+    }
+}
+<div id="@pagerId" class="flex items-center gap-2 mr-2">
+    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()" />
+
+    <label for="pageSize-@pagerId" class="text-sm font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
+    <select id="pageSize-@pagerId"
+            name="pageSize"
+            class="block w-auto px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-400"
+            @Html.Raw(htmxAttributes)>
+        @foreach (var option in Model.PageSizes)
+        {
+            <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">
+                @option
+            </option>
+        }
+    </select>
+</div>
+@if (Model.UseHtmx)
+{
+    @Html.HTMXPageSizeChange()
+}
+else
+{
+    @Html.PageSizeOnchangeSnippet()
+}

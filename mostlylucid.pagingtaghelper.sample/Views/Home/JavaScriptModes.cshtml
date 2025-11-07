@@ -1,0 +1,83 @@
+@model PagingViewModel
+@{
+    var previewModel = new PreviewPartialViewModel();
+    previewModel.Description = "This example demonstrates all available JavaScript framework modes. Use the selector below to switch between HTMX, HTMX with Alpine, Alpine only, Plain JavaScript, and No JavaScript modes. Each mode affects how the pagination control behaves on the client side.";
+    previewModel.SourceLink="/Views/Home/JavaScriptModes.cshtml";
+
+    var selectedMode = ViewBag.SelectedMode as string ?? "HTMX";
+}
+
+<partial name="_PreviewPartial" model="previewModel"/>
+
+<div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
+    <h3 class="text-lg font-semibold mb-3 text-blue-900 dark:text-blue-100">JavaScript Framework Mode Selector</h3>
+
+    <div class="flex flex-wrap gap-2 mb-4">
+        <a href="@Url.Action("JavaScriptModes", "Home", new { mode = "HTMX", page = Model.Page, pageSize = Model.PageSize })"
+           class="px-4 py-2 rounded @(selectedMode == "HTMX" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600") hover:bg-blue-500 hover:text-white transition">
+            HTMX
+        </a>
+        <a href="@Url.Action("JavaScriptModes", "Home", new { mode = "HTMXWithAlpine", page = Model.Page, pageSize = Model.PageSize })"
+           class="px-4 py-2 rounded @(selectedMode == "HTMXWithAlpine" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600") hover:bg-blue-500 hover:text-white transition">
+            HTMX + Alpine
+        </a>
+        <a href="@Url.Action("JavaScriptModes", "Home", new { mode = "Alpine", page = Model.Page, pageSize = Model.PageSize })"
+           class="px-4 py-2 rounded @(selectedMode == "Alpine" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600") hover:bg-blue-500 hover:text-white transition">
+            Alpine
+        </a>
+        <a href="@Url.Action("JavaScriptModes", "Home", new { mode = "PlainJS", page = Model.Page, pageSize = Model.PageSize })"
+           class="px-4 py-2 rounded @(selectedMode == "PlainJS" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600") hover:bg-blue-500 hover:text-white transition">
+            Plain JS
+        </a>
+        <a href="@Url.Action("JavaScriptModes", "Home", new { mode = "NoJS", page = Model.Page, pageSize = Model.PageSize })"
+           class="px-4 py-2 rounded @(selectedMode == "NoJS" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600") hover:bg-blue-500 hover:text-white transition">
+            No JS
+        </a>
+    </div>
+
+    <div class="text-sm text-gray-700 dark:text-gray-300">
+        <p class="mb-2"><strong>Current Mode:</strong> @selectedMode</p>
+        @switch (selectedMode)
+        {
+            case "HTMX":
+                <p><strong>Description:</strong> Uses HTMX for AJAX-based pagination without full page reloads. Requires htmx.js to be loaded.</p>
+                break;
+            case "HTMXWithAlpine":
+                <p><strong>Description:</strong> Combines HTMX for server requests with Alpine.js for reactive client-side state management. Requires both htmx.js and alpine.js.</p>
+                break;
+            case "Alpine":
+                <p><strong>Description:</strong> Uses Alpine.js for client-side navigation without HTMX. Requires alpine.js to be loaded.</p>
+                break;
+            case "PlainJS":
+                <p><strong>Description:</strong> Uses vanilla JavaScript for page navigation. No framework dependencies required.</p>
+                break;
+            case "NoJS":
+                <p><strong>Description:</strong> Fully functional pagination with zero JavaScript. Uses forms and standard anchor links for complete accessibility.</p>
+                break;
+        }
+    </div>
+</div>
+
+@{
+    var jsMode = selectedMode switch
+    {
+        "HTMX" => JavaScriptMode.HTMX,
+        "HTMXWithAlpine" => JavaScriptMode.HTMXWithAlpine,
+        "Alpine" => JavaScriptMode.Alpine,
+        "PlainJS" => JavaScriptMode.PlainJS,
+        "NoJS" => JavaScriptMode.NoJS,
+        _ => JavaScriptMode.HTMX
+    };
+}
+
+<paging model="Model"
+        js-mode="@jsMode"
+        class="my-4">
+</paging>
+
+<partial name="_ResultsList" model="Model"/>
+
+@if (selectedMode == "PlainJS")
+{
+    @Html.PageSizeOnchangeSnippet()
+}

@@ -1,83 +1,90 @@
 ﻿@addTagHelper *, mostlylucid.pagingtaghelper
+@using mostlylucid.pagingtaghelper.Extensions
 @model mostlylucid.pagingtaghelper.Models.TagModels.PagerViewModel
-
-
-
 @{
-    var totalPages = (int)Math.Ceiling((double)Model.TotalItems! / (double)Model.PageSize!);
-    var pageSizes = new List<int>();
-    if (Model.ShowPageSize)
-    {
-        int[] fixedSteps = { 10, 25, 50, 75, 100, 125, 150, 200, 250, 500, 1000 };
-        foreach (var step in fixedSteps)
-        {
-            if (step <= Model.TotalItems) pageSizes.Add(step);
-        }
-        if (Model.TotalItems > fixedSteps.Last())
-        {
-            int next = fixedSteps.Last();
-            while (next < Model.TotalItems)
-            {
-                next *= 2;
-                if (next < Model.TotalItems) pageSizes.Add(next);
-            }
-            if (!pageSizes.Contains(Model.TotalItems)) pageSizes.Add(Model.TotalItems);
-        }
-    }
+    var totalPages = Model.TotalPages;
+
+    string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
 }
 
-    <div class="pager-container" >
+    <div class="pager-container">
         @if (Model.ShowPageSize)
         {
             <page-size page-size-model="Model"></page-size>
         }
 
+        @if (Model.FirstLastNavigation && Model.Page > 1)
+        {
+            var href = GetUrl(1);
+            <a class="pager-button" href="@href">
+                @Model.FirstPageText
+            </a>
+        }
         @if (totalPages > 1)
         {
             <text>
-                @if (Model.FirstLastNavigation && Model.Page > 1)
-                {
-                    <a class="pager-button" href="@($"{Model.LinkUrl}?page=1&pageSize={Model.PageSize}")">@Model.FirstPageText</a>
-                }
-
                 @if (Model.Page > 1)
                 {
-                    <a class="pager-button" href="@($"{Model.LinkUrl}?page={Model.Page - 1}&pageSize={Model.PageSize}")">@Model.PreviousPageText</a>
+                    var href = GetUrl(Model.Page - 1);
+                    <a class="pager-button" href="@href">
+                        @Model.PreviousPageText
+                    </a>
                 }
 
                 @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
                 {
-                    <span class="pager-button disabled">@Model.SkipBackText</span>
+                    <span class="pager-button disabled">
+                        @Model.SkipBackText
+                    </span>
                 }
 
+                @* Pagination Numbers *@
                 @{
                     int halfDisplay = Model.PagesToDisplay / 2;
                     int startPage = Math.Max(1, Model.Page - halfDisplay);
                     int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
                     startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
                 }
-
                 @for (int i = startPage; i <= endPage; i++)
                 {
-                    <a class="pager-button @(i == Model.Page ? "active" : "")" href="@($"{Model.LinkUrl}?page={i}&pageSize={Model.PageSize}")">@i</a>
+                    var href = GetUrl(i);
+                    <a data-page="@i"
+                       class="pager-button @(i == Model.Page ? "active" : "")"
+                       href="@href">
+                        @i
+                    </a>
                 }
 
                 @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
                 {
-                    <span class="pager-button disabled">@Model.SkipForwardText</span>
+                    <span class="pager-button disabled">
+                        @Model.SkipForwardText
+                    </span>
                 }
 
                 @if (Model.Page < totalPages)
                 {
-                    <a class="pager-button" href="@($"{Model.LinkUrl}?page={Model.Page + 1}&pageSize={Model.PageSize}")">@Model.NextPageText</a>
+                    var href = GetUrl(Model.Page + 1);
+                    <a class="pager-button"
+                       href="@href"
+                       aria-label="@Model.NextPageAriaLabel">
+                        @Model.NextPageText
+                    </a>
                 }
 
                 @if (Model.FirstLastNavigation && Model.Page < totalPages)
                 {
-                    <a class="pager-button" href="@($"{Model.LinkUrl}?page={totalPages}&pageSize={Model.PageSize}")">@Model.LastPageText</a>
+                    var href = GetUrl(Model.TotalPages);
+                    <a class="pager-button" href="@href">
+                        @Model.LastPageText
+                    </a>
                 }
-
-                <div class="pager-info">Page @Model.Page of @totalPages (Total items: @Model.TotalItems)</div>
+                @if (Model.ShowSummary)
+                {
+                    <div class="pager-info">
+                        @Model.GetPageSummary()
+                    </div>
+                }
             </text>
         }
     </div>
