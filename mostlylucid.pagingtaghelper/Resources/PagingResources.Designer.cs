@@ -102,11 +102,29 @@ namespace mostlylucid.pagingtaghelper.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Page Size.
+        /// </summary>
+        public static string PageSizeString {
+            get {
+                return ResourceManager.GetString("PageSizeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Page {0} of {1} (Total items: {2}).
         /// </summary>
         public static string PageSummaryFormat {
             get {
                 return ResourceManager.GetString("PageSummaryFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to go to previous page.
+        /// </summary>
+        public static string PreviousPageAriaLabel {
+            get {
+                return ResourceManager.GetString("PreviousPageAriaLabel", resourceCulture);
             }
         }
 

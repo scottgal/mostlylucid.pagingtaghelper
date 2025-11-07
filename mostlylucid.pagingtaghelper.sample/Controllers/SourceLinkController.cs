@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using mostlylucig.pagingtaghelper.sample.Services;
+using mostlylucid.pagingtaghelper.sample.Services;
 
-namespace mostlylucig.pagingtaghelper.sample.Controllers;
+namespace mostlylucid.pagingtaghelper.sample.Controllers;
 
 public class SourceLinkController(GitHubCodeService gitHubCodeService, IMemoryCache memoryCache) : Controller
 {
     // GET
+    [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "sourceLink" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> ShowSource(string sourceLink)
     {
         var key = $"SourceLinkController_ShowSource_{sourceLink}";

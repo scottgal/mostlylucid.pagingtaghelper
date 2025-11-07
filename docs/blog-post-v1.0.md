@@ -1,8 +1,15 @@
 # PagingTagHelper v1.0.0: Enterprise-Ready Pagination for Modern ASP.NET Core
 
+<datetime class="hidden">2025-11-07T19:12</datetime>
+<!--category-- Nuget, ASP.NET Core, HTMX, Alpine.js, Javascript, TagHelper, PagingTagHelper -->
+
+> NOTE: COMING SOON, just putting the finishing touches to it. [Follow along on GitHub! ](https://github.com/scottgal/mostlylucid.pagingtaghelper).
+
+**This is just to show you all I AM making progress with this control! It'll be worth the wait.**
+
 ## Introduction
 
-After months of evolution and valuable feedback from the community (1.7k+ downloads!), I'm excited to announce that the PagingTagHelper library has reached version 1.0.0. This isn't just a version number bump – it represents a complete maturation of the library with features that make it suitable for real-world, production applications.
+After months of evolution and valuable feedback from the community (5.7k+ downloads!), I'm excited to announce that the PagingTagHelper library has reached version 1.0.0. This isn't just a version number bump – it represents a complete maturation of the library with features that make it suitable for real-world, production applications.
 
 If you've been following this series, you'll remember we started with [bare-bones paging](https://www.mostlylucid.net/blog/pagingtaghelper), added [sortable headers](https://www.mostlylucid.net/blog/pagingtaghelperpt11), and extracted [page size controls](https://www.mostlylucid.net/blog/pagingtaghelperpt2). Version 1.0.0 takes everything we've learned and adds critical enterprise features:
 
@@ -15,26 +22,10 @@ If you've been following this series, you'll remember we started with [bare-bone
 
 Let's dive into each of these features and see how they work together to create a truly flexible pagination solution.
 
-## Table of Contents
+[![NuGet](https://img.shields.io/nuget/v/mostlylucid.pagingtaghelper.svg)](https://www.nuget.org/packages/mostlylucid.pagingtaghelper)
+[![NuGet](https://img.shields.io/nuget/dt/mostlylucid.pagingtaghelper.svg)](https://www.nuget.org/packages/mostlylucid.pagingtaghelper)
 
-- [Continuation Token Pagination](#continuation-token-pagination)
-  - [Understanding Token-Based Pagination](#understanding-token-based-pagination)
-  - [Implementation](#continuation-pager-implementation)
-  - [Token History for Backward Navigation](#token-history)
-- [Localization Support](#localization-support)
-  - [Built-in Languages](#built-in-languages)
-  - [Usage Examples](#localization-usage)
-- [JavaScript Modes](#javascript-modes)
-  - [Available Modes](#available-modes)
-  - [Migration from use-htmx](#migration-from-use-htmx)
-- [ViewType Enhancements](#viewtype-enhancements)
-  - [Pure Tailwind](#pure-tailwind)
-  - [NoJS Mode](#nojs-mode)
-- [URL Parameter Preservation](#url-parameter-preservation)
-- [Migration Guide](#migration-guide)
-- [Demo Application](#demo-application)
-
----
+[TOC]
 
 ## Continuation Token Pagination {#continuation-token-pagination}
 
@@ -400,11 +391,6 @@ graph TD
     F --> F1[Zero JavaScript]
     F --> F2[Standard anchor links & forms]
 
-    style B fill:#81d4fa
-    style C fill:#ce93d8
-    style D fill:#ffb74d
-    style E fill:#aed581
-    style F fill:#e57373
 ```
 
 Let's see each mode in action:
@@ -461,14 +447,12 @@ Renders:
 ```html
 <button
     x-data
-    @@click="window.location.href = '/Products?page=2'">
+    @click="window.location.href = '/Products?page=2'">
     Next ›
 </button>
 ```
 
 Pure Alpine.js without HTMX. Useful when you're already using Alpine.js but don't want HTMX dependencies.
-
-**Note:** In Razor views, Alpine.js directives use `@@click` (escaped `@`) instead of `@click`, or you can use the longer syntax `x-on:click`.
 
 **4. PlainJS Mode**
 
@@ -703,64 +687,6 @@ Click Page 3: /Products?orderBy=price&descending=true&page=3
 Initial URL: /Products?category=electronics&brand=acme
 Click Next: /Products?category=electronics&brand=acme&currentPage=2&pageToken=abc123&tokenHistory={...}
 ```
-
-The same preservation works in forms (NoJS mode). When rendering the page size form, the view automatically includes hidden inputs for all non-pagination parameters:
-
-### Multiple Pagers on the Same Page
-
-Sometimes you need multiple pagination controls on a single page - for example, a products list and a customers list. To prevent parameter conflicts, use the `parameter-prefix` attribute:
-
-```razor
-<!-- Products pager -->
-<continuation-pager
-    model="ProductsModel"
-    parameter-prefix="products"
-    htmx-target="#products-container" />
-
-<!-- Customers pager -->
-<continuation-pager
-    model="CustomersModel"
-    parameter-prefix="customers"
-    htmx-target="#customers-container" />
-```
-
-This generates namespaced query parameters:
-
-```
-URL with both pagers navigated:
-/Dashboard?products_currentPage=2&products_pageToken=abc123&products_pageSize=25&customers_currentPage=3&customers_pageToken=xyz789&customers_pageSize=10
-```
-
-In your controller, read the prefixed parameters:
-
-```csharp
-public async Task<IActionResult> Dashboard(
-    int products_currentPage = 1,
-    int products_pageSize = 25,
-    string? products_pageToken = null,
-    int customers_currentPage = 1,
-    int customers_pageSize = 10,
-    string? customers_pageToken = null)
-{
-    var productsModel = await GetProducts(
-        products_currentPage,
-        products_pageSize,
-        products_pageToken);
-
-    var customersModel = await GetCustomers(
-        customers_currentPage,
-        customers_pageSize,
-        customers_pageToken);
-
-    return View(new DashboardViewModel
-    {
-        Products = productsModel,
-        Customers = customersModel
-    });
-}
-```
-
-The parameter prefix works across all view types and JavaScript modes, ensuring complete isolation between multiple pagers.
 
 The same preservation works in forms (NoJS mode). When rendering the page size form, the view automatically includes hidden inputs for all non-pagination parameters:
 

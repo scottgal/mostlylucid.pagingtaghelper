@@ -52,6 +52,14 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
     [HtmlAttributeName("show-page-number")]
     public bool ShowPageNumber { get; set; } = true;
 
+    /// <summary>Whether to show the pagination summary text (default: true).</summary>
+    [HtmlAttributeName("show-summary")]
+    public bool ShowSummary { get; set; } = true;
+
+    /// <summary>Custom template for the page summary. Supports placeholders: {currentPage}, {pageSize}.</summary>
+    [HtmlAttributeName("summary-template")]
+    public string? SummaryTemplate { get; set; }
+
     /// <summary>Search term used for filtering.</summary>
     [HtmlAttributeName("search-term")]
     public string? SearchTerm { get; set; }
@@ -122,13 +130,21 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
     [HtmlAttributeName("htmx-target")]
     public string HtmxTarget { get; set; } = string.Empty;
 
-    /// <summary>Language/culture code for localization (e.g., "en", "fr", "de"). If not specified, uses current UI culture.</summary>
+    /// <summary>Language/culture code for localization (e.g., "en", "fr", "de"). If not specified, auto-detects from browser Accept-Language header or uses current UI culture.</summary>
     [HtmlAttributeName("language")]
     public string? Language { get; set; }
 
     /// <summary>Whether to enable token accumulation for faster backward navigation (default: true).</summary>
     [HtmlAttributeName("enable-token-accumulation")]
     public bool EnableTokenAccumulation { get; set; } = true;
+
+    /// <summary>Maximum number of page tokens to store in history (default: 20, 0 for unlimited).</summary>
+    [HtmlAttributeName("max-history-pages")]
+    public int MaxHistoryPages { get; set; } = 20;
+
+    /// <summary>Whether to preserve all URL query parameters when navigating (default: true).</summary>
+    [HtmlAttributeName("preserve-query-parameters")]
+    public bool PreserveQueryParameters { get; set; } = true;
 
     /// <summary>JSON-serialized dictionary of page tokens for backward navigation.</summary>
     [HtmlAttributeName("page-token-history")]
@@ -189,17 +205,27 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
         var vcHelper = (IViewComponentHelper)services.GetRequiredService(typeof(IViewComponentHelper));
         ((IViewContextAware)vcHelper).Contextualize(ViewContext);
 
-        // Create localizer instance and set culture if specified
+        // Create localizer instance and set culture
         var localizer = new PagingLocalizer();
-        if (!string.IsNullOrEmpty(Language))
+        var effectiveLanguage = Language ?? DetectLanguage(ViewContext);
+
+        if (!string.IsNullOrEmpty(effectiveLanguage))
         {
             try
             {
-                localizer.SetCulture(new System.Globalization.CultureInfo(Language));
+                localizer.SetCulture(new System.Globalization.CultureInfo(effectiveLanguage));
             }
             catch (System.Globalization.CultureNotFoundException)
             {
-                // Fallback to current culture if invalid language code provided
+                // Fallback to English for unsupported languages
+                try
+                {
+                    localizer.SetCulture(new System.Globalization.CultureInfo("en"));
+                }
+                catch
+                {
+                    // Use default if even "en" fails
+                }
             }
         }
 
@@ -214,6 +240,8 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
             SearchTerm = SearchTerm,
             ShowPageSize = ShowPageSize,
             ShowPageNumber = ShowPageNumber,
+            ShowSummary = ShowSummary,
+            SummaryTemplate = SummaryTemplate,
             Model = Model,
             LinkUrl = finalLinkUrl,
             PageSize = PageSize.Value,
@@ -229,6 +257,8 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
             HtmxTarget = HtmxTarget,
             Localizer = localizer,
             EnableTokenAccumulation = EnableTokenAccumulation,
+            MaxHistoryPages = MaxHistoryPages,
+            PreserveQueryParameters = PreserveQueryParameters,
             ParameterPrefix = ParameterPrefix
         };
 
@@ -252,15 +282,52 @@ public class ContinuationPagerTagHelper(IUrlHelperFactory urlHelperFactory) : Ta
         var attrs = new[]
         {
             "model", "view-type", "use-htmx", "js-mode", "pager-model", "show-pagesize",
-            "show-page-number", "search-term", "link-url", "href", "action", "controller",
-            "next-page-token", "has-more-results", "page-size", "current-page", "use-local-view",
-            "css-class", "previous-page-text", "next-page-text", "previous-page-aria-label",
-            "next-page-aria-label", "htmx-target", "language", "enable-token-accumulation",
+            "show-page-number", "show-summary", "summary-template", "search-term", "link-url",
+            "href", "action", "controller", "next-page-token", "has-more-results", "page-size",
+            "current-page", "use-local-view", "css-class", "previous-page-text", "next-page-text",
+            "previous-page-aria-label", "next-page-aria-label", "htmx-target", "language",
+            "enable-token-accumulation", "max-history-pages", "preserve-query-parameters",
             "page-token-history", "parameter-prefix"
         };
         foreach (var attr in attrs)
         {
             output.Attributes.RemoveAll(attr);
         }
+    }
+
+    /// <summary>
+    /// Detects the language from browser Accept-Language header or current culture.
+    /// </summary>
+    private static string? DetectLanguage(ViewContext viewContext)
+    {
+        // First try: Browser's Accept-Language header
+        var acceptLanguage = viewContext.HttpContext.Request.Headers["Accept-Language"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(acceptLanguage))
+        {
+            // Parse the first language preference (e.g., "en-US,en;q=0.9,fr;q=0.8" -> "en-US")
+            var firstLang = acceptLanguage.Split(',').FirstOrDefault()?.Split(';').FirstOrDefault()?.Trim();
+            if (!string.IsNullOrEmpty(firstLang))
+            {
+                // Try to get just the language code (e.g., "en-US" -> "en")
+                var langCode = firstLang.Split('-').FirstOrDefault();
+
+                // Check if it's a supported language
+                var supportedLanguages = new[] { "en", "de", "es", "fr", "it", "pt", "ja", "zh-Hans" };
+                if (supportedLanguages.Contains(langCode))
+                {
+                    return langCode;
+                }
+
+                // Special case for Chinese
+                if (firstLang.StartsWith("zh", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "zh-Hans"; // Simplified Chinese
+                }
+            }
+        }
+
+        // Second try: Current UI culture
+        var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        return currentCulture != "iv" ? currentCulture : "en"; // "iv" is invariant culture, default to English
     }
 }

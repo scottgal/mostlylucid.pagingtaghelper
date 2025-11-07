@@ -170,7 +170,7 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
     public string? SummaryTemplate { get; set; }
 
     /// <summary>
-    /// Language/culture code for localization (e.g., "en", "fr", "de"). If not specified, uses current UI culture.
+    /// Language/culture code for localization (e.g., "en", "fr", "de"). If not specified, auto-detects from browser Accept-Language header or uses current UI culture.
     /// </summary>
     [HtmlAttributeName("language")]
     public string? Language { get; set; }
@@ -213,17 +213,27 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
         var vcHelper = (IViewComponentHelper)services.GetRequiredService(typeof(IViewComponentHelper));
         ((IViewContextAware)vcHelper).Contextualize(ViewContext);
 
-        // Create localizer instance and set culture if specified
+        // Create localizer instance and set culture
         var localizer = new PagingLocalizer();
-        if (!string.IsNullOrEmpty(Language))
+        var effectiveLanguage = Language ?? DetectLanguage(ViewContext);
+
+        if (!string.IsNullOrEmpty(effectiveLanguage))
         {
             try
             {
-                localizer.SetCulture(new System.Globalization.CultureInfo(Language));
+                localizer.SetCulture(new System.Globalization.CultureInfo(effectiveLanguage));
             }
             catch (System.Globalization.CultureNotFoundException)
             {
-                // Fallback to current culture if invalid language code provided
+                // Fallback to English for unsupported languages
+                try
+                {
+                    localizer.SetCulture(new System.Globalization.CultureInfo("en"));
+                }
+                catch
+                {
+                    // Use default if even "en" fails
+                }
             }
         }
 
@@ -315,5 +325,41 @@ public class PagerTagHelper(IUrlHelperFactory urlHelperFactory) : TagHelper
         {
             output.Attributes.RemoveAll(attr);
         }
+    }
+
+    /// <summary>
+    /// Detects the language from browser Accept-Language header or current culture.
+    /// </summary>
+    private static string? DetectLanguage(ViewContext viewContext)
+    {
+        // First try: Browser's Accept-Language header
+        var acceptLanguage = viewContext.HttpContext.Request.Headers["Accept-Language"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(acceptLanguage))
+        {
+            // Parse the first language preference (e.g., "en-US,en;q=0.9,fr;q=0.8" -> "en-US")
+            var firstLang = acceptLanguage.Split(',').FirstOrDefault()?.Split(';').FirstOrDefault()?.Trim();
+            if (!string.IsNullOrEmpty(firstLang))
+            {
+                // Try to get just the language code (e.g., "en-US" -> "en")
+                var langCode = firstLang.Split('-').FirstOrDefault();
+
+                // Check if it's a supported language
+                var supportedLanguages = new[] { "en", "de", "es", "fr", "it", "pt", "ja", "zh-Hans" };
+                if (supportedLanguages.Contains(langCode))
+                {
+                    return langCode;
+                }
+
+                // Special case for Chinese
+                if (firstLang.StartsWith("zh", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "zh-Hans"; // Simplified Chinese
+                }
+            }
+        }
+
+        // Second try: Current UI culture
+        var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        return currentCulture != "iv" ? currentCulture : "en"; // "iv" is invariant culture, default to English
     }
 }

@@ -24,7 +24,11 @@ public class PagingLocalizer : IPagingLocalizer
 
     public string NextPageAriaLabel => GetString(PagingResources.ResourceManager, nameof(PagingResources.NextPageAriaLabel)) ?? "go to next page";
 
+    public string PreviousPageAriaLabel => GetString(PagingResources.ResourceManager, nameof(PagingResources.PreviousPageAriaLabel)) ?? "go to previous page";
+
     public string PageSizeLabel => GetString(PagingResources.ResourceManager, nameof(PagingResources.PageSizeLabel)) ?? "Page size:";
+
+    public string PageSizeString => GetString(PagingResources.ResourceManager, nameof(PagingResources.PageSizeString)) ?? "Page Size";
 
     public string GetPageSummary(int currentPage, int totalPages, int totalItems)
     {

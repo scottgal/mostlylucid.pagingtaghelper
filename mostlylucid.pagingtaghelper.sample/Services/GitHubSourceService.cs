@@ -1,4 +1,4 @@
-﻿namespace mostlylucig.pagingtaghelper.sample.Services;
+﻿namespace mostlylucid.pagingtaghelper.sample.Services;
 
 using System.Net.Http;
 using System.Threading.Tasks;

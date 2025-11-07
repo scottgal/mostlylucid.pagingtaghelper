@@ -1,4 +1,4 @@
-﻿namespace mostlylucig.pagingtaghelper.sample.Models;
+﻿namespace mostlylucid.pagingtaghelper.sample.Models;
 
 using mostlylucid.pagingtaghelper.Models;
 

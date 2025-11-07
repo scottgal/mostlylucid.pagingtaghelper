@@ -13,29 +13,36 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
           disabled />
     <link rel="stylesheet" href="~/css/dist/main.css" asp-append-version="true"/>
-    <link rel="icon" type="image/png" href="/img/smalllogo.svg" />
+    <link rel="icon" type="image/png" href="~/img/smalllogo.svg" asp-append-version="true" />
 </head>
-<body class="flex flex-col min-h-screen  bg-gray-200 dark:bg-base-100 text-base-content">
-<header class="w-full dark:bg-base-100  bg-gray-200 shadow-md py-2 px-6 flex justify-between items-center">
+<body class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<header class="w-full bg-white dark:bg-gray-800 shadow-md py-2 px-6 flex justify-between items-center">
     <!-- Logo -->
     <a href="https://www.mostlylucid.net" class="flex items-center gap-2 text-lg font-bold">
-        <img src="/img/logo.svg" alt="Logo" width="224px" height="112px" class="invert dark:invert-0" >
+        <img src="~/img/logo.svg" alt="Logo" width="224px" height="112px" class="invert dark:invert-0" asp-append-version="true">
     </a>
 
     <!-- Navigation Links -->
-    <nav class="flex gap-4">
-        <a href="https://github.com/scottgal/mostlylucid.pagingtaghelper" target="_blank" class="btn text-primary btn btn btn-outline dark:text-white transition-colors">
+    <nav class="flex gap-2 items-center flex-wrap">
+        <!-- NuGet Badges -->
+        <a href="https://www.nuget.org/packages/mostlylucid.pagingtaghelper" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.shields.io/nuget/v/mostlylucid.pagingtaghelper.svg" alt="NuGet Version" class="h-5">
+        </a>
+        <a href="https://www.nuget.org/packages/mostlylucid.pagingtaghelper" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.shields.io/nuget/dt/mostlylucid.pagingtaghelper.svg" alt="NuGet Downloads" class="h-5">
+        </a>
+
+        <a href="https://github.com/scottgal/mostlylucid.pagingtaghelper" target="_blank" class="btn btn-sm text-primary btn-outline dark:text-white transition-colors">
             <i class="bx bxl-github"></i> GitHub
         </a>
-        <button onclick="toggleTheme()" class="btn btn-primary dark:btn-accent">
-            <span class="light-mode"><i class="bx bx-sun" ></i>Light Mode</span>
-            <span class="dark-mode hidden"><i class="bx bx-moon" ></i> Dark Mode</span>
+        <button onclick="toggleTheme()" class="btn btn-sm btn-primary dark:btn-accent">
+            <span class="light-mode"><i class="bx bx-sun"></i> Light</span>
+            <span class="dark-mode hidden"><i class="bx bx-moon"></i> Dark</span>
         </button>
-
     </nav>
 </header>
-<div class="flex justify-center mt-4 ">
-    <main role="main" class="flex-1 w-full max-w-screen-lg mx-auto px-4  text-base-100 dark:text-white shadow rounded-lg">
+<div class="flex justify-center mt-4 bg-gray-100 dark:bg-gray-900">
+    <main role="main" class="flex-1 w-full max-w-screen-lg mx-auto px-4 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow rounded-lg py-6">
             @RenderBody()
     </main>
 </div>

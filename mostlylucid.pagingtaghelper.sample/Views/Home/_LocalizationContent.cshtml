@@ -1,0 +1,57 @@
+@model mostlylucid.pagingtaghelper.sample.Models.PagingViewModel
+@{
+    var selectedLanguage = ViewBag.SelectedLanguage as string ?? "en";
+}
+
+<div class="bg-white dark:bg-gray-900 rounded-lg shadow overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Product
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Company
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Location
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Price
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                @foreach (var item in Model.Data)
+                {
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">@item.Name</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">@item.Description.Substring(0, Math.Min(50, item.Description.Length))...</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            @item.CompanyName
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 dark:text-white">@item.CompanyCity</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">@item.CompanyCountry</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            $@((item.Id * 10.99m).ToString("N2"))
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <paging
+            model="Model"
+            language="@selectedLanguage"
+            link-url="/Localization"
+            show-summary="true"
+            first-last-navigation="true" />
+    </div>
+</div>

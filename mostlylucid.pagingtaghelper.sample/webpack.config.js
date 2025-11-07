@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = (env, argv) => {
 
-    const isProduction = argv.mode === 'production';
+    const isProduction = env && env.production === true;
 
     return {
         mode: isProduction ? 'production' : 'development', // Set mode based on environment
@@ -20,25 +20,22 @@ module.exports = (env, argv) => {
             minimizer: isProduction ? [
                 new TerserPlugin({
                     terserOptions: {
-                        mangle: {
-                            // Enable variable and function name mangling
-                            properties: false, // Do not mangle properties
-                        },
+                        mangle: true, // Enable variable and function name mangling
                         format: {
-                            comments: true, // Remove comments
-                            beautify: true, // Disable beautification
+                            comments: false, // Remove all comments
                         },
                         compress: {
                             drop_console: true, // Drop console statements
-                            keep_fnames: true, // Keep function names
-                            keep_classnames: true, // Keep class names
+                            drop_debugger: true, // Drop debugger statements
+                            pure_funcs: ['console.log', 'console.info'], // Remove specific console calls
+                            passes: 2, // Run compression twice for better results
                         },
                     },
-                    extractComments: false,
+                    extractComments: false, // Don't extract comments to separate file
                 }),
             ] : [],
         },
-        // Add the devtool property for source maps
-        devtool: isProduction ? 'source-map' : 'eval-source-map', // Use full source maps for production and eval-source-map for development
+        // No source maps for production (smaller output)
+        devtool: isProduction ? false : 'eval-source-map'
     };
 };

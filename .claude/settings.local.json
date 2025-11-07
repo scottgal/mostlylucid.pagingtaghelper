@@ -14,7 +14,15 @@
       "Bash(dotnet add:*)",
       "Bash(npm outdated:*)",
       "Bash(npm audit:*)",
-      "WebFetch(domain:www.mostlylucid.net)"
+      "WebFetch(domain:www.mostlylucid.net)",
+      "Bash(find:*)",
+      "Bash(dotnet publish:*)",
+      "Bash(git tag:*)",
+      "Bash(git describe:*)",
+      "Bash(dotnet pack:*)",
+      "Bash(NODE_ENV=production npm run build:js:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run build:js:*)"
     ],
     "deny": [],
     "ask": []

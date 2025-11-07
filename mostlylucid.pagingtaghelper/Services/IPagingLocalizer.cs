@@ -14,7 +14,9 @@ public interface IPagingLocalizer
     string SkipBackText { get; }
     string SkipForwardText { get; }
     string NextPageAriaLabel { get; }
+    string PreviousPageAriaLabel { get; }
     string PageSizeLabel { get; }
+    string PageSizeString { get; }
     string GetPageSummary(int currentPage, int totalPages, int totalItems);
     void SetCulture(CultureInfo culture);
 }

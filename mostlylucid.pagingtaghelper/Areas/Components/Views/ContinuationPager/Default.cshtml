@@ -16,34 +16,52 @@
         ? System.Text.Json.JsonSerializer.Serialize(Model.PageTokenHistory)
         : "{}";
 
-    // Build query strings - preserves all current query parameters except our own
+    // Build query strings - preserves all current query parameters except our own (when enabled)
     string BuildQueryString(string? token, int page)
     {
         var query = new Dictionary<string, string>();
 
-        // First, preserve all existing query parameters except continuation pager's own
-        var excludeParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        // Define continuation pager's own parameters that should be excluded from preservation
+        var pagerParams = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "pageSize", "currentPage", "pageToken", "tokenHistory"
         };
 
-        foreach (var param in ViewContext.HttpContext.Request.Query)
+        // Add parameter prefix variants if using prefixed parameters
+        if (!string.IsNullOrEmpty(Model.ParameterPrefix))
         {
-            if (!excludeParams.Contains(param.Key))
+            pagerParams.Add($"{Model.ParameterPrefix}_pageSize");
+            pagerParams.Add($"{Model.ParameterPrefix}_currentPage");
+            pagerParams.Add($"{Model.ParameterPrefix}_pageToken");
+            pagerParams.Add($"{Model.ParameterPrefix}_tokenHistory");
+        }
+
+        // Preserve all existing query parameters (except pager's own) if enabled
+        if (Model.PreserveQueryParameters)
+        {
+            foreach (var param in ViewContext.HttpContext.Request.Query)
             {
-                query[param.Key] = param.Value.ToString();
+                if (!pagerParams.Contains(param.Key))
+                {
+                    query[param.Key] = param.Value.ToString();
+                }
             }
         }
 
-        // Then add/override with continuation pager parameters
-        query["pageSize"] = pageSize.ToString();
-        query["currentPage"] = page.ToString();
+        // Add continuation pager parameters (with prefix if specified)
+        var pageSizeParam = Model.GetParameterName("pageSize");
+        var currentPageParam = Model.GetParameterName("currentPage");
+        var pageTokenParam = Model.GetParameterName("pageToken");
+        var tokenHistoryParam = Model.GetParameterName("tokenHistory");
+
+        query[pageSizeParam] = pageSize.ToString();
+        query[currentPageParam] = page.ToString();
 
         if (!string.IsNullOrEmpty(token))
-            query["pageToken"] = token;
+            query[pageTokenParam] = token;
 
         if (Model.EnableTokenAccumulation)
-            query["tokenHistory"] = tokenHistoryJson;
+            query[tokenHistoryParam] = tokenHistoryJson;
 
         return string.Join("&", query.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
     }
@@ -122,9 +140,101 @@
         }
     }
 
-    @* Current Page Indicator *@
-    @if (Model.ShowPageNumber)
+    @* Page Numbers (for visited pages) *@
+    @if (Model.ShowPageNumber && Model.PageTokenHistory != null && Model.PageTokenHistory.Any())
     {
+        var maxVisiblePage = Math.Max(currentPage, Model.PageTokenHistory.Keys.Max());
+
+        <div class="join">
+            @for (int pageNum = 1; pageNum <= maxVisiblePage; pageNum++)
+            {
+                var isCurrentPage = pageNum == currentPage;
+                var canNavigateToPage = pageNum < currentPage && Model.PageTokenHistory.ContainsKey(pageNum);
+
+                string pageUrl;
+                if (pageNum == 1)
+                {
+                    // Page 1 has no token (it's the start)
+                    pageUrl = $"{linkUrl}?{BuildQueryString(null, 1)}";
+                }
+                else if (canNavigateToPage)
+                {
+                    var token = Model.PageTokenHistory[pageNum];
+                    pageUrl = $"{linkUrl}?{BuildQueryString(token, pageNum)}";
+                }
+                else
+                {
+                    pageUrl = "#";
+                }
+
+                if (isCurrentPage)
+                {
+                    <span class="join-item btn btn-sm btn-active">@pageNum</span>
+                }
+                else if (pageNum < currentPage)
+                {
+                    if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
+                    {
+                        <button
+                            class="join-item btn btn-sm"
+                            hx-get="@pageUrl"
+                            hx-target="@hxTarget"
+                            hx-swap="@swapValue"
+                            aria-label="Go to page @pageNum">
+                            @pageNum
+                        </button>
+                    }
+                    else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
+                    {
+                        <button
+                            class="join-item btn btn-sm"
+                            x-data
+                            hx-get="@pageUrl"
+                            hx-target="@hxTarget"
+                            hx-swap="@swapValue"
+                            aria-label="Go to page @pageNum">
+                            @pageNum
+                        </button>
+                    }
+                    else if (jsMode == JavaScriptMode.Alpine)
+                    {
+                        <button
+                            class="join-item btn btn-sm"
+                            x-data
+                            @@click="window.location.href = '@pageUrl'"
+                            aria-label="Go to page @pageNum">
+                            @pageNum
+                        </button>
+                    }
+                    else if (jsMode == JavaScriptMode.PlainJS)
+                    {
+                        <button
+                            class="join-item btn btn-sm"
+                            onclick="window.location.href = '@pageUrl'"
+                            aria-label="Go to page @pageNum">
+                            @pageNum
+                        </button>
+                    }
+                    else
+                    {
+                        <a href="@pageUrl"
+                           class="join-item btn btn-sm"
+                           aria-label="Go to page @pageNum">
+                            @pageNum
+                        </a>
+                    }
+                }
+                else
+                {
+                    @* Future page - show but disabled *@
+                    <span class="join-item btn btn-sm btn-disabled">@pageNum</span>
+                }
+            }
+        </div>
+    }
+    else if (Model.ShowPageNumber)
+    {
+        @* Simple current page indicator when no history *@
         <div class="badge badge-lg">
             <text>Page </text>@currentPage
         </div>

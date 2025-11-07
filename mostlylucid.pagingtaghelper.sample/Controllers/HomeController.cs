@@ -2,11 +2,11 @@ using System.Diagnostics;
 using Htmx;
 using Microsoft.AspNetCore.Mvc;
 using mostlylucid.pagingtaghelper.Extensions;
-using mostlylucig.pagingtaghelper.sample.Models;
-using mostlylucig.pagingtaghelper.sample.Services;
+using mostlylucid.pagingtaghelper.sample.Models;
+using mostlylucid.pagingtaghelper.sample.Services;
 using mostlylucid.pagingtaghelper.Models;
 
-namespace mostlylucig.pagingtaghelper.sample.Controllers;
+namespace mostlylucid.pagingtaghelper.sample.Controllers;
 
 public class HomeController(DataFakerService dataFakerService, ILogger<HomeController> logger) : Controller
 {
@@ -14,9 +14,10 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
 
 
 
+    [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
     public IActionResult Index()
     {
-        
+
             var sectionModels = new List<CardSectionModel>
             {
                     new CardSectionModel()
@@ -167,7 +168,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
 
 
 
-    
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> PlainView(int page = 1,int pageSize = 10)
     {
         var pagingModel = await GenerateModel(page, pageSize);
@@ -176,6 +177,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     [Route("TailwindView")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> TailwindView(int page = 1, int pageSize = 10)
     {
         var pagingModel = await GenerateModel(page, pageSize);
@@ -184,6 +186,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     [Route("NoJSView")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> NoJSView(int page = 1, int pageSize = 10)
     {
         var pagingModel = await GenerateModel(page, pageSize);
@@ -192,6 +195,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     [Route("JavaScriptModes")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize", "mode" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> JavaScriptModes(int page = 1, int pageSize = 10, string mode = "HTMX")
     {
         var pagingModel = await GenerateModel(page, pageSize);
@@ -200,7 +204,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
     
     [Route("BasicWithModel")]
-
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> BasicWithModel(int page = 1,int pageSize = 10)
     {
         var pagingModel = await GenerateModel(page, pageSize);
@@ -210,7 +214,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
 
 
     [Route("BasicHtmxWithModel")]
-
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async  Task<IActionResult> BasicHtmxWithModel(int page = 1,int pageSize = 10)
     {
   
@@ -222,8 +226,8 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
         return View(pagingModel);
     }
 
-    
     [Route("SearchWithHtmx")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "search", "page", "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> SearchWithHtmx(string? search, int pageSize = 10,int page = 1)
     {
         search = search?.Trim().ToLowerInvariant();
@@ -258,6 +262,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     [Route("PageSortTagHelper")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "search", "page", "pageSize", "orderBy", "descending" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> PageSortTagHelper(string? search, int pageSize = 10, int page = 1, string? orderBy = "", bool descending = false)
     {
         var pagingModel = await SortResults(search, pageSize, page, orderBy, descending);
@@ -270,6 +275,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
     
     [Route("PageSortTagHelperNoHtmx")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "search", "page", "pageSize", "orderBy", "descending" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> PageSortTagHelperNoHtmx(string? search, int pageSize = 10, int page = 1, string? orderBy = "", bool descending = false)
     {
         var pagingModel = await SortResults(search, pageSize, page, orderBy, descending);
@@ -278,6 +284,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     [Route("PageSizeWithHTMX")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> PageSizeWithHtmx(int pageSize = 10)
     {
         var pagingModel = await GenerateModel(1, pageSize, 1234);
@@ -290,6 +297,7 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
     
     [Route("PageSizeNoHTMX")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "pageSize" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> PageSizeNoHtmx(int pageSize = 10)
     {
         var pagingModel = await GenerateModel(1, pageSize, 1234);
@@ -382,10 +390,21 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
             nextToken = Convert.ToBase64String(tokenBytes);
         }
 
-        // Store current token in history
-        if (!string.IsNullOrEmpty(pageToken))
+        // Store current token in history (with max limit)
+        const int maxHistoryPages = 20; // Max pages to keep in history
+        if (!string.IsNullOrEmpty(pageToken) && currentPage > 1)
         {
             history[currentPage] = pageToken;
+
+            // Trim history if it exceeds max size (keep only recent pages)
+            if (maxHistoryPages > 0 && history.Count > maxHistoryPages)
+            {
+                var oldestPages = history.Keys.OrderBy(k => k).Take(history.Count - maxHistoryPages);
+                foreach (var oldPage in oldestPages.ToList())
+                {
+                    history.Remove(oldPage);
+                }
+            }
         }
 
         var viewModel = new ContinuationPagingViewModel
@@ -407,13 +426,25 @@ public class HomeController(DataFakerService dataFakerService, ILogger<HomeContr
     }
 
     [Route("Localization")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "page", "pageSize", "language" }, VaryByHeader = "Accept-Encoding")]
     public async Task<IActionResult> Localization(
         int page = 1,
         int pageSize = 10,
         string language = "en")
     {
+        // Set the culture for localization
+        var culture = new System.Globalization.CultureInfo(language);
+        System.Globalization.CultureInfo.CurrentCulture = culture;
+        System.Globalization.CultureInfo.CurrentUICulture = culture;
+
         var pagingModel = await GenerateModel(page, pageSize);
         ViewBag.SelectedLanguage = language;
+
+        if (Request.IsHtmx())
+        {
+            return PartialView("_LocalizationContent", pagingModel);
+        }
+
         return View(pagingModel);
     }
 

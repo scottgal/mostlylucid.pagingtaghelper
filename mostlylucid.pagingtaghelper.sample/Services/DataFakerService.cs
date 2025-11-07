@@ -1,8 +1,8 @@
 ﻿using Bogus;
 using Microsoft.Extensions.Caching.Memory;
-using mostlylucig.pagingtaghelper.sample.Models;
+using mostlylucid.pagingtaghelper.sample.Models;
 
-namespace mostlylucig.pagingtaghelper.sample.Services;
+namespace mostlylucid.pagingtaghelper.sample.Services;
 
 
 

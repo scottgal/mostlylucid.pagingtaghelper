@@ -22,7 +22,7 @@
         <Description>
             Comprehensive pagination TagHelper library for ASP.NET Core with support for traditional paging, continuation tokens (Cosmos DB, DynamoDB), sortable headers, and multiple styling frameworks (TailwindCSS, DaisyUI, Bootstrap). Features HTMX integration, localization, and zero-JS mode.
         </Description>
-        <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/ReleaseNotes.txt"))</PackageReleaseNotes>
+        <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/Properties/ReleaseNotes.txt"))</PackageReleaseNotes>
         <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
         <Version>1.0.0</Version>
     </PropertyGroup>
@@ -32,7 +32,11 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <None Remove="ReleaseNotes.txt" />
         <EmbeddedResource Include="CSS\PlainView.css" />
-        <Content Include="ReleaseNotes.txt">
+        <Content Include="..\README.md">
+          <Link>Properties\README.md</Link>
+        </Content>
+        <Content Include="Properties\ReleaseNotes.txt">
+          <Link>Properties\ReleaseNotes.txt</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <None Remove="CSS\PlainViewMin.css" />
@@ -49,7 +53,7 @@
         <None Include=".\icon.png" Pack="true" PackagePath="">
             <Link>Properties\icon.png</Link>
         </None>
-        <None Include=".\README.md" Pack="true" PackagePath="">
+        <None Include="..\README.md" Pack="true" PackagePath="">
             <Link>Properties\README.md</Link>
         </None>
     </ItemGroup>

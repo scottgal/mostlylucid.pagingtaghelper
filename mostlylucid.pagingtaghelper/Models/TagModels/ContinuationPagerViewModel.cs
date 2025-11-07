@@ -34,25 +34,56 @@ public class ContinuationPagerViewModel : PageSizeModel
     /// </summary>
     public new IContinuationPagingModel? Model { get; set; }
 
+    private string? _previousPageText;
+    private string? _nextPageText;
+    private string? _previousPageAriaLabel;
+    private string? _nextPageAriaLabel;
+    private string? _pageSizeString;
+
     /// <summary>
     /// Text for the "Previous" button.
     /// </summary>
-    public string PreviousPageText { get; set; } = "‹ Previous";
+    public string PreviousPageText
+    {
+        get => _previousPageText ?? Localizer?.PreviousPageText ?? "‹ Previous";
+        set => _previousPageText = value;
+    }
 
     /// <summary>
     /// Text for the "Next" button.
     /// </summary>
-    public string NextPageText { get; set; } = "Next ›";
+    public string NextPageText
+    {
+        get => _nextPageText ?? Localizer?.NextPageText ?? "Next ›";
+        set => _nextPageText = value;
+    }
 
     /// <summary>
     /// ARIA label for previous button.
     /// </summary>
-    public string PreviousPageAriaLabel { get; set; } = "Go to previous page";
+    public string PreviousPageAriaLabel
+    {
+        get => _previousPageAriaLabel ?? Localizer?.PreviousPageAriaLabel ?? "Go to previous page";
+        set => _previousPageAriaLabel = value;
+    }
 
     /// <summary>
     /// ARIA label for next button.
     /// </summary>
-    public string NextPageAriaLabel { get; set; } = "Go to next page";
+    public string NextPageAriaLabel
+    {
+        get => _nextPageAriaLabel ?? Localizer?.NextPageAriaLabel ?? "Go to next page";
+        set => _nextPageAriaLabel = value;
+    }
+
+    /// <summary>
+    /// Localized "Page Size" label for the dropdown.
+    /// </summary>
+    public string PageSizeString
+    {
+        get => _pageSizeString ?? Localizer?.PageSizeString ?? "Page Size";
+        set => _pageSizeString = value;
+    }
 
     /// <summary>
     /// CSS class for the container.
@@ -75,9 +106,31 @@ public class ContinuationPagerViewModel : PageSizeModel
     public bool ShowPageNumber { get; set; } = true;
 
     /// <summary>
+    /// Whether to show the pagination summary text (default: true).
+    /// </summary>
+    public bool ShowSummary { get; set; } = true;
+
+    /// <summary>
+    /// Custom template for the page summary. Supports placeholders: {currentPage}, {pageSize}.
+    /// Example: "Page {currentPage} - {pageSize} items per page"
+    /// </summary>
+    public string? SummaryTemplate { get; set; }
+
+    /// <summary>
     /// Whether to enable token accumulation for faster backward navigation.
     /// </summary>
     public bool EnableTokenAccumulation { get; set; } = true;
+
+    /// <summary>
+    /// Maximum number of page tokens to store in history. Default: 20. Set to 0 for unlimited.
+    /// </summary>
+    public int MaxHistoryPages { get; set; } = 20;
+
+    /// <summary>
+    /// Whether to preserve all URL query parameters when navigating (default: true).
+    /// When false, only paging-related parameters are included.
+    /// </summary>
+    public bool PreserveQueryParameters { get; set; } = true;
 
     /// <summary>
     /// Optional prefix for query parameters to support multiple pagers on the same page.

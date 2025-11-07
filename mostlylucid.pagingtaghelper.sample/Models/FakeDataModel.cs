@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace mostlylucig.pagingtaghelper.sample.Models;
+namespace mostlylucid.pagingtaghelper.sample.Models;
 
 public class FakeDataModel
 {

@@ -5,92 +5,95 @@
     var totalPages = Model.TotalPages;
 
     string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
+
+
 }
 
-    <div class="flex items-center gap-2 justify-center flex-wrap mt-4 pager-container">
-        @if (Model.ShowPageSize)
+    <div class="flex flex-col gap-3 items-center justify-center pager-container">
+        <div class="flex items-center gap-2 flex-wrap justify-center">
+            @if (Model.ShowPageSize)
+            {
+                <page-size page-size-model="Model"></page-size>
+            }
+
+            @if (totalPages > 1)
+            {
+                <div class="join">
+                    @if (Model.FirstLastNavigation && Model.Page > 1)
+                    {
+                        var href = GetUrl(1);
+                        <a class="join-item btn btn-sm"
+                           href="@href">
+                            @Model.FirstPageText
+                        </a>
+                    }
+
+                    @if (Model.Page > 1)
+                    {
+                        var href = GetUrl(Model.Page - 1);
+                        <a class="join-item btn btn-sm"
+                           href="@href">
+                            @Model.PreviousPageText
+                        </a>
+                    }
+
+                    @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
+                    {
+                        <button class="join-item btn btn-sm btn-disabled">
+                            @Model.SkipBackText
+                        </button>
+                    }
+
+                    @* Pagination Numbers *@
+                    @{
+                        int halfDisplay = Model.PagesToDisplay / 2;
+                        int startPage = Math.Max(1, Model.Page - halfDisplay);
+                        int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
+                        startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
+                    }
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        var href = GetUrl(i);
+                        <a data-page="@i"
+                           class="join-item btn btn-sm @(i == Model.Page ? "btn-active" : "")"
+                           href="@href">
+                            @i
+                        </a>
+                    }
+
+                    @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
+                    {
+                        <button class="join-item btn btn-sm btn-disabled">
+                            @Model.SkipForwardText
+                        </button>
+                    }
+
+                    @if (Model.Page < totalPages)
+                    {
+                        var href = GetUrl(Model.Page + 1);
+                        <a class="join-item btn btn-sm"
+                           href="@href"
+                           aria-label="@Model.NextPageAriaLabel">
+                            @Model.NextPageText
+                        </a>
+                    }
+
+                    @if (Model.FirstLastNavigation && Model.Page < totalPages)
+                    {
+                        var href = GetUrl(Model.TotalPages);
+                        <a class="join-item btn btn-sm"
+                           href="@href">
+                            @Model.LastPageText
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (Model.ShowSummary && totalPages > 1)
         {
-            <page-size page-size-model="Model"></page-size>
-        }
-
-        @if (Model.FirstLastNavigation && Model.Page > 1)
-        {
-            var href = GetUrl(1);
-            <a class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
-               href="@href">
-                @Model.FirstPageText
-            </a>
-        }
-        @if (totalPages > 1)
-        {
-            <text>
-                @if (Model.Page > 1)
-                {
-                    var href = GetUrl(Model.Page - 1);
-                    <a class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
-                       href="@href">
-                        @Model.PreviousPageText
-                    </a>
-                }
-
-                @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
-                {
-                    <span class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded cursor-not-allowed dark:bg-gray-700 dark:text-gray-500 dark:border-gray-600">
-                        @Model.SkipBackText
-                    </span>
-                }
-
-                @* Pagination Numbers *@
-                @{
-                    int halfDisplay = Model.PagesToDisplay / 2;
-                    int startPage = Math.Max(1, Model.Page - halfDisplay);
-                    int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
-                    startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
-                }
-                @for (int i = startPage; i <= endPage; i++)
-                {
-                    var href = GetUrl(i);
-                    <a data-page="@i"
-                       class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-                      @(i == Model.Page
-                        ? "text-white bg-blue-600 border border-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:border-blue-500 dark:hover:bg-blue-600"
-                        : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700")"
-                       href="@href">
-                        @i
-                    </a>
-                }
-
-                @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
-                {
-                    <span class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded cursor-not-allowed dark:bg-gray-700 dark:text-gray-500 dark:border-gray-600">
-                        @Model.SkipForwardText
-                    </span>
-                }
-
-                @if (Model.Page < totalPages)
-                {
-                    var href = GetUrl(Model.Page + 1);
-                    <a class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
-                       href="@href"
-                       aria-label="@Model.NextPageAriaLabel">
-                        @Model.NextPageText
-                    </a>
-                }
-
-                @if (Model.FirstLastNavigation && Model.Page < totalPages)
-                {
-                    var href = GetUrl(Model.TotalPages);
-                    <a class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
-                       href="@href">
-                        @Model.LastPageText
-                    </a>
-                }
-                @if (Model.ShowSummary)
-                {
-                    <div class="text-sm text-gray-600 dark:text-gray-300 ml-2">
-                        @Model.GetPageSummary()
-                    </div>
-                }
-            </text>
+            <div class="badge badge-ghost badge-sm">
+                @Model.GetPageSummary()
+            </div>
         }
     </div>

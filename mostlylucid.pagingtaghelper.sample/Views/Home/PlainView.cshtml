@@ -1,22 +1,19 @@
 @model PagingViewModel
 @{
-    Layout = "_LayoutPlain";
     ViewData["Title"] = "Plain CSS View";
     var previewModel = new PreviewPartialViewModel();
-    previewModel.Description = "This example demonstrates the Plain CSS view type with custom styling injected into the view. It uses plain JavaScript for interactivity without any framework dependencies.";
+    previewModel.Description = "This example demonstrates the Plain CSS view type with custom styling that looks identical to TailwindAndDaisy. It includes PlainView.css for styling with full dark mode support and uses plain JavaScript for interactivity.";
     previewModel.SourceLink="/Views/Home/PlainView.cshtml";
 }
 
 <partial name="_PreviewPartial" model="previewModel"/>
 
-<div class="no-tailwind">
-    @Html.PlainCSS()
-    <paging model="Model"
-            view-type="Plain"
-            js-mode="@JavaScriptMode.PlainJS"
-            class="my-4">
-    </paging>
-</div>
+@Html.PlainCSS()
+<paging model="Model"
+        view-type="Plain"
+        js-mode="@JavaScriptMode.PlainJS"
+        class="my-4">
+</paging>
 
 <partial name="_ResultsList" model="Model"/>
 

@@ -86,9 +86,17 @@
     <value>go to next page</value>
     <comment>ARIA label for next page button</comment>
   </data>
+  <data name="PreviousPageAriaLabel" xml:space="preserve">
+    <value>go to previous page</value>
+    <comment>ARIA label for previous page button</comment>
+  </data>
   <data name="PageSizeLabel" xml:space="preserve">
     <value>Page size:</value>
     <comment>Label for page size selector</comment>
+  </data>
+  <data name="PageSizeString" xml:space="preserve">
+    <value>Page Size</value>
+    <comment>Page size selector label (without colon)</comment>
   </data>
   <data name="PageSummaryFormat" xml:space="preserve">
     <value>Page {0} of {1} (Total items: {2})</value>

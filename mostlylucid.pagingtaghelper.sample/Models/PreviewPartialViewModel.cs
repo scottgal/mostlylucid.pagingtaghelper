@@ -1,4 +1,4 @@
-﻿namespace mostlylucig.pagingtaghelper.sample.Models;
+﻿namespace mostlylucid.pagingtaghelper.sample.Models;
 
 public class PreviewPartialViewModel
 {

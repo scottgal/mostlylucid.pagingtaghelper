@@ -1,17 +1,16 @@
 @model mostlylucid.pagingtaghelper.sample.Models.ContinuationPagingViewModel
 @{
     ViewData["Title"] = "Continuation Pager Demo - Cosmos DB Style";
+    var previewModel = new PreviewPartialViewModel();
+    previewModel.Description = "This demonstrates pagination using continuation tokens, similar to how Cosmos DB, DynamoDB, and Azure Table Storage work. Instead of traditional page numbers, we use tokens to navigate forward and backward. The token history enables 'Previous' navigation.";
+    previewModel.SourceLink = "/Views/Home/_ContinuationPagerList.cshtml";
 }
+
+<partial name="_PreviewPartial" model="previewModel"/>
 
 <div class="max-w-7xl mx-auto p-6">
     <div class="mb-8">
         <h1 class="text-3xl font-bold mb-4 dark:text-white">Continuation Token Pagination</h1>
-        <div class="bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 p-4 mb-6">
-            <p class="text-sm dark:text-blue-100">
-                <strong>About this demo:</strong> This demonstrates pagination using continuation tokens, similar to how Cosmos DB, DynamoDB, and Azure Table Storage work.
-                Instead of traditional page numbers, we use tokens to navigate forward and backward. The token history enables "Previous" navigation.
-            </p>
-        </div>
 
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-6">
             <h3 class="font-semibold mb-2 dark:text-white">Current State:</h3>
@@ -22,15 +21,6 @@
                 <li><strong>Next Token:</strong> @(string.IsNullOrEmpty(Model.NextPageToken) ? "None (last page)" : Model.NextPageToken.Substring(0, Math.Min(20, Model.NextPageToken.Length)) + "...")</li>
                 <li><strong>Token History Size:</strong> @(Model.PageTokenHistory?.Count ?? 0) pages</li>
             </ul>
-        </div>
-
-        <div class="flex justify-between items-center mb-4">
-            <a href="/" class="text-blue-600 dark:text-blue-400 hover:underline">← Back to Demos</a>
-            <a href="https://github.com/scottgal/mostlylucid.pagingtaghelper/blob/main/mostlylucid.pagingtaghelper.sample/Controllers/HomeController.cs#L310"
-               target="_blank"
-               class="text-blue-600 dark:text-blue-400 hover:underline">
-                View Source Code →
-            </a>
         </div>
     </div>
 
