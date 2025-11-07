@@ -49,7 +49,7 @@ Built for modern web apps with HTMX, Alpine.js, or vanilla JavaScript support. S
 - **HTMX-First** - But works great without it
 
 ### **Bonus Features**
-- **Continuation Token Pagination** - Support for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage)
+- **Continuation Token Pagination** - Support for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage) - **Work in Progress for v1.1** (expected in ~2 weeks)
 - **Sortable Headers** - Flip between ascending/descending with visual indicators
 - **Page Size Selector** - Standalone component for changing items per page
 - **Search Integration** - Preserve search terms and filters across pages automatically

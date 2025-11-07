@@ -1,17 +1,19 @@
 @model PagingViewModel
 @{
-    ViewData["Title"] = "TailwindAndDaisy View (Default)";
+    ViewData["Title"] = "Pure Tailwind View";
     var previewModel = new PreviewPartialViewModel();
-    previewModel.Description = "This example demonstrates the default TailwindAndDaisy view using DaisyUI components. This is the recommended default view that provides the best experience with HTMX and full dark mode support.";
+    previewModel.Description = "This example demonstrates the pure Tailwind view without DaisyUI dependencies. Uses only Tailwind utility classes for styling with full HTMX support.";
     previewModel.SourceLink="/Views/Home/TailwindView.cshtml";
 }
 
 <partial name="_PreviewPartial" model="previewModel"/>
 
-<paging model="Model"
-        class="my-4">
-</paging>
+<div id="paging-container">
+    <paging model="Model"
+            class="my-4"
+            hx-target="#paging-container"
+            hx-swap="outerHTML">
+    </paging>
 
-<partial name="_ResultsList" model="Model"/>
-
-@Html.PageSizeOnchangeSnippet()
+    <partial name="_ResultsList" model="Model"/>
+</div>

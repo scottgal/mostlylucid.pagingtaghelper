@@ -2,7 +2,7 @@
 MAJOR UPDATE - Breaking changes and new features:
 
 NEW FEATURES:
-- ContinuationPager TagHelper for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage)
+- ContinuationPager TagHelper for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage) - WORK IN PROGRESS (will be completed in v1.1, expected ~2 weeks)
   * Numbered page navigation showing visited pages with clickable buttons
   * Token history management with configurable max limit (default: 20 pages)
   * Automatic query parameter preservation (filters, searches, sorts)
