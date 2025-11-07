@@ -461,12 +461,14 @@ Renders:
 ```html
 <button
     x-data
-    @click="window.location.href = '/Products?page=2'">
+    @@click="window.location.href = '/Products?page=2'">
     Next ›
 </button>
 ```
 
 Pure Alpine.js without HTMX. Useful when you're already using Alpine.js but don't want HTMX dependencies.
+
+**Note:** In Razor views, Alpine.js directives use `@@click` (escaped `@`) instead of `@click`, or you can use the longer syntax `x-on:click`.
 
 **4. PlainJS Mode**
 
