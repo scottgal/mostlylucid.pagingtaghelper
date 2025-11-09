@@ -74,12 +74,12 @@
     var swapValue = "outerHTML";
 }
 
-<div class="flex gap-2 items-center @Model.CssClass" id="@Model.PagerId">
+<div class="pager-container @Model.CssClass" id="@Model.PagerId">
     @* Previous Button *@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoBack ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             hx-get="@prevUrl"
             hx-target="@hxTarget"
             hx-swap="@swapValue"
@@ -91,7 +91,7 @@
     else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoBack ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             x-data
             hx-get="@prevUrl"
             hx-target="@hxTarget"
@@ -104,7 +104,7 @@
     else if (jsMode == JavaScriptMode.Alpine)
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoBack ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             x-data
             @@click="window.location.href = '@prevUrl'"
             aria-label="@Model.PreviousPageAriaLabel"
@@ -115,7 +115,7 @@
     else if (jsMode == JavaScriptMode.PlainJS)
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoBack ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             onclick="window.location.href = '@prevUrl'"
             aria-label="@Model.PreviousPageAriaLabel"
             disabled="@(!canGoBack)">
@@ -127,21 +127,21 @@
         @if (canGoBack)
         {
             <a href="@prevUrl"
-               class="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+               class="pager-button"
                aria-label="@Model.PreviousPageAriaLabel">
                 @Model.PreviousPageText
             </a>
         }
         else
         {
-            <span class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-400 cursor-not-allowed">@Model.PreviousPageText</span>
+            <span class="pager-button disabled">@Model.PreviousPageText</span>
         }
     }
 
     @* Current Page Indicator *@
     @if (Model.ShowPageNumber)
     {
-        <div class="px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-700 dark:text-white rounded-md">
+        <div class="page-indicator">
             <text>Page </text>@currentPage
         </div>
     }
@@ -150,7 +150,7 @@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoNext ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             hx-get="@nextUrl"
             hx-target="@hxTarget"
             hx-swap="@swapValue"
@@ -162,7 +162,7 @@
     else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoNext ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             x-data
             hx-get="@nextUrl"
             hx-target="@hxTarget"
@@ -175,7 +175,7 @@
     else if (jsMode == JavaScriptMode.Alpine)
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoNext ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             x-data
             @@click="window.location.href = '@nextUrl'"
             aria-label="@Model.NextPageAriaLabel"
@@ -186,7 +186,7 @@
     else if (jsMode == JavaScriptMode.PlainJS)
     {
         <button
-            class="px-4 py-2 text-sm font-medium rounded-md @(canGoNext ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-200 text-gray-400 cursor-not-allowed")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             onclick="window.location.href = '@nextUrl'"
             aria-label="@Model.NextPageAriaLabel"
             disabled="@(!canGoNext)">
@@ -198,21 +198,21 @@
         @if (canGoNext)
         {
             <a href="@nextUrl"
-               class="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+               class="pager-button"
                aria-label="@Model.NextPageAriaLabel">
                 @Model.NextPageText
             </a>
         }
         else
         {
-            <span class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-400 cursor-not-allowed">@Model.NextPageText</span>
+            <span class="pager-button disabled">@Model.NextPageText</span>
         }
     }
 
     @* Page Size Selector (optional) *@
     @if (Model.ShowPageSize)
     {
-        <div class="ml-4">
+        <div class="page-size-container">
             <page-size
                 page-size="@pageSize"
                 total-items="@(pageSize * 10)"

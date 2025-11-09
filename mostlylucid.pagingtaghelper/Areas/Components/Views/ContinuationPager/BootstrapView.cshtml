@@ -74,12 +74,12 @@
     var swapValue = "outerHTML";
 }
 
-<div class="d-flex gap-2 align-items-center @Model.CssClass" id="@Model.PagerId">
+<div class="pager-container @Model.CssClass" id="@Model.PagerId">
     @* Previous Button *@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoBack ? "disabled" : "")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             hx-get="@prevUrl"
             hx-target="@hxTarget"
             hx-swap="@swapValue"
@@ -91,7 +91,7 @@
     else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoBack ? "disabled" : "")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             x-data
             hx-get="@prevUrl"
             hx-target="@hxTarget"
@@ -104,7 +104,7 @@
     else if (jsMode == JavaScriptMode.Alpine)
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoBack ? "disabled" : "")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             x-data
             @@click="window.location.href = '@prevUrl'"
             aria-label="@Model.PreviousPageAriaLabel"
@@ -115,7 +115,7 @@
     else if (jsMode == JavaScriptMode.PlainJS)
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoBack ? "disabled" : "")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             onclick="window.location.href = '@prevUrl'"
             aria-label="@Model.PreviousPageAriaLabel"
             disabled="@(!canGoBack)">
@@ -127,21 +127,21 @@
         @if (canGoBack)
         {
             <a href="@prevUrl"
-               class="btn btn-primary btn-sm"
+               class="pager-button"
                aria-label="@Model.PreviousPageAriaLabel">
                 @Model.PreviousPageText
             </a>
         }
         else
         {
-            <span class="btn btn-secondary btn-sm disabled">@Model.PreviousPageText</span>
+            <span class="pager-button disabled">@Model.PreviousPageText</span>
         }
     }
 
     @* Current Page Indicator *@
     @if (Model.ShowPageNumber)
     {
-        <div class="badge bg-secondary">
+        <div class="page-indicator">
             <text>Page </text>@currentPage
         </div>
     }
@@ -150,7 +150,7 @@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoNext ? "disabled" : "")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             hx-get="@nextUrl"
             hx-target="@hxTarget"
             hx-swap="@swapValue"
@@ -162,7 +162,7 @@
     else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoNext ? "disabled" : "")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             x-data
             hx-get="@nextUrl"
             hx-target="@hxTarget"
@@ -175,7 +175,7 @@
     else if (jsMode == JavaScriptMode.Alpine)
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoNext ? "disabled" : "")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             x-data
             @@click="window.location.href = '@nextUrl'"
             aria-label="@Model.NextPageAriaLabel"
@@ -186,7 +186,7 @@
     else if (jsMode == JavaScriptMode.PlainJS)
     {
         <button
-            class="btn btn-primary btn-sm @(!canGoNext ? "disabled" : "")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             onclick="window.location.href = '@nextUrl'"
             aria-label="@Model.NextPageAriaLabel"
             disabled="@(!canGoNext)">
@@ -198,21 +198,21 @@
         @if (canGoNext)
         {
             <a href="@nextUrl"
-               class="btn btn-primary btn-sm"
+               class="pager-button"
                aria-label="@Model.NextPageAriaLabel">
                 @Model.NextPageText
             </a>
         }
         else
         {
-            <span class="btn btn-secondary btn-sm disabled">@Model.NextPageText</span>
+            <span class="pager-button disabled">@Model.NextPageText</span>
         }
     }
 
     @* Page Size Selector (optional) *@
     @if (Model.ShowPageSize)
     {
-        <div class="ms-3">
+        <div class="page-size-container">
             <page-size
                 page-size="@pageSize"
                 total-items="@(pageSize * 10)"

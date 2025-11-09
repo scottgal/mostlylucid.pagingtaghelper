@@ -13,10 +13,10 @@
         <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-<div class="me-3 page-size-container">
+<div class="page-size-container">
     <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
-    <label for="pageSize-@pagerId" class="form-label me-2">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
-    <select id="pageSize-@pagerId" name="pageSize" class="form-select form-select-sm d-inline w-auto" @Html.Raw(htmxAttributes)>
+    <label for="pageSize-@pagerId">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
+    <select id="pageSize-@pagerId" name="pageSize" @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {
             <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
@@ -26,9 +26,5 @@
 
 @if (Model.UseHtmx)
 {
-@Html.HTMXPageSizeChange()
-}
-else
-{
-    @Html.PageSizeOnchangeSnippet()
+    @Html.HTMXPageSizeChange()
 }
