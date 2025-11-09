@@ -49,7 +49,7 @@ Built for modern web apps with HTMX, Alpine.js, or vanilla JavaScript support. S
 - **HTMX-First** - But works great without it
 
 ### **Bonus Features**
-- **Continuation Token Pagination** - Support for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage) - **Work in Progress for v1.1** (expected in ~2 weeks)
+- **Continuation Token Pagination** - Support for NoSQL databases (Cosmos DB, DynamoDB, Azure Table Storage) - **Included in v1.0** with basic functionality, enhanced features coming in v1.1
 - **Sortable Headers** - Flip between ascending/descending with visual indicators
 - **Page Size Selector** - Standalone component for changing items per page
 - **Search Integration** - Preserve search terms and filters across pages automatically
@@ -359,12 +359,24 @@ public class ProductsViewModel : IContinuationPagingModel
 
 ## Documentation
 
+### Getting Started
 - [Getting Started](docs/getting-started.md) - Detailed setup and first steps
-- [JavaScript Modes](docs/javascript-modes.md) - Deep dive into all JS modes
+- [Migration Guide](docs/migration-v1.md) - Upgrading to v1.0 (100% backward compatible)
+
+### TagHelper Guides
+- [Pager TagHelper](docs/pager-taghelper.md) - Full pagination controls
+- [PageSize TagHelper](docs/pagesize-taghelper.md) - Standalone page size selector
+- [SortableHeader TagHelper](docs/sortable-header-taghelper.md) - Sortable column headers
+- [ContinuationPager TagHelper](docs/continuation-pager-taghelper.md) - NoSQL token-based pagination
+
+### Features & Customization
+- [JavaScript Modes](docs/javascript-modes.md) - HTMX, Alpine, PlainJS, NoJS modes
 - [Custom Views](docs/custom-views.md) - Build your own pagination UI
-- [Localization](docs/localization.md) - Multi-language support
-- [Advanced Usage](docs/advanced-usage.md) - Power user features
-- [API Reference](docs/api-reference.md) - Complete property reference
+- [Localization](docs/localization.md) - Multi-language support (8 languages)
+- [Advanced Usage](docs/advanced-usage.md) - Search, sorting, filtering, performance
+
+### Reference
+- [API Reference](docs/api-reference.md) - Complete attribute and property reference
 
 ---
 
