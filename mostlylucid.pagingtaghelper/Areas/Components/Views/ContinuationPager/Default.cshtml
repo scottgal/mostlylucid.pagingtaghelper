@@ -70,9 +70,7 @@
     var nextUrl = canGoNext ? $"{linkUrl}?{BuildQueryString(nextToken, currentPage + 1)}" : "#";
 
     // HTMX attributes
-    var hxGet = !string.IsNullOrEmpty(Model.HtmxTarget) ? "hx-get" : null;
     var hxTarget = !string.IsNullOrEmpty(Model.HtmxTarget) ? Model.HtmxTarget : null;
-    var hxSwap = !string.IsNullOrEmpty(Model.HtmxTarget) ? "hx-swap" : null;
     var swapValue = "outerHTML";
 }
 
@@ -81,7 +79,7 @@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             hx-get="@prevUrl"
             hx-target="@hxTarget"
             hx-swap="@swapValue"
@@ -93,7 +91,7 @@
     else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             x-data
             hx-get="@prevUrl"
             hx-target="@hxTarget"
@@ -106,7 +104,7 @@
     else if (jsMode == JavaScriptMode.Alpine)
     {
         <button
-            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             x-data
             @@click="window.location.href = '@prevUrl'"
             aria-label="@Model.PreviousPageAriaLabel"
@@ -117,7 +115,7 @@
     else if (jsMode == JavaScriptMode.PlainJS)
     {
         <button
-            class="btn btn-sm @(canGoBack ? "" : "btn-disabled")"
+            class="pager-button @(canGoBack ? "" : "disabled")"
             onclick="window.location.href = '@prevUrl'"
             aria-label="@Model.PreviousPageAriaLabel"
             disabled="@(!canGoBack)">
@@ -129,113 +127,21 @@
         @if (canGoBack)
         {
             <a href="@prevUrl"
-               class="btn btn-sm"
+               class="pager-button"
                aria-label="@Model.PreviousPageAriaLabel">
                 @Model.PreviousPageText
             </a>
         }
         else
         {
-            <span class="btn btn-sm btn-disabled">@Model.PreviousPageText</span>
+            <span class="pager-button disabled">@Model.PreviousPageText</span>
         }
     }
 
-    @* Page Numbers (for visited pages) *@
-    @if (Model.ShowPageNumber && Model.PageTokenHistory != null && Model.PageTokenHistory.Any())
+    @* Current Page Indicator *@
+    @if (Model.ShowPageNumber)
     {
-        var maxVisiblePage = Math.Max(currentPage, Model.PageTokenHistory.Keys.Max());
-
-        <div class="join">
-            @for (int pageNum = 1; pageNum <= maxVisiblePage; pageNum++)
-            {
-                var isCurrentPage = pageNum == currentPage;
-                var canNavigateToPage = pageNum < currentPage && Model.PageTokenHistory.ContainsKey(pageNum);
-
-                string pageUrl;
-                if (pageNum == 1)
-                {
-                    // Page 1 has no token (it's the start)
-                    pageUrl = $"{linkUrl}?{BuildQueryString(null, 1)}";
-                }
-                else if (canNavigateToPage)
-                {
-                    var token = Model.PageTokenHistory[pageNum];
-                    pageUrl = $"{linkUrl}?{BuildQueryString(token, pageNum)}";
-                }
-                else
-                {
-                    pageUrl = "#";
-                }
-
-                if (isCurrentPage)
-                {
-                    <span class="join-item btn btn-sm btn-active">@pageNum</span>
-                }
-                else if (pageNum < currentPage)
-                {
-                    if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
-                    {
-                        <button
-                            class="join-item btn btn-sm"
-                            hx-get="@pageUrl"
-                            hx-target="@hxTarget"
-                            hx-swap="@swapValue"
-                            aria-label="Go to page @pageNum">
-                            @pageNum
-                        </button>
-                    }
-                    else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
-                    {
-                        <button
-                            class="join-item btn btn-sm"
-                            x-data
-                            hx-get="@pageUrl"
-                            hx-target="@hxTarget"
-                            hx-swap="@swapValue"
-                            aria-label="Go to page @pageNum">
-                            @pageNum
-                        </button>
-                    }
-                    else if (jsMode == JavaScriptMode.Alpine)
-                    {
-                        <button
-                            class="join-item btn btn-sm"
-                            x-data
-                            @@click="window.location.href = '@pageUrl'"
-                            aria-label="Go to page @pageNum">
-                            @pageNum
-                        </button>
-                    }
-                    else if (jsMode == JavaScriptMode.PlainJS)
-                    {
-                        <button
-                            class="join-item btn btn-sm"
-                            onclick="window.location.href = '@pageUrl'"
-                            aria-label="Go to page @pageNum">
-                            @pageNum
-                        </button>
-                    }
-                    else
-                    {
-                        <a href="@pageUrl"
-                           class="join-item btn btn-sm"
-                           aria-label="Go to page @pageNum">
-                            @pageNum
-                        </a>
-                    }
-                }
-                else
-                {
-                    @* Future page - show but disabled *@
-                    <span class="join-item btn btn-sm btn-disabled">@pageNum</span>
-                }
-            }
-        </div>
-    }
-    else if (Model.ShowPageNumber)
-    {
-        @* Simple current page indicator when no history *@
-        <div class="badge badge-lg">
+        <div class="page-indicator">
             <text>Page </text>@currentPage
         </div>
     }
@@ -244,7 +150,7 @@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             hx-get="@nextUrl"
             hx-target="@hxTarget"
             hx-swap="@swapValue"
@@ -256,7 +162,7 @@
     else if (jsMode == JavaScriptMode.HTMXWithAlpine && !string.IsNullOrEmpty(hxTarget))
     {
         <button
-            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             x-data
             hx-get="@nextUrl"
             hx-target="@hxTarget"
@@ -269,7 +175,7 @@
     else if (jsMode == JavaScriptMode.Alpine)
     {
         <button
-            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             x-data
             @@click="window.location.href = '@nextUrl'"
             aria-label="@Model.NextPageAriaLabel"
@@ -280,7 +186,7 @@
     else if (jsMode == JavaScriptMode.PlainJS)
     {
         <button
-            class="btn btn-sm @(canGoNext ? "" : "btn-disabled")"
+            class="pager-button @(canGoNext ? "" : "disabled")"
             onclick="window.location.href = '@nextUrl'"
             aria-label="@Model.NextPageAriaLabel"
             disabled="@(!canGoNext)">
@@ -292,21 +198,21 @@
         @if (canGoNext)
         {
             <a href="@nextUrl"
-               class="btn btn-sm"
+               class="pager-button"
                aria-label="@Model.NextPageAriaLabel">
                 @Model.NextPageText
             </a>
         }
         else
         {
-            <span class="btn btn-sm btn-disabled">@Model.NextPageText</span>
+            <span class="pager-button disabled">@Model.NextPageText</span>
         }
     }
 
     @* Page Size Selector (optional) *@
     @if (Model.ShowPageSize)
     {
-        <div class="ml-4">
+        <div class="page-size-container">
             <page-size
                 page-size="@pageSize"
                 total-items="@(pageSize * 10)"

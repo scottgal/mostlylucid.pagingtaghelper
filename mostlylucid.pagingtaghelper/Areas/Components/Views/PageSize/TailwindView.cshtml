@@ -1,4 +1,4 @@
-@using mostlylucid.pagingtaghelper.Extensions
+﻿@using mostlylucid.pagingtaghelper.Extensions
 @model mostlylucid.pagingtaghelper.Models.TagModels.PageSizeModel
 @{
     var pagerId = Model.PagerId;
@@ -23,17 +23,12 @@
             @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {
-            <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">
-                @option
-            </option>
+            <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
         }
     </select>
 </div>
+
 @if (Model.UseHtmx)
 {
     @Html.HTMXPageSizeChange()
-}
-else
-{
-    @Html.PageSizeOnchangeSnippet()
 }

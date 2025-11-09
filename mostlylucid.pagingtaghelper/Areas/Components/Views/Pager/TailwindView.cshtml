@@ -5,8 +5,6 @@
     var totalPages = Model.TotalPages;
 
     string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
-
-
 }
 
     <div class="pager-container">
