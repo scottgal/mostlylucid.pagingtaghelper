@@ -13,29 +13,32 @@
             <page-size page-size-model="Model"></page-size>
         }
 
-        @if (Model.FirstLastNavigation && Model.Page > 1)
-        {
-            var href = GetUrl(1);
-            <a class="pager-button" href="@href">
-                @Model.FirstPageText
-            </a>
-        }
         @if (totalPages > 1)
         {
-            <text>
+            <div class="join">
+                @if (Model.FirstLastNavigation && Model.Page > 1)
+                {
+                    var href = GetUrl(1);
+                    <a class="join-item btn btn-sm"
+                       href="@href">
+                        @Model.FirstPageText
+                    </a>
+                }
+
                 @if (Model.Page > 1)
                 {
                     var href = GetUrl(Model.Page - 1);
-                    <a class="pager-button" href="@href">
+                    <a class="join-item btn btn-sm"
+                       href="@href">
                         @Model.PreviousPageText
                     </a>
                 }
 
                 @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
                 {
-                    <span class="pager-button disabled">
+                    <button class="join-item btn btn-sm btn-disabled">
                         @Model.SkipBackText
-                    </span>
+                    </button>
                 }
 
                 @* Pagination Numbers *@
@@ -49,7 +52,7 @@
                 {
                     var href = GetUrl(i);
                     <a data-page="@i"
-                       class="pager-button @(i == Model.Page ? "active" : "")"
+                       class="join-item btn btn-sm @(i == Model.Page ? "btn-active" : "")"
                        href="@href">
                         @i
                     </a>
@@ -57,15 +60,15 @@
 
                 @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
                 {
-                    <span class="pager-button disabled">
+                    <button class="join-item btn btn-sm btn-disabled">
                         @Model.SkipForwardText
-                    </span>
+                    </button>
                 }
 
                 @if (Model.Page < totalPages)
                 {
                     var href = GetUrl(Model.Page + 1);
-                    <a class="pager-button"
+                    <a class="join-item btn btn-sm"
                        href="@href"
                        aria-label="@Model.NextPageAriaLabel">
                         @Model.NextPageText
@@ -75,16 +78,18 @@
                 @if (Model.FirstLastNavigation && Model.Page < totalPages)
                 {
                     var href = GetUrl(Model.TotalPages);
-                    <a class="pager-button" href="@href">
+                    <a class="join-item btn btn-sm"
+                       href="@href">
                         @Model.LastPageText
                     </a>
                 }
-                @if (Model.ShowSummary)
-                {
-                    <div class="pager-info">
-                        @Model.GetPageSummary()
-                    </div>
-                }
-            </text>
+            </div>
+
+            @if (Model.ShowSummary)
+            {
+                <span class="badge badge-sm">
+                    @Model.GetPageSummary()
+                </span>
+            }
         }
     </div>

@@ -13,10 +13,14 @@
         <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-<div class="page-size-container">
-    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()"/>
-    <label for="pageSize-@pagerId">@(Model.Localizer?.PageSizeLabel ?? "Page size:"):</label>
-    <select id="pageSize-@pagerId" name="pageSize" @Html.Raw(htmxAttributes)>
+<div id="@pagerId" class="page-size-container">
+    <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()" />
+
+    <label for="pageSize-@pagerId" class="text-sm font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">@(Model.Localizer?.PageSizeLabel ?? "Page size:")</label>
+    <select id="pageSize-@pagerId"
+            name="pageSize"
+            class="block w-auto px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-400"
+            @Html.Raw(htmxAttributes)>
         @foreach (var option in Model.PageSizes)
         {
             <option value="@option" selected="@(option == Model.PageSize ? "selected" : null)">@option</option>
