@@ -5,96 +5,86 @@
     var totalPages = Model.TotalPages;
 
     string GetUrl(int page) => Context.BuildPagedUrl(Model.LinkUrl ?? "", page, Model.PageSize, Model.SearchTerm, Model.OrderBy, Model.Descending);
-
-
 }
 
-    <div class="flex flex-col gap-3 items-center justify-center pager-container">
-        <div class="flex items-center gap-2 flex-wrap justify-center">
-            @if (Model.ShowPageSize)
-            {
-                <page-size page-size-model="Model"></page-size>
-            }
-
-            @if (totalPages > 1)
-            {
-                <div class="inline-flex rounded-md shadow-sm" role="group">
-                    @if (Model.FirstLastNavigation && Model.Page > 1)
-                    {
-                        var href = GetUrl(1);
-                        <a class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-50 focus:z-10 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-                           href="@href">
-                            @Model.FirstPageText
-                        </a>
-                    }
-
-                    @if (Model.Page > 1)
-                    {
-                        var href = GetUrl(Model.Page - 1);
-                        <a class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 @(Model.FirstLastNavigation && Model.Page > 1 ? "" : "rounded-l-lg")"
-                           href="@href">
-                            @Model.PreviousPageText
-                        </a>
-                    }
-
-                    @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
-                    {
-                        <button class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-300 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500 dark:border-gray-600" disabled>
-                            @Model.SkipBackText
-                        </button>
-                    }
-
-                    @* Pagination Numbers *@
-                    @{
-                        int halfDisplay = Model.PagesToDisplay / 2;
-                        int startPage = Math.Max(1, Model.Page - halfDisplay);
-                        int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
-                        startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
-                    }
-                    @for (int i = startPage; i <= endPage; i++)
-                    {
-                        var href = GetUrl(i);
-                        var isActive = i == Model.Page;
-                        <a data-page="@i"
-                           class="px-4 py-2 text-sm font-medium border @(isActive ? "text-white bg-blue-600 border-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:border-blue-500" : "text-gray-700 bg-white border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700") focus:z-10 focus:ring-2 focus:ring-blue-500"
-                           href="@href">
-                            @i
-                        </a>
-                    }
-
-                    @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
-                    {
-                        <button class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-300 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500 dark:border-gray-600" disabled>
-                            @Model.SkipForwardText
-                        </button>
-                    }
-
-                    @if (Model.Page < totalPages)
-                    {
-                        var href = GetUrl(Model.Page + 1);
-                        <a class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 @(Model.FirstLastNavigation && Model.Page < totalPages ? "" : "rounded-r-lg")"
-                           href="@href"
-                           aria-label="@Model.NextPageAriaLabel">
-                            @Model.NextPageText
-                        </a>
-                    }
-
-                    @if (Model.FirstLastNavigation && Model.Page < totalPages)
-                    {
-                        var href = GetUrl(Model.TotalPages);
-                        <a class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-50 focus:z-10 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-                           href="@href">
-                            @Model.LastPageText
-                        </a>
-                    }
-                </div>
-            }
-        </div>
-
-        @if (Model.ShowSummary && totalPages > 1)
+    <div class="pager-container">
+        @if (Model.ShowPageSize)
         {
-            <div class="px-3 py-1 text-sm text-gray-600 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                @Model.GetPageSummary()
-            </div>
+            <page-size page-size-model="Model"></page-size>
+        }
+
+        @if (Model.FirstLastNavigation && Model.Page > 1)
+        {
+            var href = GetUrl(1);
+            <a class="pager-button" href="@href">
+                @Model.FirstPageText
+            </a>
+        }
+        @if (totalPages > 1)
+        {
+            <text>
+                @if (Model.Page > 1)
+                {
+                    var href = GetUrl(Model.Page - 1);
+                    <a class="pager-button" href="@href">
+                        @Model.PreviousPageText
+                    </a>
+                }
+
+                @if (Model.SkipForwardBackNavigation && Model.Page > Model.PagesToDisplay)
+                {
+                    <span class="pager-button disabled">
+                        @Model.SkipBackText
+                    </span>
+                }
+
+                @* Pagination Numbers *@
+                @{
+                    int halfDisplay = Model.PagesToDisplay / 2;
+                    int startPage = Math.Max(1, Model.Page - halfDisplay);
+                    int endPage = Math.Min(totalPages, startPage + Model.PagesToDisplay - 1);
+                    startPage = Math.Max(1, endPage - Model.PagesToDisplay + 1);
+                }
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    var href = GetUrl(i);
+                    <a data-page="@i"
+                       class="pager-button @(i == Model.Page ? "active" : "")"
+                       href="@href">
+                        @i
+                    </a>
+                }
+
+                @if (Model.SkipForwardBackNavigation && Model.Page < totalPages - Model.PagesToDisplay + 1)
+                {
+                    <span class="pager-button disabled">
+                        @Model.SkipForwardText
+                    </span>
+                }
+
+                @if (Model.Page < totalPages)
+                {
+                    var href = GetUrl(Model.Page + 1);
+                    <a class="pager-button"
+                       href="@href"
+                       aria-label="@Model.NextPageAriaLabel">
+                        @Model.NextPageText
+                    </a>
+                }
+
+                @if (Model.FirstLastNavigation && Model.Page < totalPages)
+                {
+                    var href = GetUrl(Model.TotalPages);
+                    <a class="pager-button" href="@href">
+                        @Model.LastPageText
+                    </a>
+                }
+                @if (Model.ShowSummary)
+                {
+                    <div class="pager-info">
+                        @Model.GetPageSummary()
+                    </div>
+                }
+            </text>
         }
     </div>
