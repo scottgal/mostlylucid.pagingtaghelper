@@ -76,7 +76,7 @@
     var swapValue = "outerHTML";
 }
 
-<div class="@Model.CssClass" id="@Model.PagerId">
+<div class="pager-container @Model.CssClass" id="@Model.PagerId">
     @* Previous Button *@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {

@@ -37,7 +37,7 @@
         <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-<div id="@pagerId" class="flex items-center gap-2 page-size-container" @Html.Raw(alpineAttributes)>
+<div id="@pagerId" class="page-size-container" @Html.Raw(alpineAttributes)>
     <input type="hidden" class="useHtmx" value="@(jsMode == JavaScriptMode.HTMX || jsMode == JavaScriptMode.HTMXWithAlpine ? "true" : "false")" />
     <input type="hidden" class="jsMode" value="@jsMode.ToString()" />
 

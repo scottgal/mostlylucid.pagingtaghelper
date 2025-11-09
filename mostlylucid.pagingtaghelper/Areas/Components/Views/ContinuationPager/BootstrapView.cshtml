@@ -74,7 +74,7 @@
     var swapValue = "outerHTML";
 }
 
-<div class="d-flex gap-2 align-items-center @Model.CssClass" id="@Model.PagerId">
+<div class="pager-container @Model.CssClass" id="@Model.PagerId">
     @* Previous Button *@
     @if (jsMode == JavaScriptMode.HTMX && !string.IsNullOrEmpty(hxTarget))
     {

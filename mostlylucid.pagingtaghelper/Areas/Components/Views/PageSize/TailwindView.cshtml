@@ -13,7 +13,7 @@
         <input class="linkUrl" type="hidden" value="@Model.LinkUrl" />
     }
 }
-<div id="@pagerId" class="flex items-center gap-2 mr-2">
+<div id="@pagerId" class="page-size-container">
     <input type="hidden" class="useHtmx" value="@Model.UseHtmx.ToString().ToLowerInvariant()" />
 
     <label for="pageSize-@pagerId" class="text-sm font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">@(Model.Localizer?.PageSizeLabel ?? "Page size:")</label>
